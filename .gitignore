@@ -1,0 +1,9 @@
+# Archivos sensibles del sistema de licencias - NO subir al repo
+# (ver CLAUDE_LEEME.txt)
+clientes.py
+conexion.py
+licencia_dao.py
+main.py
+
+__pycache__/
+*.pyc

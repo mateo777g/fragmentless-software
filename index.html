@@ -30,63 +30,76 @@
 	</nav>
 
 	<main>
-		<section id="inicio" class="scroll-hero" aria-labelledby="gestion-titulo">
-			<header class="scroll-hero__word-header" style="--count: 6;">
-				<div class="scroll-hero__grid" aria-hidden="true"></div>
-				<section class="scroll-hero__word-layout">
-					<h1 id="gestion-titulo" class="scroll-hero__lead">Tú puedes</h1>
-					<ul class="scroll-hero__words" aria-label="Acciones disponibles">
-						<li>registrar.</li>
-						<li>activar.</li>
-						<li>administrar.</li>
-						<li>controlar.</li>
-						<li>proteger.</li>
-						<li>licenciar.</li>
-					</ul>
-				</section>
-			</header>
+		<section id="inicio" class="scroll-hero" style="--count: 6;" aria-labelledby="gestion-titulo">
+			<div class="scroll-hero__track">
+				<div class="scroll-hero__pin">
+					<div class="scroll-hero__grid" aria-hidden="true"></div>
+					<div class="scroll-hero__word-layout">
+						<h1 id="gestion-titulo" class="scroll-hero__lead">Tú podrás</h1>
+						<ul class="scroll-hero__words" aria-label="Acciones disponibles">
+							<li>actualizar tu menú.</li>
+							<li>gestionar tus mesas.</li>
+							<li>registrar ventas.</li>
+							<li>hacer reportes con IA.</li>
+							<li>crear contenido.</li>
+							<li>subirlo a redes sociales.</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 
 			<div class="scroll-hero__surface">
-				<section class="scroll-hero__surface-content">
+				<div class="scroll-hero__surface-content">
 					<p class="scroll-hero__surface-kicker">Sección 2</p>
-					<p class="scroll-hero__tagline">Y yo te mostraré cómo<br><a href="#inicio">gestionar tus licencias.</a></p>
-				</section>
+					<p class="scroll-hero__tagline">Y yo te mostraré cómo<br><a href="#inicio">gestionar tu negocio.</a></p>
+				</div>
 			</div>
 		</section>
 	</main>
 
 	<script>
 		const scrollHero = document.querySelector('.scroll-hero');
-		const lastScrollWord = document.querySelector('.scroll-hero__words li:last-child');
+		const scrollTrack = document.querySelector('.scroll-hero__track');
+		const scrollPin = document.querySelector('.scroll-hero__pin');
+		const scrollWords = document.querySelector('.scroll-hero__words');
 		const scrollSurface = document.querySelector('.scroll-hero__surface');
-		let completionFrame = 0;
+		let heroFrame = 0;
 
-		function updateScrollCompletion() {
-			completionFrame = 0;
-			if (!scrollHero || !lastScrollWord) return;
+		const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
 
-			const lineHeight = parseFloat(getComputedStyle(lastScrollWord).lineHeight);
-			const highlightY = window.innerHeight * 0.38;
-			const crossedHighlight = lastScrollWord.getBoundingClientRect().top <= highlightY + lineHeight * 0.5;
-			scrollHero.classList.toggle('is-complete', crossedHighlight);
+		// offsetTop no se ve afectado por transform, así que la geometría que
+		// leemos aquí no depende del scale que le aplicamos a la sección 2.
+		function layoutTop(element) {
+			let top = 0;
+			for (let node = element; node; node = node.offsetParent) top += node.offsetTop;
+			return top;
+		}
 
-			if (scrollSurface) {
-				const surfaceStart = scrollSurface.offsetTop;
-				const surfaceProgress = Math.min(
-					Math.max((window.scrollY + window.innerHeight - surfaceStart) / window.innerHeight, 0),
-					1,
-				);
-				const textProgress = Math.min(Math.max((surfaceProgress - 0.25) / 0.5, 0), 1);
-				scrollSurface.style.setProperty('--surface-progress', surfaceProgress);
-				scrollSurface.style.setProperty('--surface-text-progress', textProgress);
-			}
+		function updateScrollHero() {
+			heroFrame = 0;
+			if (!scrollHero || !scrollTrack || !scrollPin || !scrollWords || !scrollSurface) return;
+
+			const viewport = window.innerHeight;
+			const words = scrollWords.children;
+			// El track mide 2 pantallas (la fijada + el solape) más el recorrido de las palabras.
+			const wordDistance = Math.max(scrollTrack.offsetHeight - scrollPin.offsetHeight * 2, 1);
+			const lineHeight = words.length ? scrollWords.getBoundingClientRect().height / words.length : 0;
+
+			// 0 = primera palabra en la línea de resaltado, 1 = última palabra ahí (y ahí se queda).
+			const wordProgress = clamp01((window.scrollY - layoutTop(scrollTrack)) / wordDistance);
+			scrollWords.style.setProperty('--shift', `${-wordProgress * (words.length - 1) * lineHeight}px`);
+
+			// La sección 2 sube por encima de la lista ya congelada.
+			const surfaceProgress = clamp01((window.scrollY + viewport - layoutTop(scrollSurface)) / viewport);
+			scrollSurface.style.setProperty('--surface-progress', surfaceProgress);
+			scrollSurface.style.setProperty('--surface-text-progress', clamp01((surfaceProgress - 0.25) / 0.5));
 		}
 
 		window.addEventListener('scroll', () => {
-			if (!completionFrame) completionFrame = window.requestAnimationFrame(updateScrollCompletion);
+			if (!heroFrame) heroFrame = window.requestAnimationFrame(updateScrollHero);
 		}, { passive: true });
-		window.addEventListener('resize', updateScrollCompletion);
-		updateScrollCompletion();
+		window.addEventListener('resize', updateScrollHero);
+		updateScrollHero();
 	</script>
 
 </body>

@@ -106,6 +106,149 @@ body {
 	transform: scale(1.06);
 }
 
+/* =========================================================================
+ * SECCIÓN 1 - Portada azul (#inicio). Primera vista de la página.
+ * Estática: no tiene scroll animado. Es HERMANA de .scroll-hero, nunca
+ * ancestro de .scroll-hero__words, así que no afecta su matemática ni el
+ * background-attachment: fixed del resaltado.
+ * ========================================================================= */
+.intro {
+	position: relative;
+	display: grid;
+	min-height: 100svh;
+	place-items: center;
+	overflow: hidden;
+	padding: 150px 24px 110px;
+	background: #1355e8;
+	color: #ffffff;
+}
+
+.intro__grid {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	opacity: 0.5;
+	background-image:
+		linear-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(255, 255, 255, 0.13) 1px, transparent 1px);
+	background-size: 48px 48px;
+	mask-image: radial-gradient(120% 90% at 50% 30%, #000 20%, transparent 75%);
+	-webkit-mask-image: radial-gradient(120% 90% at 50% 30%, #000 20%, transparent 75%);
+	pointer-events: none;
+}
+
+.intro__content {
+	position: relative;
+	z-index: 1;
+	width: min(100%, 880px);
+	text-align: center;
+}
+
+.intro__kicker {
+	margin: 0 0 22px;
+	color: rgba(255, 255, 255, 0.72);
+	font-size: 0.76rem;
+	font-weight: 700;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+}
+
+.intro__title {
+	margin: 0;
+	font-size: clamp(2.2rem, 5.6vw, 4.8rem);
+	font-weight: 700;
+	letter-spacing: -0.05em;
+	line-height: 1.05;
+}
+
+.intro__subtitle {
+	margin: 24px auto 0;
+	max-width: 620px;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: clamp(1rem, 1.6vw, 1.2rem);
+	line-height: 1.55;
+}
+
+.intro__actions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 14px;
+	margin-top: 38px;
+}
+
+.intro__cta,
+.intro__ghost {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 50px;
+	padding: 0 28px;
+	border-radius: 999px;
+	font-size: 0.95rem;
+	font-weight: 700;
+	text-decoration: none;
+	transition: transform 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.intro__cta {
+	background: #ffffff;
+	color: #1355e8;
+	box-shadow: 0 10px 26px rgba(3, 4, 7, 0.22);
+}
+
+.intro__ghost {
+	border: 1px solid rgba(255, 255, 255, 0.42);
+	color: #ffffff;
+}
+
+.intro__cta:hover,
+.intro__cta:focus-visible,
+.intro__ghost:hover,
+.intro__ghost:focus-visible {
+	transform: translateY(-2px);
+}
+
+.intro__ghost:hover,
+.intro__ghost:focus-visible {
+	background: rgba(255, 255, 255, 0.12);
+}
+
+.intro__scroll {
+	position: absolute;
+	z-index: 1;
+	bottom: 38px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: inline-flex;
+	align-items: center;
+	gap: 9px;
+	color: rgba(255, 255, 255, 0.72);
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	text-decoration: none;
+	transition: color 180ms ease;
+}
+
+.intro__scroll:hover,
+.intro__scroll:focus-visible {
+	color: #ffffff;
+}
+
+.intro__scroll svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* =========================================================================
+ * SECCIONES 2 y 3 - Comparten el mismo riel de scroll (.scroll-hero):
+ *   · Sección 2 -> .scroll-hero__track / __pin / __words (fondo negro).
+ *   · Sección 3 -> .scroll-hero__surface (panel blanco que se encima).
+ * No tocar sin leer las TRAMPAS del CLAUDE_LEEME.txt.
+ * ========================================================================= */
 .scroll-hero {
 	--start: 38vh;
 	--line-height: 1.1;
@@ -119,7 +262,7 @@ body {
 
 /*
  * El track es el riel de scroll: una pantalla para la lista fijada, el
- * recorrido palabra por palabra, y una pantalla más para que la sección 2
+ * recorrido palabra por palabra, y una pantalla más para que la sección 3
  * suba encima sin que la lista se mueva.
  */
 .scroll-hero__track {
@@ -196,6 +339,7 @@ body {
 	color: transparent;
 }
 
+/* SECCIÓN 3 - Panel blanco. */
 .scroll-hero__surface {
 	--surface-progress: 0;
 	--surface-text-progress: 0;
@@ -277,6 +421,33 @@ body {
 		height: 34px;
 	}
 
+	/* Sección 1 */
+	.intro {
+		padding: 120px 20px 96px;
+	}
+
+	.intro__content {
+		text-align: left;
+	}
+
+	.intro__subtitle {
+		margin-left: 0;
+	}
+
+	.intro__actions {
+		justify-content: flex-start;
+	}
+
+	.intro__cta,
+	.intro__ghost {
+		width: 100%;
+	}
+
+	.intro__scroll {
+		bottom: 28px;
+	}
+
+	/* Secciones 2 y 3 */
 	.scroll-hero__word-layout {
 		align-items: flex-start;
 		justify-content: flex-start;

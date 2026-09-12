@@ -10,6 +10,7 @@
 <body>
 	<nav class="navbar">
 		<div class="navbar__inner">
+			<!-- Atajos: #inicio = sección 1 (portada azul), #gestion = sección 2 (scroll de palabras). -->
 			<a class="navbar__brand" href="#inicio">
 				<img class="navbar__logo" src="assets/fragmentless-blue-horizontal.svg" alt="Fragmentless">
 			</a>
@@ -30,12 +31,48 @@
 	</nav>
 
 	<main>
-		<section id="inicio" class="scroll-hero" style="--count: 6;" aria-labelledby="gestion-titulo">
+		<!--
+			SECCIÓN 1 - Portada azul (estática).
+			Es la primera vista de la página. No participa del riel de scroll de
+			la sección 2: es un hermano, no un ancestro, de .scroll-hero__words.
+		-->
+		<section id="inicio" class="intro" aria-labelledby="intro-titulo">
+			<div class="intro__grid" aria-hidden="true"></div>
+
+			<div class="intro__content">
+				<p class="intro__kicker">Software por suscripción</p>
+				<h1 id="intro-titulo" class="intro__title">Todo tu negocio,<br>en un solo panel.</h1>
+				<p class="intro__subtitle">Menú, mesas, ventas y reportes trabajando juntos. Sin planillas sueltas y sin instalaciones complicadas.</p>
+
+				<div class="intro__actions">
+					<a class="intro__cta" href="#contacto">Hablemos por WhatsApp</a>
+					<a class="intro__ghost" href="#gestion">Ver cómo funciona</a>
+				</div>
+			</div>
+
+			<a class="intro__scroll" href="#gestion">
+				<span>Desliza</span>
+				<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M12 5v14" />
+					<path d="m5 12 7 7 7-7" />
+				</svg>
+			</a>
+		</section>
+
+		<!--
+			SECCIONES 2 y 3 - Van juntas dentro del mismo riel de scroll:
+			  · Sección 2 = .scroll-hero__track / __pin -> la lista de palabras
+			    sobre fondo negro que sube y se congela.
+			  · Sección 3 = .scroll-hero__surface -> el panel blanco que se
+			    encima sobre la lista ya congelada.
+			La matemática de las dos está amarrada (ver CLAUDE_LEEME.txt).
+		-->
+		<section id="gestion" class="scroll-hero" style="--count: 6;" aria-labelledby="gestion-titulo">
 			<div class="scroll-hero__track">
 				<div class="scroll-hero__pin">
 					<div class="scroll-hero__grid" aria-hidden="true"></div>
 					<div class="scroll-hero__word-layout">
-						<h1 id="gestion-titulo" class="scroll-hero__lead">Tú podrás</h1>
+						<h2 id="gestion-titulo" class="scroll-hero__lead">Tú podrás</h2>
 						<ul class="scroll-hero__words" aria-label="Acciones disponibles">
 							<li>actualizar tu menú.</li>
 							<li>gestionar tus mesas.</li>
@@ -48,9 +85,10 @@
 				</div>
 			</div>
 
+			<!-- SECCIÓN 3 - Panel blanco que se solapa sobre la sección 2. -->
 			<div class="scroll-hero__surface">
 				<div class="scroll-hero__surface-content">
-					<p class="scroll-hero__surface-kicker">Sección 2</p>
+					<p class="scroll-hero__surface-kicker">Sección 3</p>
 					<p class="scroll-hero__tagline">Y yo te mostraré cómo<br><a href="#inicio">gestionar tu negocio.</a></p>
 				</div>
 			</div>
@@ -67,8 +105,10 @@
 
 		const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
 
-		// offsetTop no se ve afectado por transform, así que la geometría que
-		// leemos aquí no depende del scale que le aplicamos a la sección 2.
+		// Suma la cadena de offsetTop, así que la geometría sigue siendo
+		// correcta aunque arriba haya secciones estáticas (la portada azul).
+		// offsetTop tampoco se ve afectado por transform, o sea que no depende
+		// del scale que le aplicamos a la sección 3.
 		function layoutTop(element) {
 			let top = 0;
 			for (let node = element; node; node = node.offsetParent) top += node.offsetTop;
@@ -89,7 +129,7 @@
 			const wordProgress = clamp01((window.scrollY - layoutTop(scrollTrack)) / wordDistance);
 			scrollWords.style.setProperty('--shift', `${-wordProgress * (words.length - 1) * lineHeight}px`);
 
-			// La sección 2 sube por encima de la lista ya congelada.
+			// La sección 3 (panel blanco) sube por encima de la lista ya congelada.
 			const surfaceProgress = clamp01((window.scrollY + viewport - layoutTop(scrollSurface)) / viewport);
 			scrollSurface.style.setProperty('--surface-progress', surfaceProgress);
 			scrollSurface.style.setProperty('--surface-text-progress', clamp01((surfaceProgress - 0.25) / 0.5));

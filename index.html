@@ -101,6 +101,8 @@
 		const scrollPin = document.querySelector('.scroll-hero__pin');
 		const scrollWords = document.querySelector('.scroll-hero__words');
 		const scrollSurface = document.querySelector('.scroll-hero__surface');
+		const introSection = document.querySelector('.intro');
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 		let heroFrame = 0;
 
 		const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
@@ -115,11 +117,41 @@
 			return top;
 		}
 
+		// TRANSICIÓN SECCIÓN 1 -> SECCIÓN 2.
+		// La portada azul está fijada (sticky) y la sección negra entra girada
+		// sobre su esquina inferior izquierda hasta quedar recta.
+		//   giro máximo -> el tope de la sección 2 toca el borde inferior.
+		//   giro 0      -> ese mismo tope llega al 25% superior de la ventana.
+		// Al llegar a 0 se quita la clase (y con ella el transform), porque un
+		// ancestro transformado rompe el resaltado azul de las palabras.
+		function updateSectionTilt(viewport) {
+			// La portada se fija recién cuando su borde inferior toca el borde
+			// inferior de la ventana: sticky top = alto de ventana - su alto.
+			// Es 0 mientras mida una pantalla exacta (el caso normal).
+			if (introSection) {
+				const pinTop = Math.min(0, viewport - introSection.offsetHeight);
+				introSection.style.setProperty('--pin-top', `${pinTop}px`);
+			}
+
+			const sectionTop = layoutTop(scrollHero) - window.scrollY;
+			const progress = clamp01((viewport - sectionTop) / (viewport * 0.75));
+			const tilting = progress < 1 && !reduceMotion.matches;
+
+			scrollHero.classList.toggle('is-tilting', tilting);
+
+			if (tilting) {
+				scrollPin.style.setProperty('--tilt', `calc(${1 - progress} * var(--tilt-start))`);
+			} else {
+				scrollPin.style.removeProperty('--tilt');
+			}
+		}
+
 		function updateScrollHero() {
 			heroFrame = 0;
 			if (!scrollHero || !scrollTrack || !scrollPin || !scrollWords || !scrollSurface) return;
 
 			const viewport = window.innerHeight;
+			updateSectionTilt(viewport);
 			const words = scrollWords.children;
 			// El track mide 2 pantallas (la fijada + el solape) más el recorrido de las palabras.
 			const wordDistance = Math.max(scrollTrack.offsetHeight - scrollPin.offsetHeight * 2, 1);
@@ -139,6 +171,7 @@
 			if (!heroFrame) heroFrame = window.requestAnimationFrame(updateScrollHero);
 		}, { passive: true });
 		window.addEventListener('resize', updateScrollHero);
+		reduceMotion.addEventListener('change', updateScrollHero);
 		updateScrollHero();
 	</script>
 

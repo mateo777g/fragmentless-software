@@ -113,7 +113,18 @@ body {
  * background-attachment: fixed del resaltado.
  * ========================================================================= */
 .intro {
-	position: relative;
+	/* Queda FIJADA cuando su borde inferior toca el borde inferior de la
+	   ventana, y a partir de ahí la sección 2 le pasa por encima en vez de
+	   empujarla. Es el equivalente del pin "bottom bottom" del diseño
+	   original. --pin-top lo calcula el JS: vale 0 mientras la portada mida
+	   una pantalla, y se vuelve negativo si su contenido la hace más alta
+	   (así se sigue viendo su parte de abajo antes de fijarse).
+	   OJO: tiene que ser `top`, no `bottom`. Con `bottom` el sticky tira del
+	   elemento HACIA ARRIBA para mostrarlo antes, que es lo contrario.
+	   Ver "TRANSICIÓN 1 -> 2" más abajo. */
+	position: sticky;
+	top: var(--pin-top, 0px);
+	z-index: 0;
 	display: grid;
 	min-height: 100svh;
 	place-items: center;
@@ -254,7 +265,17 @@ body {
 	--line-height: 1.1;
 	/* Scroll que toma cada palabra en llegar a la banda de resaltado. */
 	--word-step: 18svh;
+	/* Grados con los que entra girada la sección 2 sobre la portada azul. */
+	--tilt-start: 30deg;
 	position: relative;
+	/* Por encima de la portada azul fijada. */
+	z-index: 1;
+	/* Al girar, la esquina superior derecha del pin se sale por la derecha
+	   (queda muy por debajo de la ventana, no se ve, pero generaría barra de
+	   scroll horizontal). `clip` y NO `hidden`: hidden convertiría a la
+	   sección en contenedor de scroll y el position: sticky del pin dejaría
+	   de funcionar. */
+	overflow-x: clip;
 	background: #030407;
 	color: #f4f6f8;
 	line-height: var(--line-height);
@@ -337,6 +358,54 @@ body {
 	-webkit-background-clip: text;
 	background-clip: text;
 	color: transparent;
+}
+
+/* =========================================================================
+ * TRANSICIÓN 1 -> 2 - La sección negra entra GIRADA sobre la portada azul.
+ *
+ * Mientras la portada azul está fijada (.intro es sticky), la sección 2
+ * sube desde abajo girada --tilt-start sobre su ESQUINA INFERIOR IZQUIERDA
+ * y se endereza hasta 0deg. El giro empieza cuando el tope de la sección 2
+ * toca el borde inferior de la ventana y termina cuando ese tope llega al
+ * 25% superior. El JS pone/quita la clase .is-tilting y el ángulo --tilt.
+ *
+ * Esto NO toca la transición de la sección 2 a la 3 (el panel blanco).
+ * ========================================================================= */
+.scroll-hero.is-tilting {
+	/* Durante el giro el negro lo pinta el pin. Si lo siguiera pintando la
+	   sección, por detrás del panel inclinado se vería un rectángulo negro
+	   recto y se perdería la cuña azul. */
+	background: transparent;
+}
+
+.scroll-hero.is-tilting .scroll-hero__pin {
+	background: #030407;
+	transform: rotate(var(--tilt, 0deg));
+	/* Esquina inferior izquierda = el pivote del diseño original. */
+	transform-origin: 0 100%;
+	will-change: transform;
+}
+
+/*
+ * TRAMPA 1, versión giro: con un ancestro transformado (el pin), el
+ * background-attachment: fixed de la banda azul deja de resolverse contra
+ * la ventana y se vería el resaltado en el lugar equivocado. Mientras dura
+ * el giro pintamos las palabras planas y apagadas. Al terminar el giro el
+ * JS quita .is-tilting y el transform, y vuelve la banda normal: en ese
+ * punto todavía NO hay ninguna palabra sobre la banda (la primera queda
+ * 25vh por debajo), así que el cambio no se ve.
+ */
+.scroll-hero.is-tilting .scroll-hero__words li {
+	background-image: none;
+	-webkit-background-clip: border-box;
+	background-clip: border-box;
+	color: var(--dimmed);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.scroll-hero {
+		--tilt-start: 0deg;
+	}
 }
 
 /* SECCIÓN 3 - Panel blanco. */

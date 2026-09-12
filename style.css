@@ -109,7 +109,8 @@ body {
 .scroll-hero {
 	--start: 38vh;
 	--line-height: 1.1;
-	--word-step: 30svh;
+	/* Scroll que toma cada palabra en llegar a la banda de resaltado. */
+	--word-step: 18svh;
 	position: relative;
 	background: #030407;
 	color: #f4f6f8;

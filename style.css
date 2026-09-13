@@ -972,6 +972,260 @@ body {
 	background: #8ab0ff;
 }
 
+/* =========================================================================
+ * SECCIÓN 4 - Clientes (#clientes). Última de la página.
+ *
+ * Fondo #f4f6f8: EL MISMO que el panel de planes de la sección 3, a propósito.
+ * La maqueta original usaba blanco puro, pero contra el panel de arriba se veía
+ * un escalón raro justo en la costura. Con el mismo gris las dos secciones leen
+ * como una sola superficie, y las tarjetas blancas (#fff) contrastan igual que
+ * las de planes. Si lo cambias, cámbialo también en .clients__rule::before/after.
+ *
+ * Estática: no tiene riel de scroll propio ni transición de entrada como las de
+ * arriba, solo la ola escalonada que dispara el IntersectionObserver del JS.
+ *
+ * Es HERMANA de .scroll-hero, nunca ancestro de .scroll-hero__words: no toca
+ * el track, ni el pin, ni el surface. Ver CLAUDE_LEEME.txt.
+ *
+ * Layout: tres columnas. La del medio son 3 tarjetas negras de alto natural,
+ * y es la que MARCA EL ALTO de la fila; las de los costados se reparten ese
+ * alto 7/3 (--tall / --short), por eso quedan espejadas.
+ * ========================================================================= */
+.clients {
+	position: relative;
+	padding: 114px clamp(20px, 4vw, 40px) 112px;
+	background: #f4f6f8;
+	color: #111315;
+}
+
+.clients__inner {
+	/* Mismo ancho que .scroll-hero__surface-content, así las tarjetas de
+	   clientes caen alineadas con las de planes justo arriba. */
+	width: min(100%, 1040px);
+	margin: 0 auto;
+}
+
+.clients__head {
+	max-width: 900px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+/* Más chico que .plans__title a propósito: en la maqueta este titular va en
+   UNA sola línea, y a 3rem "Negocios que ya trabajan con Fragmentless" se
+   parte en dos. Si algún día se cambia el texto por uno más largo, hay que
+   volver a mirar este número. */
+.clients__title {
+	margin: 0;
+	font-size: clamp(1.7rem, 2.9vw, 2.45rem);
+	font-weight: 700;
+	letter-spacing: -0.04em;
+	line-height: 1.08;
+}
+
+.clients__subtitle {
+	margin: 14px auto 0;
+	max-width: 560px;
+	color: rgba(17, 19, 21, 0.6);
+	font-size: clamp(0.9rem, 1.2vw, 1rem);
+	line-height: 1.5;
+}
+
+.clients__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	align-items: stretch;
+	gap: 10px;
+	margin-top: 46px;
+}
+
+.clients__col {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+/* Las tarjetas de la columna del medio NO llevan flex: se quedan en su alto
+   natural y entre las tres definen el alto de la fila. */
+.clients__card--tall {
+	flex: 7 1 0;
+}
+
+.clients__card--short {
+	flex: 3 1 0;
+}
+
+.clients__card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	margin: 0;
+	padding: 20px;
+	border: 1px solid rgba(17, 19, 21, 0.1);
+	border-radius: 12px;
+}
+
+.clients__card--paper {
+	background: #ffffff;
+}
+
+.clients__card--ink {
+	background: #111111;
+	border-color: rgba(255, 255, 255, 0.08);
+	color: #ffffff;
+}
+
+/* Azul de marca, el mismo de la portada y del resaltado de las palabras. */
+.clients__card--brand {
+	background: #1355e8;
+	border-color: transparent;
+	color: #ffffff;
+}
+
+/* Cuadrícula de las dos tarjetas blancas, con la máscara elíptica que la
+   desvanece hacia abajo. Va detrás del texto (z-index 0 contra 1). */
+.clients__card-grid {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	background-image:
+		linear-gradient(90deg, rgba(79, 79, 79, 0.18) 1px, transparent 1px),
+		linear-gradient(rgba(79, 79, 79, 0.18) 1px, transparent 1px);
+	background-size: 50px 56px;
+	mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 110%);
+	-webkit-mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, #000 70%, transparent 110%);
+	pointer-events: none;
+}
+
+/* El `margin-top: auto` es lo que empuja la cita Y el pie al fondo de la
+   tarjeta: en las tarjetas altas el texto queda abajo y arriba se ve la
+   cuadrícula sola, que es justo el efecto del diseño. */
+.clients__quote {
+	position: relative;
+	z-index: 1;
+	margin: auto 0 0;
+	font-size: 0.95rem;
+	line-height: 1.5;
+}
+
+.clients__card--ink .clients__quote {
+	font-size: 0.88rem;
+}
+
+.clients__author {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 16px;
+	padding-top: 20px;
+}
+
+.clients__name {
+	margin: 0;
+	font-size: 1.15rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.clients__role {
+	margin: 3px 0 0;
+	color: rgba(17, 19, 21, 0.6);
+	font-size: 0.88rem;
+}
+
+.clients__card--ink .clients__role,
+.clients__card--brand .clients__role {
+	color: rgba(255, 255, 255, 0.72);
+}
+
+/* Monograma en vez de foto: no hay retratos reales de estos clientes, y
+   poner caras de terceros en un testimonio de relleno sería peor que un
+   placeholder honesto. Si algún día llegan las fotos, se reemplaza el
+   <span> por un <img> del mismo tamaño y no hay que tocar nada más. */
+.clients__avatar {
+	display: grid;
+	flex-shrink: 0;
+	width: 64px;
+	height: 64px;
+	place-items: center;
+	border-radius: 12px;
+	font-size: 1.05rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+}
+
+.clients__card--paper .clients__avatar {
+	background: #eaf0fd;
+	color: #1355e8;
+}
+
+.clients__card--ink .clients__avatar {
+	background: rgba(255, 255, 255, 0.12);
+}
+
+.clients__card--brand .clients__avatar {
+	background: rgba(255, 255, 255, 0.18);
+}
+
+/* Remate de abajo: una línea con un cuadradito en cada punta. Es decorativo
+   y cierra la página; no participa del layout (position: absolute). */
+.clients__rule {
+	position: absolute;
+	bottom: 18px;
+	left: 50%;
+	width: min(100% - 40px, 1040px);
+	height: 64px;
+	border-bottom: 2px solid #e2e6ea;
+	transform: translateX(-50%);
+	pointer-events: none;
+}
+
+.clients__rule::before,
+.clients__rule::after {
+	content: "";
+	position: absolute;
+	bottom: -8px;
+	width: 14px;
+	height: 14px;
+	border: 1px solid #d8dce1;
+	/* Tapan la línea en las puntas, así que van del color de la sección. */
+	background: #f4f6f8;
+}
+
+.clients__rule::before {
+	left: -7px;
+}
+
+.clients__rule::after {
+	right: -7px;
+}
+
+/* -------------------------------------------------------------------------
+ * Ola de entrada. La clase .clients--animate la pone el JS: sin JS (o con
+ * prefers-reduced-motion) nunca se agrega y la sección se ve entera desde el
+ * principio, en vez de quedar invisible para siempre.
+ *
+ * Las piezas entran DESDE ARRIBA (-20px) y desenfocadas, como en el diseño
+ * original. El escalonado sí se apretó: el original usaba 400ms por pieza y
+ * con 7 tarjetas la última tardaba casi 3s en aparecer.
+ * ------------------------------------------------------------------------- */
+.clients--animate [data-reveal] {
+	opacity: 0;
+	filter: blur(10px);
+	transform: translateY(-20px);
+}
+
+.clients--animate.is-revealed [data-reveal] {
+	opacity: 1;
+	filter: none;
+	transform: none;
+	transition: opacity 520ms ease, filter 520ms ease, transform 520ms ease;
+	transition-delay: calc(var(--n, 0) * 110ms);
+}
+
 @media (max-width: 900px) {
 	.plans__grid {
 		grid-template-columns: 1fr;
@@ -980,6 +1234,17 @@ body {
 
 	.plans__card--featured {
 		transform: none;
+	}
+
+	/* Una sola columna: las tarjetas vuelven a su alto natural, así que el
+	   7/3 de las laterales deja de tener sentido. */
+	.clients__grid {
+		grid-template-columns: 1fr;
+	}
+
+	.clients__card--tall,
+	.clients__card--short {
+		flex: 0 1 auto;
 	}
 }
 
@@ -1075,4 +1340,30 @@ body {
 		padding: 7px 14px;
 	}
 
+	/* Sección 4 */
+	.clients {
+		padding: 76px 20px 92px;
+	}
+
+	.clients__head {
+		text-align: left;
+	}
+
+	.clients__subtitle {
+		margin-left: 0;
+	}
+
+	.clients__title {
+		font-size: clamp(1.7rem, 7.4vw, 2.4rem);
+	}
+
+	.clients__avatar {
+		width: 52px;
+		height: 52px;
+		font-size: 0.92rem;
+	}
+
+	.clients__rule {
+		width: calc(100% - 32px);
+	}
 }

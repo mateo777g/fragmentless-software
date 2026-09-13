@@ -762,7 +762,7 @@ body {
 	/* Bloque y NO grid: el __stage es sticky, y un sticky dentro de un grid
 	   se pega solo dentro de SU celda (o sea, no se pega). En flujo normal
 	   se pega contra la caja del panel, que es lo que hace falta.
-	   El centrado que hacía el grid ahora lo hace el propio __stage. */
+	   La colocación que hacía el grid ahora la hace el propio __stage. */
 	display: block;
 	/* min-height y NO height: en pantallas bajas o en móvil las tarjetas no
 	   caben en una pantalla y el panel tiene que poder crecer. Esto no
@@ -796,9 +796,18 @@ body {
 	position: sticky;
 	top: var(--stage-top, 0px);
 	display: grid;
-	place-items: center;
+	/* start y NO center: el contenido se ancla ARRIBA, a padding-top del
+	   borde del stage. Con center quedaba a 140px del tope de la ventana y el
+	   titular de los planes caía mucho más abajo que el de la sección 4 (que
+	   entra a 80px); ahora los dos aterrizan a la misma altura y el paso 3 -> 4
+	   no da el saltito.
+	   El hueco que antes se repartía arriba y abajo ahora queda TODO abajo: es
+	   espacio libre a propósito, para cuando las tarjetas de planes crezcan.
+	   Ojo: el alto de la sección no cambia, lo fija el min-height de 100svh
+	   (el contenido + padding mide ~817px, así que sobra). */
+	place-items: start center;
 	min-height: 100svh;
-	padding: 118px 0 64px;
+	padding: 80px 0 64px;
 }
 
 /*
@@ -1074,7 +1083,10 @@ body {
  * ========================================================================= */
 .clients {
 	position: relative;
-	padding: 114px clamp(20px, 4vw, 40px) 112px;
+	/* Los 114/112 de antes bajaron a 80/96: el titular de dos líneas suma
+	   ~58px y estos recortes (+ el margin-top de la grilla) los devuelven,
+	   así la sección no queda más larga que antes. */
+	padding: 80px clamp(20px, 4vw, 40px) 96px;
 	background: #f4f6f8;
 	color: #111315;
 }
@@ -1092,16 +1104,20 @@ body {
 	text-align: center;
 }
 
-/* Más chico que .plans__title a propósito: en la maqueta este titular va en
-   UNA sola línea, y a 3rem "Negocios que ya trabajan con Fragmentless" se
-   parte en dos. Si algún día se cambia el texto por uno más largo, hay que
-   volver a mirar este número. */
+/* Mismas medidas que .plans__title: los dos titulares van en dos líneas con
+   la segunda en azul, así que la sección 3 y la 4 se leen igual. Si tocas
+   uno, toca el otro. El alto que gana esta sección por la segunda línea se
+   compensa abajo, en el padding de .clients y el margin-top de la grilla. */
 .clients__title {
 	margin: 0;
-	font-size: clamp(1.7rem, 2.9vw, 2.45rem);
+	font-size: clamp(1.9rem, 3.4vw, 3rem);
 	font-weight: 700;
-	letter-spacing: -0.04em;
-	line-height: 1.08;
+	letter-spacing: -0.045em;
+	line-height: 1.05;
+}
+
+.clients__title span {
+	color: #1355e8;
 }
 
 .clients__subtitle {
@@ -1117,7 +1133,7 @@ body {
 	grid-template-columns: repeat(3, 1fr);
 	align-items: stretch;
 	gap: 10px;
-	margin-top: 46px;
+	margin-top: 38px;
 }
 
 .clients__col {
@@ -1663,7 +1679,7 @@ body {
 
 	/* Sección 4 */
 	.clients {
-		padding: 76px 20px 92px;
+		padding: 60px 20px 80px;
 	}
 
 	.clients__head {
@@ -1672,10 +1688,6 @@ body {
 
 	.clients__subtitle {
 		margin-left: 0;
-	}
-
-	.clients__title {
-		font-size: clamp(1.7rem, 7.4vw, 2.4rem);
 	}
 
 	.clients__avatar {

@@ -1,0 +1,371 @@
+CLAUDE CODE - LEEME (IMPORTANTE)
+================================
+
+Los siguientes archivos .py de este proyecto NO se suben al repositorio
+bajo ninguna circunstancia, aunque en algún momento se sugiera lo contrario:
+
+- clientes.py
+- conexion.py
+- licencia_dao.py
+- main.py
+- cualquier otro .py que se agregue a futuro en este proyecto
+
+Motivo:
+Estos archivos contienen la lógica y credenciales/API sensibles del sistema
+de licencias con el que rento software a mis clientes (incluye la parte
+donde se desactivan las mensualidades). Es información privada de mi
+negocio y de mis clientes, no debe quedar expuesta en un repo (ni público
+ni privado en la nube).
+
+Instrucción para Claude Code:
+- NO agregues estos .py a git (ni con "git add", ni sugiriendo que se suban).
+- NO los incluyas en commits, PRs, ni los publiques como Artifact.
+- Si en algún momento parece que ya están trackeados en el repo, avísame
+  antes de tocar nada — no los quites del historial sin que yo lo pida
+  explícitamente (eso reescribe historial y hay que hacerlo con cuidado).
+- Esto ya está reforzado con un .gitignore, pero esta nota es la referencia
+  humana de POR QUÉ.
+
+Si quiero compartir código de estos archivos, yo lo pego manualmente sin
+las partes sensibles (claves, endpoints, tokens, etc).
+
+Nota: este archivo (CLAUDE_LEEME.txt) está SIN subir al repo a propósito,
+porque describe qué contienen los .py privados. El .gitignore sí está
+subido, que es el que realmente protege.
+
+
+LANDING PAGE (index.html + style.css) - MAPA DE SECCIONES
+=========================================================
+
+Orden actual de la página, de arriba hacia abajo:
+
+  SECCIÓN 1 - Portada azul       -> id="inicio",  clase .intro
+  SECCIÓN 2 - Fondo negro        -> id="gestion", clase .scroll-hero
+               (lista de palabras)   (.scroll-hero__track / __pin / __words)
+  SECCIÓN 3 - Panel blanco       -> .scroll-hero__surface
+
+OJO con la numeración: la sección del fondo negro ANTES era la 1 y el
+panel blanco era la 2. Desde que se agregó la portada azul, todo corrió
+un lugar: negro = 2, blanco = 3. Los comentarios del HTML/CSS/JS ya
+usan la numeración nueva; si ves "sección 2" refiriéndose al panel
+blanco en algún lado, es texto viejo que se escapó.
+
+Las secciones 2 y 3 viven dentro del MISMO <section id="gestion">, porque
+comparten un solo riel de scroll. No las separes en dos <section>: el
+solape depende de que estén en el mismo contenedor.
+
+
+SECCIÓN 1 - PORTADA AZUL (.intro)
+==================================
+
+Ocupa min-height: 100svh, fondo #1355e8 (el azul de marca, el mismo del
+resaltado de las palabras y de los links). No tiene animación propia: lo
+único que hace es quedarse FIJADA mientras la sección 2 entra girada por
+encima (ver "TRANSICIÓN SECCIÓN 1 -> SECCIÓN 2").
+
+Piezas:
+- .intro__grid     -> la grilla blanca sutil, con máscara radial.
+- .intro__content  -> kicker + h1 + subtítulo + botones.
+- .intro__cta      -> botón blanco (WhatsApp, va a #contacto).
+- .intro__ghost    -> botón de borde (va a #gestion, la sección 2).
+- .intro__scroll   -> el "Desliza" de abajo (también va a #gestion).
+
+POR QUÉ NO ROMPE EL SCROLL DE LA SECCIÓN 2 (importante):
+- Es HERMANA de .scroll-hero, no ancestro de .scroll-hero__words. Si
+  alguna vez la metes envolviendo al hero, su nada de transform/filter
+  reventaría el background-attachment: fixed del resaltado (trampa 1).
+- El JS usa layoutTop(), que suma la cadena de offsetTop. Por eso puede
+  haber cualquier cantidad de secciones estáticas arriba sin desajustar
+  la matemática. Si alguna vez cambias eso por un offsetTop pelado o por
+  una constante, se desincroniza todo.
+- Se puede agregar más secciones estáticas ARRIBA o ABAJO con el mismo
+  criterio: hermanas, sin transform, y sin tocar el .scroll-hero.
+
+
+TRANSICIÓN SECCIÓN 1 -> SECCIÓN 2 (entrada girada)
+===================================================
+
+Copiada del componente "story scroll" (FlowArt). Cómo se ve:
+
+1. La portada azul se FIJA cuando su borde inferior toca el borde inferior
+   de la ventana. Deja de scrollear.
+2. La sección negra sube desde abajo GIRADA 30° sobre su ESQUINA INFERIOR
+   IZQUIERDA, así que entra en diagonal y por la cuña que deja se sigue
+   viendo el azul de la portada.
+3. Se va enderezando hasta 0° y queda recta. Desde ahí sigue el scroll de
+   palabras de siempre.
+
+El giro empieza cuando el tope de la sección 2 toca el borde inferior de la
+ventana y termina cuando ese tope llega al 25% superior. O sea que dura
+0.75 de pantalla, y después quedan 25vh de scroll normal antes de que la
+primera palabra llegue a la banda azul.
+
+Las piezas:
+- .intro              -> position: sticky con top: var(--pin-top). Es el
+                         "pin" de la portada.
+- .scroll-hero__pin   -> es el que gira (mide exactamente 100svh, o sea la
+                         primera pantalla de la sección 2).
+- .is-tilting         -> clase que el JS pone en .scroll-hero mientras dura
+                         el giro, y QUITA al terminarlo.
+- --tilt-start        -> el ángulo (30deg). Único perilla para suavizarlo;
+                         se puede bajar por media query si en móvil se
+                         quiere una diagonal menos marcada.
+- --tilt              -> el ángulo actual, lo escribe el JS en el pin.
+
+TRAMPAS (no romper esto):
+
+A. El pin es ANCESTRO de .scroll-hero__words, o sea que mientras tiene
+   transform vuelve a aparecer la trampa 1 de más abajo: el
+   background-attachment: fixed del resaltado deja de resolverse contra la
+   ventana. Por eso .is-tilting también pinta las palabras planas y
+   apagadas, y por eso el JS QUITA la clase (y con ella el transform) al
+   llegar a 0°. No dejes el transform puesto "porque rotate(0) no se nota":
+   sí se nota, rompe el resaltado. Justo en ese punto ninguna palabra está
+   todavía sobre la banda, así que el cambio no se ve.
+
+B. El pin de la portada tiene que ser sticky con `top`, NO con `bottom`.
+   Con `bottom` el sticky hace lo contrario (tira del elemento hacia
+   arriba para mostrarlo ANTES). El valor de --pin-top lo calcula el JS:
+   alto de ventana - alto de la portada. Es 0 mientras la portada mida una
+   pantalla exacta, y se vuelve negativo si el contenido la hace más alta,
+   para que igual se alcance a ver su parte de abajo antes de fijarse.
+
+C. Mientras gira, el negro lo pinta el PIN y .scroll-hero se queda
+   transparente. Si el fondo negro lo siguiera pintando la sección, por
+   detrás del panel inclinado se vería un rectángulo negro recto y se
+   perdería la cuña azul.
+
+D. .scroll-hero lleva overflow-x: clip porque al girar la esquina superior
+   derecha del pin se sale por la derecha (queda muy por debajo de la
+   ventana, no se ve, pero generaba barra de scroll horizontal). Tiene que
+   ser `clip` y NO `hidden`: con `hidden` la sección se vuelve contenedor
+   de scroll y el position: sticky del pin deja de funcionar.
+
+E. Esta transición NO toca la de la sección 2 a la 3. Se verificó con
+   captura de pantalla: la fase del panel blanco quedó idéntica pixel por
+   pixel a como estaba antes.
+
+
+SECCIONES 2 y 3 - CÓMO FUNCIONA EL SCROLL
+==========================================
+
+El diseño al que le apuntamos es el de rahil.pro. Costó trabajo llegar
+(una sesión anterior no lo logró), así que ANTES de tocar el scroll hay
+que entender esto. Si algo se ve raro, la causa casi siempre es una de
+las trampas de abajo.
+
+Cómo se ve, en orden:
+1. La lista de palabras sube mientras una banda de resaltado fija (a 38vh)
+   va pintando de azul la palabra que le pasa por encima.
+2. Cuando la ÚLTIMA palabra ("subirlo a redes sociales.") llega a la banda,
+   la lista SE CONGELA. Aunque sigas scrolleando, ya no se mueve.
+3. Recién ahí la sección 3 (el panel blanco) sube desde abajo y se ENCIMA
+   sobre la lista congelada, hasta cubrir la pantalla.
+
+Las piezas:
+- .scroll-hero__track  -> el riel de scroll. Mide
+                          calc(200svh + (count - 1) * word-step): una
+                          pantalla para el pin, el recorrido de las
+                          palabras, y una pantalla más para el solape.
+- .scroll-hero__pin    -> position: sticky; top: 0; height: 100svh.
+                          Es lo que mantiene la lista quieta en pantalla.
+- .scroll-hero__words  -> el JS le mueve `top`, con el avance clampeado
+                          a 1. Ese clamp ES lo que congela la lista.
+- .scroll-hero__surface-> margin-top: -100svh para solaparse sobre la
+                          última pantalla del track en vez de empujarla.
+                          Es la sección 3. Usa min-height: 100svh (NO
+                          height), así puede crecer cuando las tarjetas de
+                          planes no caben en una pantalla.
+
+TRAMPAS (no romper esto):
+
+1. La lista se mueve con `top`, NO con `transform`. Un ancestro con
+   transform rompe el `background-attachment: fixed` del degradado que
+   pinta la banda azul, y el resaltado deja de funcionar. Por la misma
+   razón, no le pongas transform, filter ni will-change a ningún padre
+   de .scroll-hero__words.
+
+2. La matemática está amarrada: el panel blanco empieza a subir justo
+   cuando la última palabra llega a la banda, y termina de cubrir justo
+   cuando el pin se despega. Si cambias el margin-top: -100svh del
+   surface, el 200svh del track, o el height: 100svh del pin, se
+   desincroniza. Los tres van juntos.
+   El ALTO del surface sí se puede tocar (de hecho es min-height, no
+   height): el solape depende de dónde EMPIEZA el panel, o sea del
+   margin-top negativo, no de cuánto mide. Si crece, simplemente queda
+   scroll normal después de que termina la animación.
+
+3. El padding-top del .scroll-hero__word-layout es
+   calc(var(--start) - 0.5lh). Eso es lo que centra la primera línea
+   exactamente sobre la banda. No lo cambies por un valor fijo.
+
+4. NO vuelvas a meter una clase tipo "is-complete" que pinte la última
+   palabra a mano. Eso existía antes y causaba que se vieran DOS líneas
+   azules al mismo tiempo. La banda cae sola sobre la última palabra.
+
+5. Si agregas o quitas secciones, ACTUALIZA la numeración en los
+   comentarios del HTML y del CSS.
+   (Antes había además un kicker visible que decía "Sección 3" arriba del
+   panel blanco. Se eliminó: era andamio de desarrollo y no tenía por qué
+   verlo el cliente. Ya no queda numeración visible en la página, solo en
+   los comentarios.)
+
+Para ajustar la velocidad:
+   --word-step en .scroll-hero (style.css) = cuánto scroll toma cada
+   palabra. 18svh es el valor actual. 12svh = más ágil, 24svh = más
+   pausado.
+
+
+CONTENIDO DE LA SECCIÓN 3 - PLANES
+===================================
+
+El panel blanco ya no es solo una frase: adentro van los 3 planes
+(clases .plans__*). Antes ahí vivía .scroll-hero__tagline ("Y yo te
+mostraré cómo gestionar tu negocio."), que se eliminó.
+
+Todo cuelga de .scroll-hero__surface-content, que es el que ya tenía el
+fundido de entrada (--surface-text-progress, lo escribe el JS). O sea que
+los planes aparecen con EXACTAMENTE la misma animación sutil de antes, sin
+código nuevo de scroll. No le agregues una animación propia a las
+tarjetas: se pelea con ese fundido.
+
+Piezas:
+- .plans__billing  -> la píldora con el switch mensual/anual.
+- .plans__switch   -> botón con role="switch" + aria-checked. El círculo
+                      (.plans__switch-thumb) va en azul de marca, que fue
+                      pedido explícito.
+- .plans__grid     -> 3 columnas en desktop, 1 sola debajo de 900px.
+- .plans__card--featured -> el plan del centro: fondo negro y scale(1.04).
+                      Las otras dos son blancas.
+- .plans__amount   -> el número del precio. Lleva data-monthly y
+                      data-yearly; el JS anima el conteo entre los dos
+                      (el reemplazo casero de NumberFlow). Tiene
+                      font-variant-numeric: tabular-nums para que el
+                      número no baile mientras cuenta.
+
+El ancho de .scroll-hero__surface-content es 1040px (antes 760px, que
+alcanzaba para una sola frase). Era el ancho que tenía la navbar vieja;
+la navbar ya no existe, pero el valor se dejó porque a las tarjetas les
+queda bien.
+
+PRECIOS: los valores (29/59/99 mensual, 23/47/79 anual) son de relleno,
+salieron del diseño de referencia. Cambiarlos es editar los data-monthly
+y data-yearly en index.html, nada más.
+
+Los tres botones "Elegir plan" apuntan a #contacto, igual que el CTA de
+la portada, así que cuando haya WhatsApp real hay que cambiar los cuatro.
+
+
+MENÚ FLOTANTE (.menu) - reemplazó a la navbar
+==============================================
+
+La navbar de píldora blanca con el logo se ELIMINÓ por completo (HTML,
+CSS y las reglas que tenía en el media query de 640px). En su lugar va
+una píldora flotante fija arriba al centro, copiada del componente
+"liquid morph floating menu" y traducida a CSS/JS pelado (el original
+era React + framer-motion; este proyecto no tiene build, así que no se
+metió ninguna dependencia).
+
+Cómo se ve:
+1. Cerrada es una píldora de 156x48 que dice "Menú" + hamburguesa. Al
+   pasar el mouse crece un 5%.
+2. Al hacer clic se estira a 280 de ancho, el radio pasa de 999 a 30, y
+   un círculo enorme BAJA desde arriba pintando el panel.
+3. Los 4 links aparecen escalonados detrás del círculo, en mayúsculas.
+4. Al pasar el mouse por un link, cada letra rueda hacia arriba con un
+   retardo por letra (hay dos copias de cada letra, una encima de otra).
+
+Las piezas:
+- .menu          -> el contenedor fijo. Tiene pointer-events: none para
+                    no tapar clics de la página; solo la píldora los
+                    recibe. Acá viven las variables de color.
+- .menu__shell   -> la píldora. Lo que se anima (width/height/radius).
+- .menu__circle  -> el círculo que baja. Cerrado top: -200% (su borde de
+                    abajo queda justo en el tope, invisible), abierto
+                    top: -20% y cubre todo. Es el truco del diseño
+                    original espejado, porque acá el menú está ARRIBA y
+                    en el original estaba abajo. Si alguna vez se lo pasa
+                    abajo, hay que invertir esos dos valores a `bottom`.
+- .menu__items   -> los links. Lleva flex-shrink: 0 a propósito: así su
+                    alto natural no se aplasta y el JS lo puede medir con
+                    offsetHeight aunque el menú esté cerrado.
+- .is-open       -> la clase que dispara todo. La pone el JS.
+
+COLOR POR SECCIÓN (data-theme):
+El JS mira, en cada scroll, qué sección hay debajo de la píldora (mide a
+44px del tope con getBoundingClientRect, así que respeta el scale del
+panel blanco) y escribe data-theme en .menu. Hay tres:
+   blue  -> sobre la portada azul  : píldora blanca, panel negro
+   dark  -> sobre el fondo negro   : píldora azul,   panel claro
+   light -> sobre el panel blanco  : píldora negra,  panel azul
+Cada tema usa para el panel abierto un color que su píldora NO usa, para
+que el morph se note. Los colores son 4 custom properties (--menu-bg,
+--menu-fg, --menu-panel, --menu-panel-fg); cambiar el tema no anima el
+custom property en sí, pero SÍ anima el background-color / color que lo
+usa, que es lo que se ve. Para agregar una sección nueva: un tema más y
+una rama más en updateMenuTheme().
+
+El menú NO toca el track, ni el pin, ni el surface: no puede
+desincronizar la matemática de las secciones 2 y 3 (se verificó contra
+la versión anterior: deriva de la última palabra 0.00px y giro 30->0
+idénticos en 1920, 1440, 1024, 390 y 360).
+
+LOGO: la barra nueva no lleva logo, fue pedido explícito. El favicon
+sigue usando assets/fragmentless-blue-reposo.svg, pero
+assets/fragmentless-blue-horizontal.svg quedó SIN USAR (era el de la
+navbar). No se borró por si vuelve en un footer.
+
+
+ATAJOS (anclas y menú)
+=======================
+
+Anclas que YA existen:
+   #inicio   -> Sección 1, la portada azul. Lo usa el link "Inicio" del
+                menú flotante. (Antes también lo usaban el logo de la
+                navbar y el link "gestionar tu negocio." del panel
+                blanco; ninguno de los dos existe ya.)
+   #gestion  -> Sección 2, el scroll de palabras. Lo usan el botón
+                "Ver cómo funciona" y el "Desliza" de la portada.
+
+Anclas que TODAVÍA NO existen (los links están puestos, pero no hay
+sección a la que saltar; no rompen nada, simplemente no hacen nada):
+   #clientes  -> link del menú flotante.
+   #licencias -> link del menú flotante.
+   #contacto  -> link "Contacto" del menú flotante, el CTA blanco de la
+                 portada y los 3 botones "Elegir plan" de la sección 3.
+                 Cuando haya WhatsApp real, acá va el https://wa.me/...
+                 en vez del ancla (son 5 links en total).
+
+Regla: el ancla #inicio SIEMPRE apunta a la primera sección de la
+página, sea cual sea. Si algún día se mete otra sección arriba, se le
+pasa el id="inicio" a esa y a la que lo tenía se le pone un id propio
+(fue exactamente lo que se hizo cuando entró la portada azul: el hero
+negro pasó de id="inicio" a id="gestion").
+
+Nota: html { scroll-behavior: smooth } en style.css hace que todos estos
+saltos sean animados. Si alguna vez un ancla se siente lenta, es por eso.
+
+Cómo verificar cambios (importante, no confiar solo en que compile):
+Se probó con Playwright + Chrome headless, scrolleando la página y
+midiendo posiciones reales. Lo que hay que comprobar:
+- que el .top de la última palabra NO cambie durante toda la fase de
+  solape (deriva 0.00px en desktop; hasta ~0.4px en móvil es normal,
+  es sub-píxel y queda tapado por el panel opaco),
+- que solo haya una palabra resaltada a la vez,
+- que no haya overflow horizontal ni errores JS,
+- que la portada azul arranque en top = 0 y mida una pantalla completa,
+- que la portada azul quede fijada durante todo el giro (su borde inferior
+  clavado en el borde inferior de la ventana),
+- que el giro empiece en 30° y llegue a 0° en 0.75 de pantalla, y que ahí
+  el transform del pin vuelva a `none`,
+- que durante el giro NINGUNA palabra esté resaltada y que el resaltado
+  vuelva solo al terminar (subir y bajar el scroll varias veces),
+- que las anclas #inicio y #gestion salten a la sección correcta,
+- que el menú flotante cambie de tema en las tres secciones (blue, dark,
+  light) y que abra/cierre con clic, con Escape y con clic afuera,
+- probar en varios anchos: 1920, 1440, 1024, 390 y 360.
+
+Detalle de semántica: el único <h1> de la página es el de la portada
+azul ("Todo tu negocio, en un solo panel."). El "Tú podrás" del hero
+negro es <h2> justamente para no tener dos h1. Visualmente da igual
+porque .scroll-hero__lead define font-size y font-weight con inherit.

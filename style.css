@@ -328,7 +328,7 @@ body {
 	min-height: 100svh;
 	place-items: center;
 	overflow: hidden;
-	padding: 150px 24px 110px;
+	padding: 150px clamp(24px, 4.6vw, 96px) 110px;
 	background: #1355e8;
 	color: #ffffff;
 }
@@ -347,11 +347,21 @@ body {
 	pointer-events: none;
 }
 
+/* Texto a la izquierda, isotipo a la derecha. La columna del logo se
+   encoge antes que la del texto para que el título nunca se parta feo. */
 .intro__content {
 	position: relative;
 	z-index: 1;
-	width: min(100%, 880px);
-	text-align: center;
+	display: grid;
+	grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+	align-items: center;
+	gap: clamp(24px, 5vw, 72px);
+	width: min(100%, 1760px);
+	text-align: left;
+}
+
+.intro__copy {
+	min-width: 0;
 }
 
 .intro__kicker {
@@ -365,14 +375,28 @@ body {
 
 .intro__title {
 	margin: 0;
-	font-size: clamp(2.2rem, 5.6vw, 4.8rem);
+	/* El 6.9vw está calculado para que "FRAGMENTLESS" (la palabra más larga,
+	   que no puede partirse) siempre quepa en su columna. Subirlo la
+	   desborda en anchos medios. */
+	font-size: clamp(2.6rem, 6.9vw, 8.2rem);
 	font-weight: 700;
-	letter-spacing: -0.05em;
-	line-height: 1.05;
+	letter-spacing: -0.035em;
+	line-height: 0.94;
+	text-transform: uppercase;
+}
+
+/* El ® va chiquito y pegado a la línea base de "SOFTWARE". */
+.intro__title-mark {
+	display: inline-block;
+	margin-left: 0.06em;
+	font-size: 0.28em;
+	font-weight: 700;
+	letter-spacing: 0;
+	vertical-align: baseline;
 }
 
 .intro__subtitle {
-	margin: 24px auto 0;
+	margin: 28px 0 0;
 	max-width: 620px;
 	color: rgba(255, 255, 255, 0.8);
 	font-size: clamp(1rem, 1.6vw, 1.2rem);
@@ -382,10 +406,25 @@ body {
 .intro__actions {
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: flex-start;
 	flex-wrap: wrap;
 	gap: 14px;
 	margin-top: 38px;
+}
+
+.intro__logo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 0;
+}
+
+.intro__logo img {
+	/* El SVG trae aire alrededor del hexágono, por eso el ancho del <img>
+	   va bastante por encima del tamaño visible del cubo. */
+	width: min(100%, 560px);
+	height: auto;
+	display: block;
 }
 
 .intro__cta,
@@ -913,16 +952,27 @@ body {
 		padding: 120px 20px 96px;
 	}
 
+	/* En móvil se apila: primero el isotipo, después el texto. */
 	.intro__content {
-		text-align: left;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 32px;
+	}
+
+	.intro__logo {
+		order: -1;
+		justify-content: flex-start;
+	}
+
+	.intro__logo img {
+		width: min(58%, 240px);
+	}
+
+	.intro__title {
+		font-size: clamp(2.4rem, 12vw, 3.6rem);
 	}
 
 	.intro__subtitle {
 		margin-left: 0;
-	}
-
-	.intro__actions {
-		justify-content: flex-start;
 	}
 
 	.intro__cta,

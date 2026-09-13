@@ -140,92 +140,104 @@
 			<!-- SECCIÓN 3 - Panel blanco que se solapa sobre la sección 2. -->
 			<div class="scroll-hero__surface">
 				<!--
+					__stage = el ENGANCHE de la sección 3 (scroll jacking). Es
+					sticky y mide una pantalla; el panel de abajo le deja
+					--surface-hold de sobra, así que los planes se quedan
+					quietos en pantalla ese tramo antes de que suba la
+					sección 4. Es solo un envoltorio de posición: no toca el
+					track, ni el pin, ni el solape. Ver CLAUDE_LEEME.txt.
+
 					Todo lo de los planes va DENTRO de .scroll-hero__surface-content,
 					así que aparece con el mismo desvanecido sutil de siempre (lo
 					maneja --surface-text-progress). No tiene animación propia.
 				-->
-				<div class="scroll-hero__surface-content">
-					<h2 class="plans__title">Planes que crecen<br><span>con tu negocio.</span></h2>
-					<p class="plans__subtitle">Elige el plan que necesitas hoy. Puedes cambiarlo o cancelarlo cuando quieras.</p>
+				<div class="scroll-hero__surface-stage">
+					<div class="scroll-hero__surface-content">
+						<h2 class="plans__title">Planes que crecen<br><span>con tu negocio.</span></h2>
+						<p class="plans__subtitle">Elige el plan que necesitas hoy. Puedes cambiarlo o cancelarlo cuando quieras.</p>
 
-					<div class="plans__billing">
-						<span class="plans__billing-label" data-billing="monthly">Mensual</span>
+						<div class="plans__billing">
+							<span class="plans__billing-label" data-billing="monthly">Mensual</span>
 
-						<button type="button" class="plans__switch" role="switch" aria-checked="true" aria-label="Cambiar entre facturación mensual y anual">
-							<span class="plans__switch-thumb" aria-hidden="true"></span>
-						</button>
+							<button type="button" class="plans__switch" role="switch" aria-checked="true" aria-label="Cambiar entre facturación mensual y anual">
+								<span class="plans__switch-thumb" aria-hidden="true"></span>
+							</button>
 
-						<span class="plans__billing-label" data-billing="yearly">Anual</span>
-						<span class="plans__badge">Ahorra 20%</span>
-					</div>
+							<span class="plans__billing-label" data-billing="yearly">Anual</span>
+							<span class="plans__badge">Ahorra 20%</span>
+						</div>
 
-					<!-- data-monthly / data-yearly: los lee el JS para el conteo del precio. -->
-					<div class="plans__grid">
-						<article class="plans__card">
-							<h3 class="plans__name">Plan Básico</h3>
-							<p class="plans__desc">Ideal para negocios que empiezan</p>
+						<!-- data-monthly / data-yearly: los lee el JS para el conteo del precio. -->
+						<div class="plans__grid">
+							<article class="plans__card">
+								<h3 class="plans__name">Plan Básico</h3>
+								<p class="plans__desc">Ideal para negocios que empiezan</p>
 
-							<p class="plans__price">
-								<span class="plans__currency">$</span>
-								<span class="plans__amount" data-monthly="29" data-yearly="23">23</span>
-								<span class="plans__period">/mes</span>
-							</p>
+								<p class="plans__price">
+									<span class="plans__currency">$</span>
+									<span class="plans__amount" data-monthly="29" data-yearly="23">23</span>
+									<span class="plans__period">/mes</span>
+								</p>
 
-							<a class="plans__cta" href="#contacto">Elegir plan</a>
+								<a class="plans__cta" href="#contacto">Elegir plan</a>
 
-							<ul class="plans__features">
-								<li>Panel unificado</li>
-								<li>Actualización de menú</li>
-								<li>Control de mesas</li>
-								<li>Registro de ventas</li>
-								<li>3 usuarios</li>
-							</ul>
-						</article>
+								<ul class="plans__features">
+									<li>Panel unificado</li>
+									<li>Actualización de menú</li>
+									<li>Control de mesas</li>
+									<li>Registro de ventas</li>
+									<li>3 usuarios</li>
+								</ul>
+							</article>
 
-						<!-- Plan destacado: tarjeta negra, un poco más grande. -->
-						<article class="plans__card plans__card--featured">
-							<h3 class="plans__name">Plan Negocio</h3>
-							<p class="plans__desc">Para negocios que están creciendo</p>
+							<!-- Plan destacado: tarjeta negra, un poco más grande. -->
+							<article class="plans__card plans__card--featured">
+								<h3 class="plans__name">Plan Negocio</h3>
+								<p class="plans__desc">Para negocios que están creciendo</p>
 
-							<p class="plans__price">
-								<span class="plans__currency">$</span>
-								<span class="plans__amount" data-monthly="59" data-yearly="47">47</span>
-								<span class="plans__period">/mes</span>
-							</p>
+								<p class="plans__price">
+									<span class="plans__currency">$</span>
+									<span class="plans__amount" data-monthly="59" data-yearly="47">47</span>
+									<span class="plans__period">/mes</span>
+								</p>
 
-							<a class="plans__cta" href="#contacto">Elegir plan</a>
+								<a class="plans__cta" href="#contacto">Elegir plan</a>
 
-							<ul class="plans__features">
-								<li>Todo lo del plan básico</li>
-								<li>Reportes con IA</li>
-								<li>Creación de contenido</li>
-								<li>Historial y respaldos</li>
-								<li>10 usuarios</li>
-							</ul>
-						</article>
+								<ul class="plans__features">
+									<li>Todo lo del plan básico</li>
+									<li>Reportes con IA</li>
+									<li>Creación de contenido</li>
+									<li>Historial y respaldos</li>
+									<li>10 usuarios</li>
+								</ul>
+							</article>
 
-						<article class="plans__card">
-							<h3 class="plans__name">Plan Premium</h3>
-							<p class="plans__desc">Para operaciones con varias sucursales</p>
+							<article class="plans__card">
+								<h3 class="plans__name">Plan Premium</h3>
+								<p class="plans__desc">Para operaciones con varias sucursales</p>
 
-							<p class="plans__price">
-								<span class="plans__currency">$</span>
-								<span class="plans__amount" data-monthly="99" data-yearly="79">79</span>
-								<span class="plans__period">/mes</span>
-							</p>
+								<p class="plans__price">
+									<span class="plans__currency">$</span>
+									<span class="plans__amount" data-monthly="99" data-yearly="79">79</span>
+									<span class="plans__period">/mes</span>
+								</p>
 
-							<a class="plans__cta" href="#contacto">Elegir plan</a>
+								<a class="plans__cta" href="#contacto">Elegir plan</a>
 
-							<ul class="plans__features">
-								<li>Todo lo del plan negocio</li>
-								<li>Publicación en redes sociales</li>
-								<li>Integraciones a medida</li>
-								<li>Roles y permisos</li>
-								<li>Usuarios ilimitados</li>
-							</ul>
-						</article>
+								<ul class="plans__features">
+									<li>Todo lo del plan negocio</li>
+									<li>Publicación en redes sociales</li>
+									<li>Integraciones a medida</li>
+									<li>Roles y permisos</li>
+									<li>Usuarios ilimitados</li>
+								</ul>
+							</article>
+						</div>
 					</div>
 				</div>
+
+				<!-- El tramo del enganche: alto y nada más. -->
+				<div class="scroll-hero__surface-hold" aria-hidden="true"></div>
 			</div>
 		</section>
 
@@ -425,6 +437,7 @@
 		const scrollPin = document.querySelector('.scroll-hero__pin');
 		const scrollWords = document.querySelector('.scroll-hero__words');
 		const scrollSurface = document.querySelector('.scroll-hero__surface');
+		const scrollStage = document.querySelector('.scroll-hero__surface-stage');
 		const introSection = document.querySelector('.intro');
 		// Se busca acá arriba y no abajo porque updateMenuTheme() lo usa.
 		const footerSection = document.querySelector('.footer');
@@ -655,6 +668,17 @@
 			const surfaceProgress = clamp01((window.scrollY + viewport - layoutTop(scrollSurface)) / viewport);
 			scrollSurface.style.setProperty('--surface-progress', surfaceProgress);
 			scrollSurface.style.setProperty('--surface-text-progress', clamp01((surfaceProgress - 0.25) / 0.5));
+
+			// ENGANCHE de la sección 3: el __stage se clava mientras el panel
+			// consume su --surface-hold. Si los planes miden MÁS que la ventana
+			// (pantallas bajas), se clava por abajo en vez de por arriba, así el
+			// enganche nunca deja las tarjetas cortadas. Mismo cálculo que el
+			// --pin-top de la portada. offsetHeight es layout: el scale del panel
+			// no lo afecta.
+			if (scrollStage) {
+				const stageTop = Math.min(0, viewport - scrollStage.offsetHeight);
+				scrollStage.style.setProperty('--stage-top', `${stageTop}px`);
+			}
 		}
 
 		window.addEventListener('scroll', () => {

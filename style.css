@@ -708,25 +708,65 @@ body {
 .scroll-hero__surface {
 	--surface-progress: 0;
 	--surface-text-progress: 0;
+	/* ENGANCHE (scroll jacking): scroll de más que se come el __stage sticky
+	   quedándose quieto, para que la sección 3 no se caiga de golpe en la 4
+	   (las dos usan el mismo #f4f6f8 y el corte se leía raro). Es lo único
+	   que hay que tocar para que enganche más o menos. 0 = sin enganche. */
+	--surface-hold: 50svh;
 	position: relative;
 	z-index: 3;
 	/* Se solapa sobre la última pantalla del track: sube por encima de la
 	   lista congelada en vez de empujarla. */
 	margin-top: -100svh;
-	display: grid;
+	/* Bloque y NO grid: el __stage es sticky, y un sticky dentro de un grid
+	   se pega solo dentro de SU celda (o sea, no se pega). En flujo normal
+	   se pega contra la caja del panel, que es lo que hace falta.
+	   El centrado que hacía el grid ahora lo hace el propio __stage. */
+	display: block;
 	/* min-height y NO height: en pantallas bajas o en móvil las tarjetas no
 	   caben en una pantalla y el panel tiene que poder crecer. Esto no
 	   desincroniza nada: la matemática del solape depende del margin-top
 	   negativo (que fija dónde EMPIEZA el panel), no de su alto. */
 	min-height: 100svh;
-	place-items: center;
-	padding: 118px 24px 64px;
+	/* El padding vertical se mudó al __stage. */
+	padding: 0 24px;
 	background: #f4f6f8;
 	color: #111315;
 	border-radius: calc(1.25rem * (1 - var(--surface-progress))) calc(1.25rem * (1 - var(--surface-progress))) 0 0;
 	transform: scale(calc(0.9 + (var(--surface-progress) * 0.1)));
-	transform-origin: 50% 100%;
+	/* El pivote del scale es el borde de abajo del PANEL, o sea el de antes
+	   de sumarle el enganche. Si se dejara en 100% el panel entraría desde
+	   más abajo y cambiaría la transición 2 -> 3. */
+	transform-origin: 50% calc(100% - var(--surface-hold));
 	will-change: transform, border-radius;
+}
+
+/*
+ * El enganche de la sección 3. Mide una pantalla y es sticky, así que se
+ * queda clavado mientras el panel consume sus --surface-hold de más. Cuando
+ * se despega, el borde de abajo del panel queda justo en el borde de abajo
+ * de la ventana: la sección 4 entra enseguida, sin hueco muerto.
+ *
+ * --stage-top lo escribe el JS: es 0 cuando los planes caben en una
+ * pantalla, y negativo cuando no (mismo truco que el --pin-top de la
+ * portada), para que el enganche nunca deje las tarjetas cortadas.
+ */
+.scroll-hero__surface-stage {
+	position: sticky;
+	top: var(--stage-top, 0px);
+	display: grid;
+	place-items: center;
+	min-height: 100svh;
+	padding: 118px 0 64px;
+}
+
+/*
+ * El tramo que se come el enganche. Es alto de verdad (no padding del panel):
+ * el sticky del __stage solo puede correrse dentro de la caja de CONTENIDO de
+ * su padre, así que un padding-bottom no le daría nada de juego.
+ */
+.scroll-hero__surface-hold {
+	height: var(--surface-hold);
 }
 
 .scroll-hero__surface-content {
@@ -1434,6 +1474,14 @@ body {
 }
 
 @media (max-width: 900px) {
+	/* Sin enganche en móvil: con las tarjetas en una sola columna los planes
+	   miden bastante más que una pantalla, así que clavarlos un tramo sería
+	   dejar media sección congelada a mitad de lectura. Acá la sección 3 ya
+	   tiene scroll propio de sobra, que es justo lo que el enganche busca. */
+	.scroll-hero__surface {
+		--surface-hold: 0svh;
+	}
+
 	.plans__grid {
 		grid-template-columns: 1fr;
 		gap: 14px;
@@ -1531,7 +1579,11 @@ body {
 	}
 
 	.scroll-hero__surface {
-		padding: 100px 20px 60px;
+		padding: 0 20px;
+	}
+
+	.scroll-hero__surface-stage {
+		padding: 100px 0 60px;
 	}
 
 	.scroll-hero__surface-content {

@@ -260,6 +260,63 @@ Los tres botones "Elegir plan" apuntan a #contacto, igual que el CTA de
 la portada, así que cuando haya WhatsApp real hay que cambiar los cuatro.
 
 
+EL ENGANCHE DE LA SECCIÓN 3 (scroll jacking)
+============================================
+
+Problema que resuelve: las secciones 3 y 4 usan el mismo fondo (#f4f6f8),
+así que el panel de planes se caía de una en los testimonios sin ningún
+respiro y el corte se leía raro. Ahora la sección 3 se CLAVA media
+pantalla antes de soltar.
+
+Piezas (las tres nuevas):
+- --surface-hold            -> cuánto engancha. Vive en
+                               .scroll-hero__surface. 50svh es el valor
+                               actual. 0 = sin enganche. ES LA ÚNICA
+                               PERILLA: no hace falta tocar nada más.
+- .scroll-hero__surface-stage -> envoltorio sticky de los planes. Mide una
+                               pantalla y se lleva el padding vertical que
+                               antes tenía el panel.
+- .scroll-hero__surface-hold  -> div vacío al final del panel, de alto
+                               --surface-hold. Es el tramo que el sticky
+                               se come quedándose quieto.
+
+Cómo se ve: el panel termina de tapar la pantalla igual que siempre, y a
+partir de ahí los planes se quedan clavados mientras scrolleas
+--surface-hold. Cuando se sueltan, el borde de abajo del panel queda
+JUSTO en el borde de abajo de la ventana, o sea que la sección 4 entra
+enseguida y no queda ningún hueco gris muerto.
+
+TRAMPAS:
+
+1. El panel es display: block, NO grid. Un sticky dentro de un grid se
+   pega solo dentro de SU celda, o sea que no se pega. Por eso el
+   centrado vertical se mudó al __stage.
+
+2. El enganche es un DIV CON ALTO, no un padding-bottom del panel. El
+   sticky solo puede correrse dentro de la caja de CONTENIDO del padre:
+   un padding no le da nada de juego.
+
+3. transform-origin del panel = calc(100% - var(--surface-hold)), NO
+   100%. El pivote tiene que seguir siendo el borde de abajo del panel
+   SIN el enganche; si no, el scale de entrada arranca desde más abajo y
+   cambia la transición 2 -> 3.
+
+4. --stage-top lo escribe el JS = min(0, ventana - alto del stage), el
+   mismo truco que el --pin-top de la portada. Cuando los planes no caben
+   en una pantalla (ventanas bajas), el enganche se clava por ABAJO, así
+   nunca deja las tarjetas cortadas.
+
+5. En móvil (<=900px) el enganche está en 0 a propósito: con las tarjetas
+   en una sola columna los planes miden bastante más que una pantalla, y
+   clavarlos sería congelar media sección a mitad de lectura.
+
+Verificado midiendo con Chrome headless, antes vs. después: la deriva de
+la lista de palabras y del tope del panel durante todo el solape es
+0.00px en 1920x1080, 1440x900, 1440x700 y 390x844. O sea que la
+matemática de las secciones 2 y 3 quedó intacta; lo único que cambia es
+que la página mide media pantalla más.
+
+
 SECCIÓN 4 - CLIENTES (.clients)
 ================================
 

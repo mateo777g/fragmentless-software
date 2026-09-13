@@ -54,13 +54,19 @@ body {
 	animation: menu-in 520ms var(--menu-ease) both;
 }
 
+/* La píldora abre la ola de entrada de la portada: mismos valores que el
+   data-reveal de la sección 1 (desde arriba y desenfocada), sólo que acá va
+   como animation y no como transition porque no depende del JS. Si tocas los
+   -20px o el blur, tocá también .intro--animate [data-reveal]. */
 @keyframes menu-in {
 	from {
 		opacity: 0;
-		transform: translate(-50%, -16px);
+		filter: blur(10px);
+		transform: translate(-50%, -20px);
 	}
 	to {
 		opacity: 1;
+		filter: none;
 		transform: translate(-50%, 0);
 	}
 }
@@ -548,6 +554,41 @@ body {
 .intro__scroll svg {
 	width: 16px;
 	height: 16px;
+}
+
+/* -------------------------------------------------------------------------
+ * Entrada escalonada de la portada (texto, isotipo y el "Desliza").
+ * Es la MISMA ola que la sección 4 (desde arriba y desenfocado), sólo que
+ * acá no la dispara un observer: la portada ya se ve al cargar, así que el
+ * JS pone .is-revealed en el primer frame.
+ *
+ * .intro--animate la agrega el JS y no el HTML, igual que en clientes: es
+ * la clase que esconde las piezas, así que sin JS (o con
+ * prefers-reduced-motion) la portada se ve entera desde el principio en vez
+ * de quedar invisible para siempre.
+ * ------------------------------------------------------------------------- */
+.intro--animate [data-reveal] {
+	opacity: 0;
+	filter: blur(10px);
+	transform: translateY(-20px);
+}
+
+.intro--animate.is-revealed [data-reveal] {
+	opacity: 1;
+	filter: none;
+	transform: none;
+	transition: opacity 520ms ease, filter 520ms ease, transform 520ms ease;
+	transition-delay: calc(var(--n, 0) * 110ms);
+}
+
+/* El "Desliza" se centra con translateX(-50%), así que su transform no puede
+   resetearse a none: se le repite el centrado en los dos estados. */
+.intro--animate .intro__scroll {
+	transform: translate(-50%, -20px);
+}
+
+.intro--animate.is-revealed .intro__scroll {
+	transform: translateX(-50%);
 }
 
 /* =========================================================================

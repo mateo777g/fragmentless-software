@@ -86,23 +86,33 @@
 				pasa arriba del texto.
 			-->
 			<div class="intro__content">
-				<div class="intro__copy">
-					<p class="intro__kicker">Software por suscripción</p>
-					<h1 id="intro-titulo" class="intro__title">Fragmentless<br>Software<span class="intro__title-mark">®</span></h1>
-					<p class="intro__subtitle">Menú, mesas, ventas y reportes trabajando juntos. Sin planillas sueltas y sin instalaciones complicadas.</p>
+				<!--
+					Todo el contenido entra escalonado al cargar, con la misma ola
+					que la sección 4 (mismo data-reveal, mismo --n = lugar en la
+					fila). La píldora del menú también entra en esta ola, pero con
+					su propio @keyframes menu-in, porque vive fuera de .intro.
 
-					<div class="intro__actions">
+					El isotipo sólo APARECE con la ola: su animación de armado
+					(los 36 cuadros) es aparte y no se toca. Una mueve opacidad,
+					blur y posición del contenedor; la otra cambia el src del img.
+				-->
+				<div class="intro__copy">
+					<p class="intro__kicker" data-reveal style="--n: 0;">Software por suscripción</p>
+					<h1 id="intro-titulo" class="intro__title" data-reveal style="--n: 1;">Fragmentless<br>Software<span class="intro__title-mark">®</span></h1>
+					<p class="intro__subtitle" data-reveal style="--n: 2;">Menú, mesas, ventas y reportes trabajando juntos. Sin planillas sueltas y sin instalaciones complicadas.</p>
+
+					<div class="intro__actions" data-reveal style="--n: 3;">
 						<a class="intro__cta" href="#contacto">Hablemos por WhatsApp</a>
 						<a class="intro__ghost" href="#gestion">Ver cómo funciona</a>
 					</div>
 				</div>
 
-				<div class="intro__logo" aria-hidden="true">
+				<div class="intro__logo" aria-hidden="true" data-reveal style="--n: 4;">
 					<img src="assets/svg/blanco/fragmentless-white-frame35.svg" alt="">
 				</div>
 			</div>
 
-			<a class="intro__scroll" href="#gestion">
+			<a class="intro__scroll" href="#gestion" data-reveal style="--n: 5;">
 				<span>Desliza</span>
 				<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 					<path d="M12 5v14" />
@@ -792,6 +802,28 @@
 			}, { threshold: 0.2 });
 
 			footerObserver.observe(footerSection);
+		}
+
+		/* =====================================================================
+		 * SECCIÓN 1 - Entrada del texto de la portada.
+		 * Misma ola escalonada que la sección 4, pero sin observer: la portada
+		 * ya está en pantalla al cargar, así que se esconde el texto y se
+		 * revela en el frame siguiente (los dos rAF son para que el navegador
+		 * alcance a pintar el estado escondido; con uno solo a veces junta los
+		 * dos estados en el mismo frame y no hay transición).
+		 *
+		 * .intro--animate se agrega acá y no en el HTML a propósito: sin JS (o
+		 * con prefers-reduced-motion) la portada se ve entera desde el
+		 * principio en vez de quedar invisible para siempre.
+		 * ===================================================================== */
+		if (introSection && !reduceMotion.matches) {
+			introSection.classList.add('intro--animate');
+
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					introSection.classList.add('is-revealed');
+				});
+			});
 		}
 
 		/* =====================================================================

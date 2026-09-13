@@ -63,9 +63,10 @@ SECCIÓN 1 - PORTADA AZUL (.intro)
 ==================================
 
 Ocupa min-height: 100svh, fondo #1355e8 (el azul de marca, el mismo del
-resaltado de las palabras y de los links). No tiene animación propia: lo
+resaltado de las palabras y de los links). Con el scroll no hace nada: lo
 único que hace es quedarse FIJADA mientras la sección 2 entra girada por
-encima (ver "TRANSICIÓN SECCIÓN 1 -> SECCIÓN 2").
+encima (ver "TRANSICIÓN SECCIÓN 1 -> SECCIÓN 2"). Lo que sí tiene es una
+ola de entrada al cargar (más abajo).
 
 Piezas:
 - .intro__grid     -> la grilla blanca sutil, con máscara radial.
@@ -73,6 +74,30 @@ Piezas:
 - .intro__cta      -> botón blanco (WhatsApp, va a #contacto).
 - .intro__ghost    -> botón de borde (va a #gestion, la sección 2).
 - .intro__scroll   -> el "Desliza" de abajo (también va a #gestion).
+- .intro__logo     -> el isotipo, con su animación de armado aparte.
+
+ANIMACIÓN (la ola de entrada, al cargar):
+Misma ola que la sección 4 (desde arriba, -20px y blur(10px), 520ms, con
+110ms de escalón por pieza y el --n inline), pero acá NO la dispara un
+observer: la portada ya está en pantalla, así que el JS pone .is-revealed
+en el frame siguiente (dos requestAnimationFrame: con uno solo el navegador
+junta el estado escondido y el revelado en el mismo frame y no hay
+transición). La clase .intro--animate (la que esconde las piezas) la agrega
+el JS, NO está en el HTML: sin JS o con prefers-reduced-motion la portada
+se ve entera desde el principio en vez de quedar invisible para siempre.
+
+Orden de la ola: píldora del menú (va primero, con su propio @keyframes
+menu-in porque vive FUERA de .intro) -> kicker -> h1 -> subtítulo ->
+botones -> isotipo -> "Desliza".
+
+Dos cosas para no romper:
+- El "Desliza" se centra con translateX(-50%): su transform no puede
+  resetearse a none, por eso tiene sus dos reglas aparte.
+- El isotipo sólo APARECE con la ola. Su armado (los 36 cuadros) es otra
+  animación: una mueve opacidad/blur/posición del contenedor, la otra
+  cambia el src del <img>. No se pisan.
+- Si tocas los -20px o el blur, tocá también @keyframes menu-in, que los
+  repite para que la píldora entre igual que el resto.
 
 POR QUÉ NO ROMPE EL SCROLL DE LA SECCIÓN 2 (importante):
 - Es HERMANA de .scroll-hero, no ancestro de .scroll-hero__words. Si

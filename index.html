@@ -26,12 +26,47 @@
 				<span class="menu__icon" aria-hidden="true"><i></i><i></i></span>
 			</button>
 
-			<!-- Las letras las parte el JS en dos copias para el roll del hover. -->
+			<!--
+				Las letras (.menu__text) las parte el JS en dos copias para el roll
+				del hover. El icono va aparte, a la izquierda, y es estático: no
+				entra en el roll ni se toca desde el JS.
+			-->
 			<ul class="menu__items" id="menu-items">
-				<li><a class="menu__item" href="#inicio">Inicio</a></li>
-				<li><a class="menu__item" href="#clientes">Clientes</a></li>
-				<li><a class="menu__item" href="#licencias">Licencias</a></li>
-				<li><a class="menu__item" href="#contacto">Contacto</a></li>
+				<li><a class="menu__item" href="#inicio">
+					<span class="menu__ico" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M3 10a2 2 0 0 1 .7-1.5l7-6a2 2 0 0 1 2.6 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+							<path d="M15 21v-8H9v8" />
+						</svg>
+					</span>
+					<span class="menu__text">Inicio</span>
+				</a></li>
+				<li><a class="menu__item" href="#licencias">
+					<span class="menu__ico" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect x="2" y="5" width="20" height="14" rx="2" />
+							<path d="M2 10h20" />
+						</svg>
+					</span>
+					<span class="menu__text">Licencias</span>
+				</a></li>
+				<li><a class="menu__item" href="#clientes">
+					<span class="menu__ico" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="12" cy="8" r="4" />
+							<path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" />
+						</svg>
+					</span>
+					<span class="menu__text">Clientes</span>
+				</a></li>
+				<li><a class="menu__item" href="#contacto">
+					<span class="menu__ico" aria-hidden="true">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z" />
+						</svg>
+					</span>
+					<span class="menu__text">Contacto</span>
+				</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -223,16 +258,20 @@
 		// Parte el texto en letras duplicadas (una arriba y otra abajo) para que
 		// el hover pueda subir la columna. El aria-label deja la palabra entera
 		// para los lectores de pantalla, que si no leerían "IINNIICCIIOO".
+		// Solo se vacía .menu__text: el icono es hermano y queda intacto.
 		function buildRollingText(link) {
-			const label = link.textContent.trim();
-			link.textContent = '';
+			const target = link.querySelector('.menu__text');
+			if (!target) return;
+
+			const label = target.textContent.trim();
+			target.textContent = '';
 			link.setAttribute('aria-label', label);
 
 			[...label].forEach((char, index) => {
 				if (char === ' ') {
 					const space = document.createElement('span');
 					space.className = 'menu__space';
-					link.appendChild(space);
+					target.appendChild(space);
 					return;
 				}
 
@@ -246,7 +285,7 @@
 				roll.appendChild(Object.assign(document.createElement('span'), { textContent: char }));
 
 				box.appendChild(roll);
-				link.appendChild(box);
+				target.appendChild(box);
 			});
 		}
 

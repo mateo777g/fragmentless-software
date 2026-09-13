@@ -59,7 +59,14 @@
 					</span>
 					<span class="menu__text">Clientes</span>
 				</a></li>
-				<li><a class="menu__item" href="#contacto">
+				<!--
+					Contacto no es una sección de la página: abre WhatsApp directo al
+					número del negocio, con el mensaje ya escrito. Mismo destino que
+					el botón blanco de la portada y el icono del pie.
+					El texto va URL-encodeado a mano (acentos incluidos) para que el
+					link funcione sin JS y se pueda copiar tal cual.
+				-->
+				<li><a class="menu__item" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20interesa%20rentar%20una%20suscripci%C3%B3n%20del%20software.%20%C2%BFMe%20pueden%20dar%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener">
 					<span class="menu__ico" aria-hidden="true">
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 							<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z" />
@@ -99,10 +106,10 @@
 				<div class="intro__copy">
 					<p class="intro__kicker" data-reveal style="--n: 0;">Software por suscripción</p>
 					<h1 id="intro-titulo" class="intro__title" data-reveal style="--n: 1;">Fragmentless<br>Software<span class="intro__title-mark">®</span></h1>
-					<p class="intro__subtitle" data-reveal style="--n: 2;">Menú, mesas, ventas y reportes trabajando juntos. Sin planillas sueltas y sin instalaciones complicadas.</p>
+					<p class="intro__subtitle" data-reveal style="--n: 2;">Menú, mesas, ventas y anuncios con IA en un solo panel, instalado en la computadora de tu negocio. Sin planillas sueltas.</p>
 
 					<div class="intro__actions" data-reveal style="--n: 3;">
-						<a class="intro__cta" href="#contacto">Hablemos por WhatsApp</a>
+						<a class="intro__cta" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20interesa%20rentar%20una%20suscripci%C3%B3n%20del%20software.%20%C2%BFMe%20pueden%20dar%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener">Hablemos por WhatsApp</a>
 						<a class="intro__ghost" href="#gestion">Ver cómo funciona</a>
 					</div>
 				</div>
@@ -186,7 +193,7 @@
 						<div class="plans__grid">
 							<article class="plans__card">
 								<h3 class="plans__name">Plan Básico</h3>
-								<p class="plans__desc">Ideal para negocios que empiezan</p>
+								<p class="plans__desc">El panel completo, con IA esencial</p>
 
 								<p class="plans__price">
 									<span class="plans__currency">$</span>
@@ -208,7 +215,9 @@
 									<span class="plans__annual-tooltip" id="anual-basico" role="tooltip">Pagás los 12 meses de una sola vez: $11,510 MXN al año, un 20% menos que pagar $1,199 MXN cada mes.</span>
 								</div>
 
-								<a class="plans__cta" href="#contacto">Elegir plan</a>
+								<!-- Igual que los otros botones de contacto, pero el mensaje ya
+									 nombra el plan para que no haya que preguntarlo. -->
+								<a class="plans__cta" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20interesa%20contratar%20el%20Plan%20B%C3%A1sico.%20%C2%BFMe%20pueden%20dar%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener">Elegir plan</a>
 
 								<ul class="plans__features">
 									<li class="plans__feature--ai">GPT-4o + GPT Image 1.5 High</li>
@@ -226,7 +235,7 @@
 							<!-- Plan destacado: tarjeta negra, un poco más grande. -->
 							<article class="plans__card plans__card--featured">
 								<h3 class="plans__name">Plan Negocio</h3>
-								<p class="plans__desc">Para negocios que están creciendo</p>
+								<p class="plans__desc">El panel completo, con IA avanzada</p>
 
 								<p class="plans__price">
 									<span class="plans__currency">$</span>
@@ -246,7 +255,7 @@
 									<span class="plans__annual-tooltip" id="anual-negocio" role="tooltip">Pagás los 12 meses de una sola vez: $14,870 MXN al año, un 20% menos que pagar $1,549 MXN cada mes.</span>
 								</div>
 
-								<a class="plans__cta" href="#contacto">Elegir plan</a>
+								<a class="plans__cta" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20interesa%20contratar%20el%20Plan%20Negocio.%20%C2%BFMe%20pueden%20dar%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener">Elegir plan</a>
 
 								<ul class="plans__features">
 									<li class="plans__feature--ai">GPT-4o + GPT Image 2.5 Flare</li>
@@ -263,7 +272,7 @@
 
 							<article class="plans__card">
 								<h3 class="plans__name">Plan Premium</h3>
-								<p class="plans__desc">Para operaciones con varias sucursales</p>
+								<p class="plans__desc">El panel completo, con IA al máximo</p>
 
 								<p class="plans__price">
 									<span class="plans__currency">$</span>
@@ -283,7 +292,7 @@
 									<span class="plans__annual-tooltip" id="anual-premium" role="tooltip">Pagás los 12 meses de una sola vez: $18,230 MXN al año, un 20% menos que pagar $1,899 MXN cada mes.</span>
 								</div>
 
-								<a class="plans__cta" href="#contacto">Elegir plan</a>
+								<a class="plans__cta" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20interesa%20contratar%20el%20Plan%20Premium.%20%C2%BFMe%20pueden%20dar%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener">Elegir plan</a>
 
 								<ul class="plans__features">
 									<li class="plans__feature--ai">GPT-4o + GPT Image 2.5 Sunburst</li>
@@ -411,12 +420,12 @@
 			</nav>
 
 			<ul class="footer__social" data-reveal style="--n: 2;">
-				<li><a class="footer__icon" href="#" aria-label="Instagram">
+				<li><a class="footer__icon" href="https://www.instagram.com/mattthew.reyes/" target="_blank" rel="noopener" aria-label="Instagram">
 					<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 						<path d="M12 2c-2.72 0-3.06.01-4.12.06-1.07.05-1.79.22-2.43.47-.66.25-1.22.6-1.77 1.15-.55.55-.89 1.11-1.15 1.77-.25.64-.42 1.36-.47 2.43C2.01 8.94 2 9.28 2 12s.01 3.06.06 4.12c.05 1.07.22 1.79.47 2.43.25.66.6 1.22 1.15 1.77.55.55 1.11.89 1.77 1.15.64.25 1.36.42 2.43.47C8.94 21.99 9.28 22 12 22s3.06-.01 4.12-.06c1.07-.05 1.79-.22 2.43-.47.66-.25 1.22-.6 1.77-1.15.55-.55.89-1.11 1.15-1.77.25-.64.42-1.36.47-2.43.05-1.06.06-1.4.06-4.12s-.01-3.06-.06-4.12c-.05-1.07-.22-1.79-.47-2.43-.25-.66-.6-1.22-1.15-1.77-.55-.55-1.11-.89-1.77-1.15-.64-.25-1.36-.42-2.43-.47C15.06 2.01 14.72 2 12 2m0 1.8c2.67 0 2.99.01 4.04.06.97.05 1.5.21 1.86.35.47.18.8.4 1.15.75.35.35.57.68.75 1.15.14.36.3.89.35 1.86.05 1.05.06 1.37.06 4.03s-.01 2.99-.06 4.04c-.05.97-.21 1.5-.35 1.86-.18.47-.4.8-.75 1.15-.35.35-.68.57-1.15.75-.36.14-.89.3-1.86.35-1.05.05-1.37.06-4.04.06s-2.99-.01-4.04-.06c-.97-.05-1.5-.21-1.86-.35-.47-.18-.8-.4-1.15-.75-.35-.35-.57-.68-.75-1.15-.14-.36-.3-.89-.35-1.86-.05-1.05-.06-1.37-.06-4.04s.01-2.99.06-4.03c.05-.97.21-1.5.35-1.86.18-.47.4-.8.75-1.15.35-.35.68-.57 1.15-.75.36-.14.89-.3 1.86-.35C9.01 3.81 9.33 3.8 12 3.8m0 3.06a5.14 5.14 0 1 0 0 10.28 5.14 5.14 0 0 0 0-10.28m0 8.47a3.34 3.34 0 1 1 0-6.67 3.34 3.34 0 0 1 0 6.67m6.54-8.67a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0" />
 					</svg>
 				</a></li>
-				<li><a class="footer__icon" href="#" aria-label="WhatsApp">
+				<li><a class="footer__icon" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20interesa%20rentar%20una%20suscripci%C3%B3n%20del%20software.%20%C2%BFMe%20pueden%20dar%20m%C3%A1s%20informaci%C3%B3n%3F" target="_blank" rel="noopener" aria-label="WhatsApp">
 					<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
 						<path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m0 1.8c2.16 0 4.19.84 5.72 2.37a8.03 8.03 0 0 1 2.37 5.72c0 4.46-3.63 8.09-8.09 8.09a8.1 8.1 0 0 1-4.12-1.13l-.3-.17-3.06.8.82-2.99-.19-.31a8.05 8.05 0 0 1-1.24-4.3c0-4.46 3.63-8.08 8.09-8.08m-3.7 4.34c-.17 0-.45.06-.69.32-.24.26-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.8 2.86 4.44 3.9 2.19.87 2.64.7 3.11.65.47-.04 1.53-.62 1.75-1.23.21-.6.21-1.12.15-1.23-.06-.11-.24-.17-.5-.3-.26-.13-1.53-.75-1.77-.84-.24-.09-.41-.13-.58.13-.17.26-.67.84-.82 1.01-.15.17-.3.19-.56.06-.26-.13-1.1-.4-2.1-1.29-.78-.69-1.3-1.55-1.45-1.81-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.57-1.4-.79-1.92-.2-.5-.41-.43-.56-.44h-.48" />
 					</svg>

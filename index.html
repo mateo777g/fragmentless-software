@@ -48,7 +48,7 @@
 							<path d="M2 10h20" />
 						</svg>
 					</span>
-					<span class="menu__text">Licencias</span>
+					<span class="menu__text">Planes</span>
 				</a></li>
 				<li><a class="menu__item" href="#clientes">
 					<span class="menu__ico" aria-hidden="true">
@@ -137,11 +137,11 @@
 						<h2 id="gestion-titulo" class="scroll-hero__lead">Tú podrás</h2>
 						<ul class="scroll-hero__words" aria-label="Acciones disponibles">
 							<li>actualizar tu menú.</li>
-							<li>gestionar tus mesas.</li>
+							<li>controlar tus mesas.</li>
 							<li>registrar ventas.</li>
-							<li>hacer reportes con IA.</li>
-							<li>crear contenido.</li>
-							<li>subirlo a redes sociales.</li>
+							<li>hacer análisis con IA.</li>
+							<li>crear anuncios.</li>
+							<li>guardar tus anuncios.</li>
 						</ul>
 					</div>
 				</div>
@@ -172,9 +172,9 @@
 						<p class="plans__subtitle">Elige el plan que necesitas hoy. Puedes cambiarlo o cancelarlo cuando quieras.</p>
 
 						<div class="plans__billing">
-							<span class="plans__billing-label" data-billing="monthly">Mensual</span>
+							<span class="plans__billing-label is-active" data-billing="monthly">Mensual</span>
 
-							<button type="button" class="plans__switch" role="switch" aria-checked="true" aria-label="Cambiar entre facturación mensual y anual">
+							<button type="button" class="plans__switch" role="switch" aria-checked="false" aria-label="Cambiar entre facturación mensual y anual">
 								<span class="plans__switch-thumb" aria-hidden="true"></span>
 							</button>
 
@@ -190,18 +190,36 @@
 
 								<p class="plans__price">
 									<span class="plans__currency">$</span>
-									<span class="plans__amount" data-monthly="29" data-yearly="23">23</span>
+									<span class="plans__amount" data-monthly="1199" data-yearly="959">1,199</span>
+									<span class="plans__currency-code">MXN</span>
 									<span class="plans__period">/mes</span>
 								</p>
+
+								<!-- Solo se ve con el anual activo (lo prende/apaga el JS con
+									 .plans__grid.is-yearly). Explica cómo se arma ese precio. -->
+								<div class="plans__annual-info">
+									<button type="button" class="plans__annual-info-btn" aria-describedby="anual-basico" aria-label="Cómo se calcula el precio anual">
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+											<circle cx="12" cy="12" r="10" />
+											<line x1="12" y1="8" x2="12" y2="12" />
+											<line x1="12" y1="16" x2="12.01" y2="16" />
+										</svg>
+									</button>
+									<span class="plans__annual-tooltip" id="anual-basico" role="tooltip">Pagás los 12 meses de una sola vez: $11,510 MXN al año, un 20% menos que pagar $1,199 MXN cada mes.</span>
+								</div>
 
 								<a class="plans__cta" href="#contacto">Elegir plan</a>
 
 								<ul class="plans__features">
-									<li>Panel unificado</li>
-									<li>Actualización de menú</li>
+									<li class="plans__feature--ai">GPT-4o + GPT Image 1.5 High</li>
+									<li class="plans__feature--ai">Créditos de OpenAI: $6 USD</li>
+									<li>Sitio web y panel con tu marca</li>
+									<li>Menú digital que actualizas tú mismo</li>
 									<li>Control de mesas</li>
 									<li>Registro de ventas</li>
-									<li>3 usuarios</li>
+									<li>Reportes y análisis de ventas con IA</li>
+									<li>Creación de anuncios con IA y plantillas</li>
+									<li>Biblioteca de tus anuncios</li>
 								</ul>
 							</article>
 
@@ -212,18 +230,34 @@
 
 								<p class="plans__price">
 									<span class="plans__currency">$</span>
-									<span class="plans__amount" data-monthly="59" data-yearly="47">47</span>
+									<span class="plans__amount" data-monthly="1549" data-yearly="1239">1,549</span>
+									<span class="plans__currency-code">MXN</span>
 									<span class="plans__period">/mes</span>
 								</p>
+
+								<div class="plans__annual-info">
+									<button type="button" class="plans__annual-info-btn" aria-describedby="anual-negocio" aria-label="Cómo se calcula el precio anual">
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+											<circle cx="12" cy="12" r="10" />
+											<line x1="12" y1="8" x2="12" y2="12" />
+											<line x1="12" y1="16" x2="12.01" y2="16" />
+										</svg>
+									</button>
+									<span class="plans__annual-tooltip" id="anual-negocio" role="tooltip">Pagás los 12 meses de una sola vez: $14,870 MXN al año, un 20% menos que pagar $1,549 MXN cada mes.</span>
+								</div>
 
 								<a class="plans__cta" href="#contacto">Elegir plan</a>
 
 								<ul class="plans__features">
-									<li>Todo lo del plan básico</li>
-									<li>Reportes con IA</li>
-									<li>Creación de contenido</li>
-									<li>Historial y respaldos</li>
-									<li>10 usuarios</li>
+									<li class="plans__feature--ai">GPT-4o + GPT Image 2.5 Flare</li>
+									<li class="plans__feature--ai">Créditos de OpenAI: $12 USD</li>
+									<li>Sitio web y panel con tu marca</li>
+									<li>Menú digital que actualizas tú mismo</li>
+									<li>Control de mesas</li>
+									<li>Registro de ventas</li>
+									<li>Reportes y análisis de ventas con IA</li>
+									<li>Creación de anuncios con IA y plantillas</li>
+									<li>Biblioteca de tus anuncios</li>
 								</ul>
 							</article>
 
@@ -233,18 +267,34 @@
 
 								<p class="plans__price">
 									<span class="plans__currency">$</span>
-									<span class="plans__amount" data-monthly="99" data-yearly="79">79</span>
+									<span class="plans__amount" data-monthly="1899" data-yearly="1519">1,899</span>
+									<span class="plans__currency-code">MXN</span>
 									<span class="plans__period">/mes</span>
 								</p>
+
+								<div class="plans__annual-info">
+									<button type="button" class="plans__annual-info-btn" aria-describedby="anual-premium" aria-label="Cómo se calcula el precio anual">
+										<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+											<circle cx="12" cy="12" r="10" />
+											<line x1="12" y1="8" x2="12" y2="12" />
+											<line x1="12" y1="16" x2="12.01" y2="16" />
+										</svg>
+									</button>
+									<span class="plans__annual-tooltip" id="anual-premium" role="tooltip">Pagás los 12 meses de una sola vez: $18,230 MXN al año, un 20% menos que pagar $1,899 MXN cada mes.</span>
+								</div>
 
 								<a class="plans__cta" href="#contacto">Elegir plan</a>
 
 								<ul class="plans__features">
-									<li>Todo lo del plan negocio</li>
-									<li>Publicación en redes sociales</li>
-									<li>Integraciones a medida</li>
-									<li>Roles y permisos</li>
-									<li>Usuarios ilimitados</li>
+									<li class="plans__feature--ai">GPT-4o + GPT Image 2.5 Sunburst</li>
+									<li class="plans__feature--ai">Créditos de OpenAI: $18 USD</li>
+									<li>Sitio web y panel con tu marca</li>
+									<li>Menú digital que actualizas tú mismo</li>
+									<li>Control de mesas</li>
+									<li>Registro de ventas</li>
+									<li>Reportes y análisis de ventas con IA</li>
+									<li>Creación de anuncios con IA y plantillas</li>
+									<li>Biblioteca de tus anuncios</li>
 								</ul>
 							</article>
 						</div>
@@ -355,7 +405,7 @@
 
 			<nav class="footer__nav" data-reveal style="--n: 1;" aria-label="Enlaces del pie">
 				<a class="footer__link" href="#inicio">Inicio</a>
-				<a class="footer__link" href="#licencias">Licencias</a>
+				<a class="footer__link" href="#licencias">Planes</a>
 				<a class="footer__link" href="#clientes">Clientes</a>
 				<a class="footer__link" href="#">Términos</a>
 			</nav>
@@ -693,14 +743,17 @@
 		const billingSwitch = document.querySelector('.plans__switch');
 		const billingLabels = document.querySelectorAll('.plans__billing-label');
 		const priceAmounts = document.querySelectorAll('.plans__amount');
+		const plansGrid = document.querySelector('.plans__grid');
 		const priceFrames = new WeakMap();
 
 		function countPriceTo(node, target) {
-			const from = Number(node.textContent) || target;
+			// Los precios de 4 cifras se muestran con coma de miles (1,199), así
+			// que hay que sacarla antes de leer el número que había.
+			const from = Number(node.textContent.replace(/,/g, '')) || target;
 			cancelAnimationFrame(priceFrames.get(node));
 
 			if (from === target || reduceMotion.matches) {
-				node.textContent = target;
+				node.textContent = target.toLocaleString('en-US');
 				return;
 			}
 
@@ -709,7 +762,7 @@
 				// easeOutCubic: arranca rápido y frena suave sobre el número final.
 				const progress = clamp01((now - started) / 420);
 				const eased = 1 - Math.pow(1 - progress, 3);
-				node.textContent = Math.round(from + (target - from) * eased);
+				node.textContent = Math.round(from + (target - from) * eased).toLocaleString('en-US');
 				if (progress < 1) priceFrames.set(node, requestAnimationFrame(step));
 			};
 
@@ -724,14 +777,17 @@
 			priceAmounts.forEach((node) => {
 				countPriceTo(node, Number(yearly ? node.dataset.yearly : node.dataset.monthly));
 			});
+			// El icono de "cómo se calcula" del precio anual solo tiene sentido
+			// mientras se está viendo el precio anual.
+			if (plansGrid) plansGrid.classList.toggle('is-yearly', yearly);
 		}
 
 		if (billingSwitch) {
 			billingSwitch.addEventListener('click', () => {
 				setBilling(billingSwitch.getAttribute('aria-checked') !== 'true');
 			});
-			// Arranca en anual, que es el precio con descuento.
-			setBilling(true);
+			// Arranca en mensual: el switch se mueve a anual recién cuando el usuario le da clic.
+			setBilling(false);
 		}
 
 		/* =====================================================================

@@ -1850,3 +1850,559 @@ body {
 		height: 40px;
 	}
 }
+
+/* =========================================================================
+ * PÁGINA DE TÉRMINOS (terminos.html).
+ *
+ * Es una página APARTE, no una sección de index.html: no toca el track, ni
+ * el pin, ni el surface del scroll-hero, así que no puede desincronizar
+ * nada de las secciones 2 y 3. Comparte style.css sólo para heredar el
+ * sistema visual (azul #1355e8, negro #030407/#111315, panel #f4f6f8).
+ *
+ * El FOOTER se reusa tal cual. Funciona sin JS: la clase .footer--animate
+ * (la que esconde las piezas) la pone el JS de index.html, que acá no
+ * existe, así que el footer se ve entero desde el principio. Por eso el
+ * año del copyright va escrito a mano en el HTML.
+ * ========================================================================= */
+.terms-page {
+	background: #f4f6f8;
+	color: #111315;
+}
+
+/* -------------------------------------------------------------------------
+ * Portada azul, versión corta. Mismo azul y misma grilla que la sección 1,
+ * pero sin sticky y sin animación: acá no hay riel de scroll que respetar.
+ * ------------------------------------------------------------------------- */
+.terms-hero {
+	position: relative;
+	padding: 96px clamp(20px, 4vw, 40px) 72px;
+	background: #1355e8;
+	color: #ffffff;
+	overflow: hidden;
+}
+
+.terms-hero__grid {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	opacity: 0.5;
+	background-image:
+		linear-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(255, 255, 255, 0.13) 1px, transparent 1px);
+	background-size: 48px 48px;
+	mask-image: radial-gradient(120% 90% at 50% 30%, #000 20%, transparent 75%);
+	-webkit-mask-image: radial-gradient(120% 90% at 50% 30%, #000 20%, transparent 75%);
+	pointer-events: none;
+}
+
+.terms-hero__inner {
+	position: relative;
+	z-index: 1;
+	width: min(100%, 1040px);
+	margin: 0 auto;
+}
+
+/* Botón de volver. Es el único enlace de navegación de la página: no se
+   monta el menú flotante porque vive del JS de index.html. */
+.terms-back {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 40px;
+	padding: 0 18px;
+	border: 1px solid rgba(255, 255, 255, 0.42);
+	border-radius: 999px;
+	color: #ffffff;
+	font-size: 0.9rem;
+	font-weight: 700;
+	text-decoration: none;
+	transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.terms-back:hover,
+.terms-back:focus-visible {
+	transform: translateY(-2px);
+	background: rgba(255, 255, 255, 0.12);
+}
+
+.terms-back svg {
+	width: 16px;
+	height: 16px;
+}
+
+.terms-hero__kicker {
+	margin: 34px 0 16px;
+	color: rgba(255, 255, 255, 0.72);
+	font-size: 0.76rem;
+	font-weight: 700;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+}
+
+.terms-hero__title {
+	margin: 0;
+	max-width: 14ch;
+	font-size: clamp(2.4rem, 6vw, 4.6rem);
+	font-weight: 700;
+	letter-spacing: -0.045em;
+	line-height: 1.02;
+}
+
+.terms-hero__lead {
+	margin: 22px 0 0;
+	max-width: 56ch;
+	color: rgba(255, 255, 255, 0.82);
+	font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+	line-height: 1.6;
+}
+
+.terms-hero__meta {
+	margin: 28px 0 0;
+	color: rgba(255, 255, 255, 0.62);
+	font-size: 0.84rem;
+}
+
+/* -------------------------------------------------------------------------
+ * Cuerpo: índice pegajoso a la izquierda, contenido a la derecha.
+ * En móvil el índice se cae arriba y deja de ser sticky.
+ * ------------------------------------------------------------------------- */
+.terms-body {
+	width: min(100%, 1040px);
+	margin: 0 auto;
+	padding: clamp(40px, 6vw, 72px) clamp(20px, 4vw, 40px) clamp(56px, 8vw, 96px);
+	display: grid;
+	grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+	gap: clamp(28px, 4vw, 56px);
+	align-items: start;
+}
+
+.terms-toc {
+	position: sticky;
+	/* 92px: deja aire respecto del borde y no compite con nada fijo. */
+	top: 92px;
+	padding: 22px 20px;
+	border: 1px solid rgba(17, 19, 21, 0.09);
+	border-radius: 18px;
+	background: #ffffff;
+	box-shadow: 0 12px 30px rgba(3, 4, 7, 0.06);
+}
+
+.terms-toc__title {
+	margin: 0 0 14px;
+	color: rgba(17, 19, 21, 0.45);
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+.terms-toc__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	counter-reset: toc;
+}
+
+.terms-toc__link {
+	display: block;
+	padding: 7px 0;
+	color: rgba(17, 19, 21, 0.66);
+	font-size: 0.9rem;
+	font-weight: 600;
+	line-height: 1.35;
+	text-decoration: none;
+	transition: color 180ms ease, transform 180ms ease;
+}
+
+.terms-toc__link::before {
+	counter-increment: toc;
+	content: counter(toc) ". ";
+	color: rgba(17, 19, 21, 0.32);
+	font-variant-numeric: tabular-nums;
+}
+
+.terms-toc__link:hover,
+.terms-toc__link:focus-visible {
+	color: #1355e8;
+	transform: translateX(3px);
+}
+
+.terms-toc__link:hover::before,
+.terms-toc__link:focus-visible::before {
+	color: #1355e8;
+}
+
+.terms__sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.terms-content {
+	min-width: 0;
+}
+
+/* Cada regla es una tarjeta blanca, igual que las de planes: se escanea
+   mejor en pantalla y en persona que un muro de párrafos. */
+.terms__section {
+	padding: clamp(24px, 3vw, 34px);
+	border: 1px solid rgba(17, 19, 21, 0.09);
+	border-radius: 18px;
+	background: #ffffff;
+	box-shadow: 0 12px 30px rgba(3, 4, 7, 0.06);
+	/* scroll-margin y no padding: las anclas del índice tienen que frenar
+	   con aire arriba, no empujar la caja. */
+	scroll-margin-top: 24px;
+}
+
+.terms__section + .terms__section {
+	margin-top: 18px;
+}
+
+.terms__num {
+	display: block;
+	margin: 0 0 10px;
+	color: #1355e8;
+	font-size: 0.74rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+.terms__heading {
+	margin: 0 0 16px;
+	font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+	font-weight: 700;
+	letter-spacing: -0.035em;
+	line-height: 1.12;
+}
+
+.terms__sub {
+	margin: 26px 0 12px;
+	font-size: 1rem;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+}
+
+.terms__text {
+	margin: 0 0 14px;
+	color: rgba(17, 19, 21, 0.72);
+	font-size: 0.98rem;
+	line-height: 1.62;
+}
+
+.terms__text:last-child,
+.terms__list:last-child,
+.terms__steps:last-child {
+	margin-bottom: 0;
+}
+
+.terms__text strong {
+	color: #111315;
+}
+
+/* Enlace dentro del texto. Sólo se usa para los cruces entre secciones
+   (la 02 manda a la 08 y al revés), así que no hace falta nada más. */
+.terms__link {
+	color: #1355e8;
+	font-weight: 700;
+	text-decoration: none;
+	border-bottom: 1px solid rgba(19, 85, 232, 0.35);
+	transition: border-color 180ms ease;
+}
+
+.terms__link:hover,
+.terms__link:focus-visible {
+	border-bottom-color: #1355e8;
+}
+
+.terms__list {
+	margin: 0 0 14px;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.terms__list li {
+	position: relative;
+	padding-left: 24px;
+	color: rgba(17, 19, 21, 0.72);
+	font-size: 0.98rem;
+	line-height: 1.55;
+}
+
+.terms__list li::before {
+	content: "";
+	position: absolute;
+	top: 0.62em;
+	left: 4px;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #1355e8;
+}
+
+/* Lista de "esto NO lo hacemos": misma caja, viñeta apagada. */
+.terms__list--no li::before {
+	background: rgba(17, 19, 21, 0.22);
+}
+
+/* Lista numerada, para las reglas que se cuentan (reembolso). */
+.terms__steps {
+	margin: 0 0 14px;
+	padding: 0;
+	list-style: none;
+	counter-reset: step;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.terms__steps li {
+	position: relative;
+	padding-left: 40px;
+	color: rgba(17, 19, 21, 0.72);
+	font-size: 0.98rem;
+	line-height: 1.55;
+}
+
+.terms__steps li::before {
+	counter-increment: step;
+	content: counter(step);
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: grid;
+	place-items: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background: #1355e8;
+	color: #ffffff;
+	font-size: 0.8rem;
+	font-weight: 700;
+}
+
+/* Nota al margen, azul tenue. Para los "ojo con esto". */
+.terms__note {
+	margin: 18px 0 0;
+	padding: 16px 18px;
+	border-left: 3px solid #1355e8;
+	border-radius: 0 12px 12px 0;
+	background: rgba(19, 85, 232, 0.06);
+	color: rgba(17, 19, 21, 0.78);
+	font-size: 0.94rem;
+	line-height: 1.55;
+}
+
+.terms__note p {
+	margin: 0;
+}
+
+.terms__note p + p {
+	margin-top: 10px;
+}
+
+/* Bloque negro destacado. Reservado para la regla de los créditos de IA,
+   que es la que más malentendidos genera y merece su propia caja. */
+.terms__section--highlight {
+	border-color: transparent;
+	background: #111315;
+	color: #f4f6f8;
+	box-shadow: 0 18px 40px rgba(3, 4, 7, 0.22);
+}
+
+.terms__section--highlight .terms__num {
+	color: #6f9bff;
+}
+
+.terms__section--highlight .terms__text,
+.terms__section--highlight .terms__list li,
+.terms__section--highlight .terms__steps li {
+	color: rgba(244, 246, 248, 0.74);
+}
+
+.terms__section--highlight .terms__text strong {
+	color: #ffffff;
+}
+
+.terms__section--highlight .terms__note {
+	border-left-color: #6f9bff;
+	background: rgba(244, 246, 248, 0.07);
+	color: rgba(244, 246, 248, 0.82);
+}
+
+/* La frase que no se puede saltar nadie. */
+.terms__shout {
+	margin: 18px 0;
+	padding: 18px 20px;
+	border-radius: 14px;
+	background: #1355e8;
+	color: #ffffff;
+	font-size: clamp(1rem, 1.8vw, 1.2rem);
+	font-weight: 700;
+	line-height: 1.4;
+	letter-spacing: -0.02em;
+}
+
+/* -------------------------------------------------------------------------
+ * Tablas. Van dentro de .terms__table-wrap, que es el que scrollea en
+ * horizontal: la tabla no se encoge, se arrastra. Es lo único de la página
+ * que puede pasarse de ancho.
+ * ------------------------------------------------------------------------- */
+.terms__table-wrap {
+	margin: 0 0 14px;
+	overflow-x: auto;
+	border: 1px solid rgba(17, 19, 21, 0.09);
+	border-radius: 14px;
+}
+
+.terms__table {
+	width: 100%;
+	min-width: 480px;
+	border-collapse: collapse;
+	font-size: 0.94rem;
+}
+
+.terms__table th,
+.terms__table td {
+	padding: 12px 16px;
+	text-align: right;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.terms__table thead th {
+	background: rgba(17, 19, 21, 0.04);
+	color: #111315;
+	font-size: 0.82rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+}
+
+.terms__table tbody th {
+	font-weight: 600;
+}
+
+.terms__table th:first-child,
+.terms__table td:first-child {
+	text-align: left;
+	white-space: normal;
+	color: rgba(17, 19, 21, 0.72);
+	font-weight: 600;
+}
+
+.terms__table tbody tr + tr th,
+.terms__table tbody tr + tr td {
+	border-top: 1px solid rgba(17, 19, 21, 0.08);
+}
+
+/* La fila que importa: lo que pagas si NO te vas por la anual. */
+.terms__table tr.is-key td,
+.terms__table tr.is-key th {
+	background: rgba(19, 85, 232, 0.06);
+	color: #111315;
+	font-weight: 700;
+}
+
+.terms__table tr.is-save td {
+	color: #1355e8;
+	font-weight: 700;
+}
+
+/* Cierre: la misma puerta de siempre, WhatsApp. */
+.terms__end {
+	margin-top: 28px;
+	padding: clamp(26px, 3.4vw, 38px);
+	border-radius: 18px;
+	background: #1355e8;
+	color: #ffffff;
+	text-align: center;
+}
+
+.terms__end-title {
+	margin: 0 0 10px;
+	font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+	font-weight: 700;
+	letter-spacing: -0.035em;
+}
+
+.terms__end-text {
+	margin: 0 auto 22px;
+	max-width: 46ch;
+	color: rgba(255, 255, 255, 0.82);
+	font-size: 0.98rem;
+	line-height: 1.6;
+}
+
+.terms__end-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 50px;
+	padding: 0 28px;
+	border-radius: 999px;
+	background: #ffffff;
+	color: #1355e8;
+	font-size: 0.95rem;
+	font-weight: 700;
+	text-decoration: none;
+	box-shadow: 0 10px 26px rgba(3, 4, 7, 0.22);
+	transition: transform 180ms ease;
+}
+
+.terms__end-cta:hover,
+.terms__end-cta:focus-visible {
+	transform: translateY(-2px);
+}
+
+.terms__updated {
+	margin: 22px 0 0;
+	color: rgba(17, 19, 21, 0.45);
+	font-size: 0.84rem;
+	text-align: center;
+}
+
+@media (max-width: 900px) {
+	.terms-body {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.terms-toc {
+		position: static;
+	}
+}
+
+@media (max-width: 620px) {
+	.terms-hero {
+		padding-top: 80px;
+	}
+
+	.terms__section {
+		padding: 22px 18px;
+	}
+
+	.terms__table th,
+	.terms__table td {
+		padding: 10px 12px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.terms-back,
+	.terms-toc__link,
+	.terms__end-cta {
+		transition: none;
+	}
+}

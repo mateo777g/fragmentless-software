@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Términos y condiciones — Fragmentless</title>
+	<meta name="description" content="Las reglas del trato, en corto y en confianza: cómo agendamos la cita, qué incluye la suscripción de Fragmentless, cuándo empieza a contar tu renta y cómo se cancela.">
+	<link rel="icon" href="assets/fragmentless-blue-reposo.svg" type="image/svg+xml">
+	<link rel="stylesheet" href="style.css">
+</head>
+<!--
+	PÁGINA DE TÉRMINOS.
+
+	Es una página APARTE de index.html a propósito: comparte style.css para
+	heredar el sistema visual, pero no carga el JS del scroll-hero. Por eso
+	tampoco lleva el menú flotante (vive del JS de index.html) sino un botón
+	de "volver" en la portada.
+
+	El footer es una copia del de index.html con los links apuntando a
+	index.html#ancla. Funciona sin JS: la clase .footer--animate (la que
+	esconde las piezas para la ola de entrada) la pone el JS, que acá no
+	corre, así que el footer se ve entero desde el principio. Por lo mismo
+	el año del copyright va escrito a mano.
+
+	VOZ: primera persona del singular ("yo" / "tú"). Es un negocio de una
+	persona y la página se lee en persona, así que el "nosotros" sonaba a
+	corporativo. Si tocas un texto, mantené el "yo".
+
+	WHATSAPP: acá el WhatsApp NO cierra la renta, sirve para AGENDAR LA
+	CITA en el local. Ojo: los botones de index.html todavía dicen "me
+	interesa rentar"; si se cambian, cambiar también los de acá.
+
+	Contenido: sale de TERMINOS_BRIEF.txt. Las cifras están verificadas
+	contra las tarjetas de planes de index.html. Si cambias un precio allá,
+	cambia también las dos tablas de acá (secciones 6 y 8).
+-->
+<body class="terms-page">
+	<main>
+		<!-- Portada azul, versión corta de la sección 1 de index.html. -->
+		<header class="terms-hero">
+			<div class="terms-hero__grid" aria-hidden="true"></div>
+
+			<div class="terms-hero__inner">
+				<a class="terms-back" href="index.html#inicio">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M19 12H5" />
+						<path d="m12 19-7-7 7-7" />
+					</svg>
+					Volver al inicio
+				</a>
+
+				<p class="terms-hero__kicker">Fragmentless</p>
+				<h1 class="terms-hero__title">Términos y condiciones</h1>
+				<p class="terms-hero__lead">Las reglas del trato escritas con confianza. Cómo nos conocemos, qué incluye la renta, cuándo empieza a contar, qué pasa cuando se acaban los créditos de IA y cómo se cancela si algún día ya no te sirve. Si algo no queda claro, pregúntamelo con toda confianza: prefiero explicarlo dos veces que dejarte con la duda.</p>
+				<p class="terms-hero__meta">Última actualización: 13 de septiembre de 2026</p>
+			</div>
+		</header>
+
+		<div class="terms-body">
+			<!-- Índice pegajoso. En móvil deja de ser sticky y queda arriba. -->
+			<nav class="terms-toc" aria-label="Índice de los términos">
+				<p class="terms-toc__title">En esta página</p>
+				<ul class="terms-toc__list">
+					<li><a class="terms-toc__link" href="#como-empezamos">Cómo empezamos</a></li>
+					<li><a class="terms-toc__link" href="#personalizacion">Personalización y arranque</a></li>
+					<li><a class="terms-toc__link" href="#incluye">Qué incluye tu suscripción</a></li>
+					<li><a class="terms-toc__link" href="#no-incluye">Qué no incluye</a></li>
+					<li><a class="terms-toc__link" href="#creditos">Créditos de IA</a></li>
+					<li><a class="terms-toc__link" href="#precios">Precios</a></li>
+					<li><a class="terms-toc__link" href="#pagos">Pagos y atrasos</a></li>
+					<li><a class="terms-toc__link" href="#cancelacion">Cancelación y reembolsos</a></li>
+					<li><a class="terms-toc__link" href="#limpieza">Limpieza anual de datos</a></li>
+					<li><a class="terms-toc__link" href="#privacidad">Privacidad</a></li>
+					<li><a class="terms-toc__link" href="#testimonios">Testimonios</a></li>
+					<li><a class="terms-toc__link" href="#ley">Ley aplicable</a></li>
+				</ul>
+			</nav>
+
+			<div class="terms-content">
+				<!-- 1 - El encuadre real: el WhatsApp agenda una cita, no cierra la renta. -->
+				<section class="terms__section" id="como-empezamos" aria-labelledby="como-empezamos-titulo">
+					<span class="terms__num">01</span>
+					<h2 class="terms__heading" id="como-empezamos-titulo">Cómo empezamos</h2>
+
+					<p class="terms__text">Fragmentless no se compra: <strong>se renta por suscripción</strong>. Mientras tu suscripción esté al día, tienes licencia para usar el software en tu negocio.</p>
+
+					<p class="terms__text">El panel se descarga y se instala en la computadora de tu local, así que no depende de que tengas el navegador abierto. La página de tu negocio sí vive en internet, para que tus clientes la vean desde donde sea.</p>
+
+					<h3 class="terms__sub">El WhatsApp es para agendar, no para cerrar</h3>
+
+					<p class="terms__text">Aquí no hay registro, ni carrito, ni pago en línea, y no me gusta cerrar tratos por mensaje. Si te interesa, escríbeme y <strong>agendamos una cita</strong>: con mucho gusto voy a tu local, sin costo y sin compromiso.</p>
+
+					<p class="terms__text">En esa visita te enseño con calma:</p>
+
+					<ul class="terms__list">
+						<li><strong>Las páginas que ya he hecho</strong> para otros negocios, funcionando de verdad, no maquetas.</li>
+						<li><strong>El panel por dentro</strong>, tal como se ve y como se usa: el menú, las mesas, las ventas, los reportes.</li>
+						<li><strong>Los precios</strong>, con lo que cuesta cada plan y cuál te conviene según lo que necesitas hoy.</li>
+					</ul>
+
+					<p class="terms__text">Ahí preguntas todo lo que quieras y lo piensas sin prisa. Si decides que sí, seguimos con lo de la siguiente sección. Si decides que no, no pasa absolutamente nada: me da gusto igual haberte mostrado el trabajo.</p>
+
+					<div class="terms__note">
+						<p>Contratar un plan quiere decir que estás de acuerdo con lo que dice esta página. Por eso está escrita para leerse tranquilo y no para esconderme detrás de ella. Si algo te parece injusto, dímelo en la cita y lo platicamos.</p>
+					</div>
+				</section>
+
+				<!-- 2 - Lo nuevo: personalización y cuándo arranca el reloj de la renta. -->
+				<section class="terms__section" id="personalizacion" aria-labelledby="personalizacion-titulo">
+					<span class="terms__num">02</span>
+					<h2 class="terms__heading" id="personalizacion-titulo">La personalización, y cuándo empieza a contar tu renta</h2>
+
+					<p class="terms__text">Esta es la parte que más me importa de todo el trato, así que la explico con calma.</p>
+
+					<p class="terms__text">Tu sitio y tu panel no salen de una plantilla genérica con tu logo encima. <strong>Los personalizo a tu marca</strong>: tus colores, tu tipo de letra, tu estética, y <strong>4 plantillas de anuncios</strong> armadas con la paleta de tu negocio. La idea es que cuando abras el panel se sienta tuyo, no de un software cualquiera.</p>
+
+					<p class="terms__text">Y aquí va la parte honesta: <strong>ese trabajo lleva tiempo</strong>. Después de la cita tengo que regresarme a dejar todo personalizado. No te voy a prometer un número de días, porque depende de tu marca y del material que tengas listo, pero sí me comprometo a dos cosas: <strong>a terminarlo</strong>, y <strong>a irte avisando cómo va</strong> para que nunca te quedes sin saber.</p>
+
+					<h3 class="terms__sub">Puedes pagar desde el día que decides</h3>
+
+					<p class="terms__text">Si en la cita ya te decidiste, puedes pagarme ahí mismo sin problema. Pero que quede clarísimo, porque es lo justo:</p>
+
+					<p class="terms__shout">Tu renta no empieza a contar el día que pagas. Empieza el día que tu sitio está en línea y tu panel está instalado y funcionando en tu computadora.</p>
+
+					<p class="terms__text">El tiempo que yo ocupe en dejarlo todo listo <strong>corre por mi cuenta, no por la tuya</strong>. No pierdes días de suscripción esperándome. El primer mes se cuenta desde que todo arranca de verdad, y de ahí en adelante tu fecha de corte es esa.</p>
+
+					<div class="terms__note">
+						<p>Lo mismo aplica para los créditos de IA: la primera recarga entra cuando el panel arranca, no antes. No pagas créditos que no podías usar todavía.</p>
+					</div>
+
+					<h3 class="terms__sub">Nada se compra hasta que tú digas que sí</h3>
+
+					<p class="terms__text">Mientras te preparo todo, no gasto un peso de lo que me pagaste. Te digo el orden exacto para que no quede duda:</p>
+
+					<ol class="terms__steps">
+						<li><strong>Mientras armo tu sitio y tu panel</strong>, corre todo por mi cuenta: lo pruebo con mis propios créditos y mi propia clave de IA, y tu página vive en un servidor de prueba, todavía sin dominio.</li>
+						<li><strong>Cuando ya viste el trabajo terminado y te gustó</strong>, ahí sí se levanta tu dominio.</li>
+						<li><strong>Cuando estoy instalando el panel en tu computadora</strong>, ahí sí entran tus créditos de IA.</li>
+					</ol>
+
+					<p class="terms__text">Así nunca pagas por algo que todavía no has visto ni puedes usar. Y por eso lo de abajo puedo ofrecértelo sin condiciones raras.</p>
+
+					<h3 class="terms__sub">¿Y si te arrepientes antes de que arranque?</h3>
+
+					<p class="terms__text">Te devuelvo <strong>el 100% de lo que pagaste</strong>, sin descuentos y sin que me tengas que dar explicaciones.</p>
+
+					<p class="terms__text">Y es justo que sea así de simple: si todavía no arranca nada, es que todavía no se gastó nada. No se ha recargado ni un crédito de IA, no se ha levantado tu dominio y no hay un solo mes de suscripción corriendo. No tengo qué descontarte, así que no te descuento nada.</p>
+
+					<p class="terms__text">Esto aplica <strong>sólo mientras no esté todo funcionando</strong>. En cuanto tu sitio está en línea y tu panel instalado, ya empezó tu renta, y de ahí en adelante lo que manda es la regla de cancelación de la <a class="terms__link" href="#cancelacion">sección 08</a>.</p>
+				</section>
+
+				<!-- 3 -->
+				<section class="terms__section" id="incluye" aria-labelledby="incluye-titulo">
+					<span class="terms__num">03</span>
+					<h2 class="terms__heading" id="incluye-titulo">Qué incluye tu suscripción</h2>
+
+					<ul class="terms__list">
+						<li><strong>La licencia de uso del software</strong>, mientras tu suscripción esté al día.</li>
+						<li><strong>El mantenimiento de tu página y de tu panel, ya incluido en la renta.</strong> Es decir: que lo que tienes siga funcionando, que se arreglen las fallas y que se hagan los ajustes chicos. Eso no te lo cobro aparte nunca.</li>
+						<li><strong>El dominio, gratis.</strong> El dominio que te doy va incluido en la renta. No hay cargo extra por él, ni al contratar ni cada año.</li>
+						<li><strong>La recarga mensual de créditos de OpenAI</strong> que le toca a tu plan: $6 USD en Básico, $12 USD en Negocio y $18 USD en Premium. Los pago yo, tú no tienes que abrir cuenta con nadie ni meter tarjeta en ningún lado.</li>
+						<li><strong>La personalización de tu sitio y tu panel</strong> a tu marca, con las 4 plantillas de anuncios de las que te hablé arriba.</li>
+					</ul>
+
+					<h3 class="terms__sub">Los tres planes traen lo mismo</h3>
+
+					<p class="terms__text">Todas las funciones están en los tres planes: sitio web y panel con tu marca, menú digital, control de mesas, registro de ventas, reportes y análisis con IA, creación de anuncios y biblioteca de anuncios.</p>
+
+					<p class="terms__text">Lo único que cambia de un plan a otro es <strong>la potencia del modelo de IA</strong> y el monto de créditos que trae. No te escondo funciones en el plan de entrada para obligarte a subir: eso no se me hace correcto.</p>
+				</section>
+
+				<!-- 4 -->
+				<section class="terms__section" id="no-incluye" aria-labelledby="no-incluye-titulo">
+					<span class="terms__num">04</span>
+					<h2 class="terms__heading" id="no-incluye-titulo">Qué no incluye: las funciones nuevas</h2>
+
+					<p class="terms__text">El mantenimiento cubre que <strong>lo que ya tienes siga funcionando</strong> y se vea bien. Lo que no alcanza a cubrir es construir cosas que todavía no existen.</p>
+
+					<p class="terms__text">Las funciones nuevas con mucho gusto te las hago, nada más que son trabajo aparte y por eso <strong>se cotizan y se pagan por separado</strong> de la mensualidad. Por ejemplo:</p>
+
+					<ul class="terms__list">
+						<li>Un agente de WhatsApp que le conteste solo a tus clientes.</li>
+						<li>Login y carrito de compras en tu página.</li>
+						<li>Plantillas adicionales, más allá de las 4 que ya vienen incluidas.</li>
+					</ul>
+
+					<p class="terms__text">Si se te ocurre algo, dímelo sin pena. Lo platicamos, te paso el precio con tiempo y tú decides si vale la pena. Nunca te voy a hacer trabajo extra sin avisarte antes lo que cuesta.</p>
+				</section>
+
+				<!-- 5 - Bloque negro. Es la regla que más malentendidos genera. -->
+				<section class="terms__section terms__section--highlight" id="creditos" aria-labelledby="creditos-titulo">
+					<span class="terms__num">05</span>
+					<h2 class="terms__heading" id="creditos-titulo">Créditos de IA: lo más importante de esta página</h2>
+
+					<p class="terms__text">Cada mes recargo los créditos de OpenAI de tu cuenta según tu plan. Esos créditos son los que mueven el agente de IA y la creación de contenido con IA, y se van gastando conforme los usas.</p>
+
+					<p class="terms__text">Cuando se acaban los créditos del mes, <strong>la IA deja de responder</strong>: el agente y la generación de contenido se pausan hasta la siguiente recarga.</p>
+
+					<p class="terms__shout">Que se acaben los créditos no significa que el software dejó de funcionar.</p>
+
+					<p class="terms__text">Tu panel sigue entero: menú, mesas, ventas y reportes trabajan igual que siempre. Lo único que se pausa es lo que consume IA.</p>
+
+					<h3 class="terms__sub">Qué hacer cuando pasa</h3>
+
+					<ul class="terms__list">
+						<li><strong>Esperar la renovación</strong> de tu suscripción, que recarga los créditos del mes siguiente.</li>
+						<li><strong>Subir de plan</strong>, que te da más créditos y además un modelo de IA más potente.</li>
+					</ul>
+
+					<div class="terms__note">
+						<p><strong>Prefiero decírtelo aquí y no que lo descubras un viernes en la noche:</strong> en el Plan Básico esto pasa seguido. Es lo normal de un plan de entrada, no es una falla ni algo que se haya roto. Si sabes que vas a usar la IA todos los días, platícamelo en la cita y vemos juntos qué plan te conviene de verdad.</p>
+					</div>
+				</section>
+
+				<!-- 6 -->
+				<section class="terms__section" id="precios" aria-labelledby="precios-titulo">
+					<span class="terms__num">06</span>
+					<h2 class="terms__heading" id="precios-titulo">Precios: cuánto pagas de verdad</h2>
+
+					<p class="terms__text">Hay dos formas de pagar: mes a mes, o el año completo de contado con <strong>20% de descuento</strong>. Te pongo aquí el número que la tabla de planes no te muestra, para que compares con todo a la vista: <strong>cuánto terminas pagando si te quedas en el mensual.</strong></p>
+
+					<div class="terms__table-wrap">
+						<table class="terms__table">
+							<caption class="terms__sr">Comparación de precios mensuales y anuales de los tres planes, en pesos mexicanos</caption>
+							<thead>
+								<tr>
+									<th scope="col">Concepto</th>
+									<th scope="col">Básico</th>
+									<th scope="col">Negocio</th>
+									<th scope="col">Premium</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row">Pago mensual</th>
+									<td>$1,199 MXN</td>
+									<td>$1,549 MXN</td>
+									<td>$1,899 MXN</td>
+								</tr>
+								<tr class="is-key">
+									<th scope="row">Lo que pagas en 12 meses si vas mes a mes</th>
+									<td>$14,388 MXN</td>
+									<td>$18,588 MXN</td>
+									<td>$22,788 MXN</td>
+								</tr>
+								<tr>
+									<th scope="row">Año completo de contado</th>
+									<td>$11,510 MXN</td>
+									<td>$14,870 MXN</td>
+									<td>$18,230 MXN</td>
+								</tr>
+								<tr>
+									<th scope="row">Eso equivale a</th>
+									<td>$959 /mes</td>
+									<td>$1,239 /mes</td>
+									<td>$1,519 /mes</td>
+								</tr>
+								<tr class="is-save">
+									<th scope="row">Te ahorras</th>
+									<td>$2,878 MXN</td>
+									<td>$3,718 MXN</td>
+									<td>$4,558 MXN</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<p class="terms__text">Todos los precios son en pesos mexicanos y el descuento anual es del 20% en los tres planes. Que la anual salga más barata no quiere decir que tengas que tomarla: si te acomoda más ir mes a mes, ve mes a mes, con toda confianza.</p>
+
+					<div class="terms__note">
+						<p>El "equivale a" está redondeado, es sólo para que compares fácil. <strong>El número que manda es el total anual</strong>: eso es lo que se cobra y lo que se usa para calcular un reembolso.</p>
+					</div>
+
+					<p class="terms__text">Elige el plan que necesitas hoy. Puedes cambiarlo o cancelarlo cuando quieras: si subes de plan, se cobra la diferencia desde el mes siguiente.</p>
+				</section>
+
+				<!-- 7 -->
+				<section class="terms__section" id="pagos" aria-labelledby="pagos-titulo">
+					<span class="terms__num">07</span>
+					<h2 class="terms__heading" id="pagos-titulo">Pagos, corte y atrasos</h2>
+
+					<h3 class="terms__sub">Cómo puedes pagar</h3>
+
+					<p class="terms__text">Como se te haga más cómodo. Acepto las cuatro:</p>
+
+					<ul class="terms__list">
+						<li>Transferencia bancaria o SPEI.</li>
+						<li>Efectivo, en persona.</li>
+						<li>Depósito en banco o en tienda.</li>
+						<li>Tarjeta de crédito o débito.</li>
+					</ul>
+
+					<h3 class="terms__sub">Sobre la factura</h3>
+
+					<p class="terms__text">Por ahora <strong>no emito facturas</strong>. Prefiero decírtelo aquí y no cuando ya pagaste: si necesitas el comprobante fiscal para deducir el gasto, coméntamelo en la cita para que lo tomes en cuenta antes de decidir.</p>
+
+					<h3 class="terms__sub">La fecha de corte</h3>
+
+					<p class="terms__text">Tu fecha de corte es el día en que arrancó todo (sitio en línea y panel instalado), y es la misma todos los meses. En esa fecha se renueva la suscripción y se recargan tus créditos de IA.</p>
+
+					<h3 class="terms__sub">Si un mes se te complica</h3>
+
+					<p class="terms__text">Si llega la fecha de corte y el pago no entró, <strong>te escribo por WhatsApp antes de tocar nada</strong>. No hay desactivación sorpresa ni el mismo día: primero hablamos.</p>
+
+					<p class="terms__text">No pongo aquí un número fijo de días de gracia justamente porque prefiero platicarlo. Sé que hay meses flojos y no me voy a poner rígido por eso; dímelo y nos acomodamos. Lo único que sí tengo que dejar escrito es que, si el atraso se queda sin respuesta, la licencia se puede desactivar y el panel deja de abrir hasta que se regularice el pago.</p>
+
+					<div class="terms__note">
+						<p><strong>Tus datos no se borran por un atraso.</strong> Tu menú, tus ventas y tu historial quedan ahí esperándote, completos, para cuando retomes.</p>
+					</div>
+				</section>
+
+				<!-- 8 -->
+				<section class="terms__section" id="cancelacion" aria-labelledby="cancelacion-titulo">
+					<span class="terms__num">08</span>
+					<h2 class="terms__heading" id="cancelacion-titulo">Cancelación y reembolsos</h2>
+
+					<p class="terms__text">Puedes cancelar cuando quieras, nada más avisándome por WhatsApp. No hay penalización por irte, ni trámite, ni tengo que convencerte de quedarte. Si el software dejó de servirte, lo entiendo.</p>
+
+					<p class="terms__text">Esta sección es para cuando tu suscripción <strong>ya arrancó</strong>. Si me pagaste y cambiaste de opinión antes de que montara todo, te devuelvo el 100%: eso está en la <a class="terms__link" href="#personalizacion">sección 02</a>.</p>
+
+					<h3 class="terms__sub">El mes que ya empezó no se devuelve</h3>
+
+					<p class="terms__text">Es la misma regla para el mensual y para el anual, así que la explico una sola vez: <strong>en cuanto arranca un mes, sus créditos de IA ya se recargaron y ya son tuyos para gastar.</strong> Por eso ese mes se cobra completo, canceles el día 2 o el día 28.</p>
+
+					<ul class="terms__list">
+						<li><strong>Si pagas mensual:</strong> cancelas, no se te vuelve a cobrar y sigues usando el panel hasta que termine el mes que ya pagaste. No hay nada que devolver.</li>
+						<li><strong>Si pagaste el año:</strong> el mes en curso cuenta como mes usado, y el reembolso sale de los meses completos que seguían.</li>
+					</ul>
+
+					<h3 class="terms__sub">Cómo se calcula el reembolso de la anual</h3>
+
+					<ol class="terms__steps">
+						<li>Se te devuelven <strong>los meses completos que todavía no empezaste</strong>.</li>
+						<li>Cada uno de esos meses se devuelve al <strong>precio mensual de tu plan anual</strong>, o sea el total que pagaste dividido entre 12. No pierdes el descuento sobre lo que no usaste: me parece lo justo.</li>
+						<li>El mes en curso y los meses que ya usaste no se devuelven, porque sus créditos ya se recargaron y ya estaban a tu disposición.</li>
+					</ol>
+
+					<p class="terms__text">Un ejemplo con números reales, cancelando <strong>durante el mes 5</strong> (quedan 7 meses completos sin empezar):</p>
+
+					<div class="terms__table-wrap">
+						<table class="terms__table">
+							<caption class="terms__sr">Ejemplo de reembolso al cancelar un plan anual durante el quinto mes</caption>
+							<thead>
+								<tr>
+									<th scope="col">Concepto</th>
+									<th scope="col">Básico</th>
+									<th scope="col">Negocio</th>
+									<th scope="col">Premium</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th scope="row">Pagaste de contado</th>
+									<td>$11,510 MXN</td>
+									<td>$14,870 MXN</td>
+									<td>$18,230 MXN</td>
+								</tr>
+								<tr>
+									<th scope="row">Precio mensual de tu anual</th>
+									<td>$959 MXN</td>
+									<td>$1,239 MXN</td>
+									<td>$1,519 MXN</td>
+								</tr>
+								<tr>
+									<th scope="row">Meses completos sin empezar</th>
+									<td>7</td>
+									<td>7</td>
+									<td>7</td>
+								</tr>
+								<tr class="is-key">
+									<th scope="row">Tu reembolso</th>
+									<td>$6,713 MXN</td>
+									<td>$8,673 MXN</td>
+									<td>$10,633 MXN</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="terms__note">
+						<p><strong>Por qué los créditos de IA no entran en la cuenta:</strong> los créditos que ya se gastaron pertenecen a los meses que sí usaste, y esos meses no se reembolsan. Los meses que no empezaste todavía no tienen créditos recargados. Por eso no hay que restar nada aparte: la cuenta sale limpia sola.</p>
+					</div>
+
+					<h3 class="terms__sub">Qué pasa con tu dominio y con tus datos</h3>
+
+					<p class="terms__text"><strong>Tu dominio no se apaga el día que cancelas.</strong> Ya estaba pagado, así que sigue funcionando hasta que se termine el periodo que cubría. Cuando llegue esa fecha ya no lo renuevo, porque la renovación iba incluida en la renta y ya no hay renta. El dominio se queda a mi nombre y no se transfiere.</p>
+
+					<p class="terms__text">De tus datos <strong>te entrego un respaldo completo</strong> —tu menú, tus ventas, tu historial— y una vez que lo tienes en tus manos, se borran de mi lado. No me quedo con la información de un negocio que ya no es cliente.</p>
+
+					<div class="terms__note">
+						<p>Te aviso esto desde ahora, no el día que te vayas: como el dominio no se transfiere, si algún día dejas Fragmentless vas a necesitar uno nuevo para tu negocio. Vale la pena tenerlo en cuenta antes de mandar a imprimir tarjetas o lonas con esa dirección.</p>
+					</div>
+				</section>
+
+				<!-- 9 -->
+				<section class="terms__section" id="limpieza" aria-labelledby="limpieza-titulo">
+					<span class="terms__num">09</span>
+					<h2 class="terms__heading" id="limpieza-titulo">Limpieza anual de datos (opcional)</h2>
+
+					<p class="terms__text">Con los años tu panel acumula historial, sobre todo en la tabla de ventas. Si quieres, puedo hacerte una limpieza anual de esos datos operativos para que el panel trabaje ligero.</p>
+
+					<p class="terms__text">Es completamente opcional, y va con dos condiciones que me puse yo mismo:</p>
+
+					<ul class="terms__list">
+						<li><strong>Sólo si tú me la pides.</strong> Nunca por iniciativa mía, nunca automática. Si no me dices nada, no toco nada.</li>
+						<li><strong>Primero respaldo todo, y después limpio.</strong> El respaldo va antes, siempre, sin excepción. Cómo te lo entrego lo acordamos contigo antes de empezar.</li>
+					</ul>
+				</section>
+
+				<!-- 10 -->
+				<section class="terms__section" id="privacidad" aria-labelledby="privacidad-titulo">
+					<span class="terms__num">10</span>
+					<h2 class="terms__heading" id="privacidad-titulo">Privacidad: qué datos sí y qué datos no</h2>
+
+					<h3 class="terms__sub">Lo que no hago</h3>
+
+					<ul class="terms__list terms__list--no">
+						<li>No hay formularios en esta página. No te pido correo ni teléfono.</li>
+						<li>No armo listas de correo ni te mando publicidad.</li>
+						<li>No vendo ni comparto datos con terceros.</li>
+						<li>No hay píxeles de rastreo ni analítica de marketing.</li>
+					</ul>
+
+					<p class="terms__text">La única forma de contacto es WhatsApp, y si tengo tu número es porque tú me escribiste primero.</p>
+
+					<h3 class="terms__sub">Lo que pasa de por sí</h3>
+
+					<p class="terms__text">Esta página está hospedada en <strong>Vercel</strong>. Como cualquier página de internet, su servidor guarda registros técnicos de las visitas: dirección IP, tipo de navegador y de dispositivo, y fecha y hora. Existen porque todo servidor web los registra y porque sirven para que la página funcione y esté segura. <strong>No tengo activada su analítica ni ninguna otra herramienta de medición.</strong></p>
+
+					<p class="terms__text"><strong>Yo no los consulto, no los cruzo con nadie y no los uso para nada.</strong> Te lo digo aunque nadie me lo pregunte, porque es tu derecho saberlo.</p>
+
+					<h3 class="terms__sub">Los datos de tu negocio</h3>
+
+					<p class="terms__text">Lo que capturas en el panel (tu menú, tus mesas, tus ventas) es tuyo y de nadie más. Lo uso únicamente para que el software funcione y para ayudarte cuando me pides soporte.</p>
+				</section>
+
+				<!-- 11 -->
+				<section class="terms__section" id="testimonios" aria-labelledby="testimonios-titulo">
+					<span class="terms__num">11</span>
+					<h2 class="terms__heading" id="testimonios-titulo">Testimonios de clientes</h2>
+
+					<p class="terms__text">La sección de clientes de la página de inicio muestra nombre, foto y frase de clientes reales. Eso sí son datos personales, así que te digo exactamente cómo los manejo:</p>
+
+					<ul class="terms__list">
+						<li>Se los pido <strong>sólo a los primeros 7 clientes</strong>, para poder ilustrar la página. No es una recolección abierta ni permanente.</li>
+						<li><strong>Siempre con tu permiso.</strong> Si no me lo das, no se publica y no pasa nada.</li>
+						<li>Se publica lo mínimo: nombre, foto y la frase del testimonio. Nada más.</li>
+						<li><strong>Puedes pedirme que baje el tuyo cuando quieras</strong>, sin darme explicaciones, y lo bajo.</li>
+					</ul>
+				</section>
+
+				<!-- 12 -->
+				<section class="terms__section" id="ley" aria-labelledby="ley-titulo">
+					<span class="terms__num">12</span>
+					<h2 class="terms__heading" id="ley-titulo">Ley aplicable</h2>
+
+					<p class="terms__text">Estos términos se rigen por las leyes aplicables en <strong>Orizaba, Veracruz, México</strong>, y cualquier asunto relacionado con ellos se resuelve ante los tribunales de esa ciudad. Ojalá nunca haga falta, pero es mejor tenerlo escrito.</p>
+
+					<p class="terms__text">Puedo actualizar esta página cuando cambien los planes, los precios o la forma de trabajar. La fecha de la última actualización siempre está al pie, y si un cambio te afecta directamente te lo aviso por WhatsApp: no me parecería bien que lo tuvieras que descubrir tú.</p>
+				</section>
+
+				<!-- Cierre: la invitación real, que es la cita en el local. -->
+				<aside class="terms__end">
+					<h2 class="terms__end-title">¿Te gustaría verlo en persona?</h2>
+					<p class="terms__end-text">Agendamos una cita y voy a tu local, sin costo y sin compromiso. Te muestro las páginas que he hecho, el panel funcionando y platicamos de precios con calma. Si algo de estos términos no te cuadró, ahí mismo lo resolvemos.</p>
+					<a class="terms__end-cta" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20gustar%C3%ADa%20agendar%20una%20cita%20para%20conocer%20el%20panel." target="_blank" rel="noopener">Agendar una cita</a>
+				</aside>
+
+				<p class="terms__updated">Última actualización: 13 de septiembre de 2026</p>
+			</div>
+		</div>
+	</main>
+
+	<!--
+		FOOTER - copia del de index.html. Los links del sitio apuntan a
+		index.html#ancla porque acá no existen esas secciones; "Términos"
+		se queda en esta misma página y lo marca aria-current.
+		Sin JS: el año va escrito a mano y las piezas se ven desde el
+		principio (ver el comentario de arriba y style.css).
+	-->
+	<footer class="footer" aria-labelledby="footer-titulo">
+		<h2 id="footer-titulo" class="footer__sr">Fragmentless</h2>
+
+		<div class="footer__inner">
+			<a class="footer__logo" href="index.html#inicio" data-reveal style="--n: 0;" aria-label="Fragmentless — volver al inicio">
+				<img src="assets/svg/blanco/fragmentless-white-frame35.svg" alt="Fragmentless" width="512" height="512">
+			</a>
+
+			<nav class="footer__nav" data-reveal style="--n: 1;" aria-label="Enlaces del pie">
+				<a class="footer__link" href="index.html#inicio">Inicio</a>
+				<a class="footer__link" href="index.html#licencias">Planes</a>
+				<a class="footer__link" href="index.html#clientes">Clientes</a>
+				<a class="footer__link" href="terminos.html" aria-current="page">Términos</a>
+			</nav>
+
+			<ul class="footer__social" data-reveal style="--n: 2;">
+				<li><a class="footer__icon" href="https://www.instagram.com/mattthew.reyes/" target="_blank" rel="noopener" aria-label="Instagram">
+					<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M12 2c-2.72 0-3.06.01-4.12.06-1.07.05-1.79.22-2.43.47-.66.25-1.22.6-1.77 1.15-.55.55-.89 1.11-1.15 1.77-.25.64-.42 1.36-.47 2.43C2.01 8.94 2 9.28 2 12s.01 3.06.06 4.12c.05 1.07.22 1.79.47 2.43.25.66.6 1.22 1.15 1.77.55.55 1.11.89 1.77 1.15.64.25 1.36.42 2.43.47C8.94 21.99 9.28 22 12 22s3.06-.01 4.12-.06c1.07-.05 1.79-.22 2.43-.47.66-.25 1.22-.6 1.77-1.15.55-.55.89-1.11 1.15-1.77.25-.64.42-1.36.47-2.43.05-1.06.06-1.4.06-4.12s-.01-3.06-.06-4.12c-.05-1.07-.22-1.79-.47-2.43-.25-.66-.6-1.22-1.15-1.77-.55-.55-1.11-.89-1.77-1.15-.64-.25-1.36-.42-2.43-.47C15.06 2.01 14.72 2 12 2m0 1.8c2.67 0 2.99.01 4.04.06.97.05 1.5.21 1.86.35.47.18.8.4 1.15.75.35.35.57.68.75 1.15.14.36.3.89.35 1.86.05 1.05.06 1.37.06 4.03s-.01 2.99-.06 4.04c-.05.97-.21 1.5-.35 1.86-.18.47-.4.8-.75 1.15-.35.35-.68.57-1.15.75-.36.14-.89.3-1.86.35-1.05.05-1.37.06-4.04.06s-2.99-.01-4.04-.06c-.97-.05-1.5-.21-1.86-.35-.47-.18-.8-.4-1.15-.75-.35-.35-.57-.68-.75-1.15-.14-.36-.3-.89-.35-1.86-.05-1.05-.06-1.37-.06-4.04s.01-2.99.06-4.03c.05-.97.21-1.5.35-1.86.18-.47.4-.8.75-1.15.35-.35.68-.57 1.15-.75.36-.14.89-.3 1.86-.35C9.01 3.81 9.33 3.8 12 3.8m0 3.06a5.14 5.14 0 1 0 0 10.28 5.14 5.14 0 0 0 0-10.28m0 8.47a3.34 3.34 0 1 1 0-6.67 3.34 3.34 0 0 1 0 6.67m6.54-8.67a1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 1 2.4 0" />
+					</svg>
+				</a></li>
+				<li><a class="footer__icon" href="https://wa.me/5212721467532?text=Hola%2C%20vengo%20de%20la%20p%C3%A1gina%20de%20Fragmentless%20y%20me%20gustar%C3%ADa%20agendar%20una%20cita%20para%20conocer%20el%20panel." target="_blank" rel="noopener" aria-label="WhatsApp">
+					<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+						<path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m0 1.8c2.16 0 4.19.84 5.72 2.37a8.03 8.03 0 0 1 2.37 5.72c0 4.46-3.63 8.09-8.09 8.09a8.1 8.1 0 0 1-4.12-1.13l-.3-.17-3.06.8.82-2.99-.19-.31a8.05 8.05 0 0 1-1.24-4.3c0-4.46 3.63-8.08 8.09-8.08m-3.7 4.34c-.17 0-.45.06-.69.32-.24.26-.9.88-.9 2.15s.92 2.49 1.05 2.66c.13.17 1.8 2.86 4.44 3.9 2.19.87 2.64.7 3.11.65.47-.04 1.53-.62 1.75-1.23.21-.6.21-1.12.15-1.23-.06-.11-.24-.17-.5-.3-.26-.13-1.53-.75-1.77-.84-.24-.09-.41-.13-.58.13-.17.26-.67.84-.82 1.01-.15.17-.3.19-.56.06-.26-.13-1.1-.4-2.1-1.29-.78-.69-1.3-1.55-1.45-1.81-.15-.26-.02-.4.11-.53.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.57-1.4-.79-1.92-.2-.5-.41-.43-.56-.44h-.48" />
+					</svg>
+				</a></li>
+			</ul>
+		</div>
+
+		<!-- La banda de rayas diagonales que se desplaza sola. Decorativa. -->
+		<div class="footer__stripes" aria-hidden="true"></div>
+
+		<div class="footer__base" data-reveal style="--n: 3;">
+			<p class="footer__copy">&copy; <span class="footer__year">2026</span> Fragmentless. Todos los derechos reservados.</p>
+		</div>
+	</footer>
+</body>
+</html>

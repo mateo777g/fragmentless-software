@@ -248,14 +248,26 @@ body {
 }
 
 /*
- * Icono estático a la izquierda del texto. Ancho fijo (no 1em) para que no
- * cambie de tamaño si algún día se toca el font-size del link, y para que los
- * cuatro ocupen exactamente lo mismo. No entra en el roll del hover.
+ * Icono a la izquierda del texto. Ancho fijo (no 1em) para que no cambie de
+ * tamaño si algún día se toca el font-size del link, y para que los cuatro
+ * ocupen exactamente lo mismo.
+ *
+ * La caja es el equivalente de un .menu__char: recorta la columna de dos
+ * copias del SVG que arma el JS, y el roll la sube en el hover. El --c lo pone
+ * el JS en 0, así el icono abre la ola.
  */
 .menu__ico {
-	display: grid;
+	display: block;
 	flex-shrink: 0;
 	width: 22px;
+	height: 22px;
+	overflow: hidden;
+}
+
+/* Cada copia ocupa la celda entera: la columna mide 44px y el -50% del roll
+   deja la segunda copia exactamente donde estaba la primera. */
+.menu__ico .menu__roll > span {
+	display: grid;
 	height: 22px;
 	place-items: center;
 }

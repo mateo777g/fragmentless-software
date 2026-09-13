@@ -28,8 +28,8 @@
 
 			<!--
 				Las letras (.menu__text) las parte el JS en dos copias para el roll
-				del hover. El icono va aparte, a la izquierda, y es estático: no
-				entra en el roll ni se toca desde el JS.
+				del hover, y al icono le hace lo mismo: entra en la misma ola, como
+				el cuadro 0 de la fila, así que la ola arranca en él.
 			-->
 			<ul class="menu__items" id="menu-items">
 				<li><a class="menu__item" href="#inicio">
@@ -258,7 +258,9 @@
 		// Parte el texto en letras duplicadas (una arriba y otra abajo) para que
 		// el hover pueda subir la columna. El aria-label deja la palabra entera
 		// para los lectores de pantalla, que si no leerían "IINNIICCIIOO".
-		// Solo se vacía .menu__text: el icono es hermano y queda intacto.
+		// Solo se vacía .menu__text: el icono es hermano y se arma aparte.
+		//
+		// Las letras arrancan en --c 1 porque el cuadro 0 es el icono.
 		function buildRollingText(link) {
 			const target = link.querySelector('.menu__text');
 			if (!target) return;
@@ -277,7 +279,7 @@
 
 				const box = document.createElement('span');
 				box.className = 'menu__char';
-				box.style.setProperty('--c', index);
+				box.style.setProperty('--c', index + 1);
 
 				const roll = document.createElement('span');
 				roll.className = 'menu__roll';
@@ -287,6 +289,34 @@
 				box.appendChild(roll);
 				target.appendChild(box);
 			});
+		}
+
+		// El icono usa exactamente el mismo mecanismo que una letra: una columna
+		// con dos copias del SVG que sube 50% en el hover. Se duplica acá y no en
+		// el HTML para no tener el mismo dibujo escrito dos veces por link.
+		//
+		// Queda en --c 0, o sea que es el primero de la ola: el icono sale y
+		// atrás van entrando las letras de izquierda a derecha.
+		function buildRollingIcon(link) {
+			const box = link.querySelector('.menu__ico');
+			const svg = box?.querySelector('svg');
+			if (!svg) return;
+
+			// Las copias se toman ANTES de vaciar la caja. Sacar el SVG del DOM no
+			// invalida la referencia, así que el original se puede reusar.
+			const copies = [svg, svg.cloneNode(true)];
+			box.replaceChildren();
+
+			const roll = document.createElement('span');
+			roll.className = 'menu__roll';
+			copies.forEach((copy) => {
+				const cell = document.createElement('span');
+				cell.appendChild(copy);
+				roll.appendChild(cell);
+			});
+
+			box.style.setProperty('--c', 0);
+			box.appendChild(roll);
 		}
 
 		function setMenuOpen(open) {
@@ -318,12 +348,14 @@
 		if (menuRoot) {
 			menuItems.forEach((link, index) => {
 				link.style.setProperty('--i', index);
+				buildRollingIcon(link);
 				buildRollingText(link);
 
 				// Bloqueo del roll: si el mouse sale a mitad de la animación, la
 				// salida se retiene hasta que termina. Si no, la columna pega un
 				// salto feo al volver a su lugar.
-				const lock = 30 * link.querySelectorAll('.menu__char').length + 300;
+				// El +1 es el icono, que también ocupa un lugar en la ola.
+				const lock = 30 * (link.querySelectorAll('.menu__char').length + 1) + 300;
 				let timer = 0;
 				let pendingLeave = false;
 

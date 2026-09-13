@@ -451,22 +451,30 @@ Las piezas, de arriba hacia abajo:
                       cubo de 52x60 medido en captura (64px en móvil).
                       Es un <img> suelto, no la animación de 36 cuadros:
                       acá el cubo está quieto a propósito.
-- .footer__nav     -> los 6 links. Los cinco primeros usan los MISMOS
-                      anchors que el menú flotante (#inicio, #gestion,
-                      #licencias, #clientes, #contacto); "Términos" va a
-                      "#" porque todavía no hay página.
-                      OJO: #licencias y #contacto siguen sin existir como
-                      id en el HTML, igual que en el menú. Cuando se creen
-                      hay que revisar los dos lugares.
+- .footer__nav     -> los 4 links: Inicio, Licencias, Clientes y
+                      Términos. Los tres primeros usan los MISMOS anchors
+                      que el menú flotante (#inicio, #licencias,
+                      #clientes); "Términos" va a "#" porque todavía no
+                      hay página.
+                      Gestión (#gestion) y Contacto (#contacto) SE
+                      QUITARON del footer por pedido explícito. Siguen en
+                      el menú flotante: no los devuelvas acá "para que
+                      coincidan".
+                      OJO: #inicio y #licencias son sticky, así que sus
+                      links dependen del handler manualAnchors del JS
+                      (ver "TRAMPA de #inicio y #licencias").
 - .footer__link    -> el hover del original: una píldora que crece desde
                       el centro + scale 1.05. La píldora es un ::before
                       con z-index: -1, y por eso el link lleva
                       `isolation: isolate`. SIN eso el ::before se va
                       detrás del fondo del footer y la píldora no se ve
                       nunca (el <a> no crea contexto de apilado solo).
-- .footer__social  -> 6 iconos (Instagram, Facebook, WhatsApp, TikTok,
-                      YouTube, X). Hover: suben 3px y crecen.
-                      TODOS apuntan a "#": son de RELLENO hasta que
+- .footer__social  -> 2 iconos: Instagram y WhatsApp. Hover: suben 3px y
+                      crecen. Facebook, TikTok, YouTube y X estaban y se
+                      BORRARON por pedido explícito (el negocio solo usa
+                      esas dos); si hacen falta de nuevo, los SVG están en
+                      el historial de git.
+                      Los dos apuntan a "#": son de RELLENO hasta que
                       existan las cuentas reales, igual que los precios y
                       los testimonios.
 - .footer__stripes -> la banda de rayas diagonales que se desplaza sola.
@@ -570,14 +578,17 @@ Anclas que YA existen:
                 "Ver cómo funciona" y el "Desliza" de la portada.
    #clientes -> Sección 4, los testimonios. Lo usa el link "Clientes" del
                 menú flotante.
+   #licencias -> Sección 3, el panel blanco de los planes (el id vive en
+                .scroll-hero__surface). Lo usa el link "Licencias" del
+                menú flotante.
 
 Anclas que TODAVÍA NO existen (los links están puestos, pero no hay
 sección a la que saltar; no rompen nada, simplemente no hacen nada):
-   #licencias -> link del menú flotante.
    #contacto  -> link "Contacto" del menú flotante, el CTA blanco de la
                  portada y los 3 botones "Elegir plan" de la sección 3.
                  Cuando haya WhatsApp real, acá va el https://wa.me/...
-                 en vez del ancla (son 5 links en total).
+                 en vez del ancla (son 5 links en total). Ya NO está en el
+                 footer: ese se quitó a propósito.
 
 Regla: el ancla #inicio SIEMPRE apunta a la primera sección de la
 página, sea cual sea. Si algún día se mete otra sección arriba, se le
@@ -587,6 +598,42 @@ negro pasó de id="inicio" a id="gestion").
 
 Nota: html { scroll-behavior: smooth } en style.css hace que todos estos
 saltos sean animados. Si alguna vez un ancla se siente lenta, es por eso.
+
+TRAMPA de #inicio y #licencias (sticky vs. salto de ancla):
+La portada es position: sticky dentro del <main>, o sea que mientras
+estés en cualquier sección sigue pegada al tope de la ventana. Para el
+navegador eso significa que #inicio YA está arriba, así que el salto del
+ancla NO mueve nada (medido: scrollY 2741 -> 2741), y si ya pasaste el
+main cae al final de la sección 4 en vez de al inicio. Por eso el JS
+intercepta los clics de todo a[href="#inicio"] (el link del menú, el logo
+del footer y el "Inicio" del footer) y hace window.scrollTo({ top: 0 }) a
+mano, con behavior 'auto' si hay prefers-reduced-motion. El hash se
+escribe con history.replaceState y NO con location.hash, porque poner el
+hash volvería a disparar el salto roto.
+Si algún día la portada deja de ser sticky, este handler se puede borrar.
+
+#licencias tiene el mismo problema y la misma solución: el panel blanco
+también es sticky (su __stage), así que el ancla sola no lo alcanza. El
+destino se calcula con layoutTop(.scroll-hero__surface), que es
+exactamente el scroll donde --surface-progress llega a 1: el panel ya
+terminó de tapar la lista negra y los planes quedan quietos en pantalla.
+Los dos destinos viven juntos en el objeto manualAnchors del JS; para
+agregar otra sección sticky al menú, se le suma una entrada ahí.
+
+Medido (Chrome headless por CDP, clic real en el link del menú):
+   1400x900 -> scrollY 2335, progress 1, título en top 118, tarjetas
+               374-789 dentro de una ventana de 805. Tema del menú: light.
+   1280x700 -> scrollY 1790, progress 1, título en top 117.
+   móvil    -> scrollY 2285, progress 1, título en top 100.
+Da lo mismo venir de arriba o desde el footer: los tres tamaños caen en
+el mismo punto.
+
+Se PROBÓ bajar de más en pantallas bajas (sumarle el sobrante del stage,
+tapado por el --surface-hold) para que no queden las tarjetas cortadas
+abajo, y quedó PEOR: en 1280x700 el título "Planes que crecen" se iba
+fuera de la pantalla (top -96px). El tope del panel es el punto correcto
+en todos los tamaños; lo que sobra abajo se ve con un scroll corto, que
+es justo para lo que está el hold. No repetir ese intento.
 
 Cómo verificar cambios (importante, no confiar solo en que compile):
 Se probó con Playwright + Chrome headless, scrolleando la página y

@@ -1164,6 +1164,19 @@ body {
 	color: #ffffff;
 }
 
+/* Tarjetas vacías: quedan solo el fondo y el cuadrado del avatar, abajo a
+   la derecha. Sin cita no hay `margin: auto 0 0` que empuje nada, así que el
+   auto va aquí. El min-height es el que sostiene la fila: las tres negras
+   del medio marcan el alto y las laterales se lo reparten 7/3. */
+.clients__card--empty .clients__avatar {
+	margin-top: auto;
+	align-self: flex-end;
+}
+
+.clients__card--ink.clients__card--empty {
+	min-height: 184px;
+}
+
 /* Cuadrícula de las dos tarjetas blancas, con la máscara elíptica que la
    desvanece hacia abajo. Va detrás del texto (z-index 0 contra 1). */
 .clients__card-grid {
@@ -1249,6 +1262,14 @@ body {
 
 .clients__card--brand .clients__avatar {
 	background: rgba(255, 255, 255, 0.18);
+}
+
+/* Variante con foto real: el mismo cuadrado de 64px y el mismo radio que el
+   monograma, así que el pie de la tarjeta no se mueve. El `cover` la recorta
+   al cuadrado sin deformarla. */
+.clients__avatar--photo {
+	display: block;
+	object-fit: cover;
 }
 
 /* Remate de abajo: una línea con un cuadradito en cada punta. Es decorativo

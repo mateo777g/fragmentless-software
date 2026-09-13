@@ -7,3 +7,9 @@ main.py
 
 __pycache__/
 *.pyc
+
+# Notas internas - NO subir al repo
+# CLAUDE_LEEME.txt describe qué contienen los .py privados.
+# TERMINOS_BRIEF.txt son las indicaciones del dueño para los Términos.
+CLAUDE_LEEME.txt
+TERMINOS_BRIEF.txt

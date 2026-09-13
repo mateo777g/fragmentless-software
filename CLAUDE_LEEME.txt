@@ -43,6 +43,10 @@ Orden actual de la página, de arriba hacia abajo:
   SECCIÓN 2 - Fondo negro        -> id="gestion", clase .scroll-hero
                (lista de palabras)   (.scroll-hero__track / __pin / __words)
   SECCIÓN 3 - Panel blanco       -> .scroll-hero__surface
+               (los 3 planes)
+  SECCIÓN 4 - Clientes           -> id="clientes", clase .clients
+               (testimonios)
+  FOOTER - Negro, animado        -> clase .footer (VA FUERA del <main>)
 
 OJO con la numeración: la sección del fondo negro ANTES era la 1 y el
 panel blanco era la 2. Desde que se agregó la portada azul, todo corrió
@@ -256,6 +260,162 @@ Los tres botones "Elegir plan" apuntan a #contacto, igual que el CTA de
 la portada, así que cuando haya WhatsApp real hay que cambiar los cuatro.
 
 
+SECCIÓN 4 - CLIENTES (.clients)
+================================
+
+Última sección de la página, id="clientes" (o sea que el link "Clientes"
+del menú flotante YA salta a algún lado).
+
+FONDO: #f4f6f8, EL MISMO que el panel de planes de la sección 3. La
+maqueta original usaba blanco puro y así se hizo primero, pero contra el
+panel de arriba se veía un escalón raro justo en la costura; el usuario
+pidió igualarlos. Con el mismo gris las dos secciones leen como una sola
+superficie, y las tarjetas blancas (#ffffff) contrastan igual que las de
+planes. Si alguna vez se cambia, hay que cambiarlo TAMBIÉN en
+.clients__rule::before / ::after, que son los cuadraditos que tapan la
+línea del remate en las puntas.
+
+Es ESTÁTICA y HERMANA de .scroll-hero, igual que la portada azul: no
+tiene riel de scroll propio, no toca el track/pin/surface, y no puede
+desincronizar la matemática de las secciones 2 y 3. Verificado: deriva de
+la última palabra 0.00px en 1920/1440/1024/360 (0.40px en 390, que es el
+sub-píxel de siempre) y giro 30->0 idéntico.
+
+El diseño salió del componente "testimonial" de 21st.dev (React +
+framer-motion). Traducido a CSS/JS pelado, porque el proyecto no tiene
+build ni dependencias. El azul del original (blue-600) se cambió por el
+#1355e8 de marca, que fue pedido explícito.
+
+Layout - tres columnas, y esto es lo único delicado:
+- La columna del MEDIO son 3 tarjetas negras de alto natural, y es la que
+  MARCA EL ALTO de la fila.
+- Las columnas de los costados se reparten ese alto 7/3
+  (.clients__card--tall / --short), por eso quedan espejadas: blanca
+  grande + azul chica a la izquierda, azul chica + blanca grande a la
+  derecha.
+- Si le pones flex a las tarjetas negras se rompe esa relación.
+- Debajo de 900px pasa a una sola columna y el 7/3 se desactiva.
+
+Otras piezas:
+- .clients__card-grid -> la cuadrícula de las dos tarjetas blancas, con
+                         máscara elíptica que la desvanece hacia abajo.
+- .clients__quote     -> lleva `margin-top: auto`. ESO es lo que empuja la
+                         cita Y el pie al fondo de la tarjeta y deja la
+                         cuadrícula sola arriba, que es el efecto del
+                         diseño. No lo cambies por un padding.
+- .clients__avatar    -> MONOGRAMA (iniciales), no foto. El componente
+                         original hotlinkeaba retratos del CDN de
+                         21st.dev; poner caras de terceros en testimonios
+                         inventados era peor que un placeholder honesto.
+                         Cuando haya fotos reales, se reemplaza el <span>
+                         por un <img> del mismo tamaño y listo.
+- .clients__rule      -> el remate decorativo de abajo (la línea con un
+                         cuadradito en cada punta). Es absolute, no
+                         participa del layout.
+- .clients__title     -> va MÁS CHICO que .plans__title a propósito: en la
+                         maqueta el titular es de una sola línea, y a 3rem
+                         se parte en dos. Si cambias el texto por uno más
+                         largo, hay que volver a mirar ese font-size.
+
+ANIMACIÓN (la ola de entrada):
+Un IntersectionObserver pone .is-revealed cuando la sección entra en
+pantalla, y el CSS escalona las piezas con el --n que cada una trae
+inline. Se dispara UNA sola vez y el observer se desconecta.
+La clase .clients--animate (la que esconde las piezas) la agrega el JS, NO
+está en el HTML: así, sin JS o con prefers-reduced-motion, la sección se
+ve entera desde el principio en vez de quedar invisible para siempre. No
+le saques esa vuelta.
+El escalonado del original era de 400ms por pieza; con 7 tarjetas la
+última tardaba casi 3 segundos en aparecer, así que se apretó a 110ms.
+
+TESTIMONIOS: son de RELLENO, igual que los precios. Nombres, negocios y
+frases están inventados. Cambiarlos es editar el HTML de la sección, nada
+más — pero hay que cambiarlos antes de que la página sea pública.
+
+MENÚ: no hizo falta tocar updateMenuTheme(). La rama `light` se activa en
+cuanto el panel blanco pasa por arriba de la píldora y se queda activa de
+ahí para abajo, así que la sección 4 (también clara) hereda el tema
+correcto. Verificado: blue -> dark -> light -> light.
+
+
+FOOTER (.footer)
+=================
+
+Lo último de la página, después de la sección 4. Va FUERA del <main>
+(un footer de sitio no es contenido principal), pero sigue siendo
+HERMANO de .scroll-hero: no toca el track, ni el pin, ni el surface.
+
+FONDO: #030407, el negro de la sección 2 — NO el #111315 del body. Contra
+el gris claro de clientes el corte se lee como el final de la página. Si
+lo cambias, mirá también .footer__stripes: las rayas son blancas
+translúcidas y dependen de que el fondo sea oscuro.
+
+El diseño salió del componente "footer-section-1" (React + motion) de
+21st.dev. Traducido a CSS/JS pelado, igual que el menú y los testimonios,
+porque el proyecto no tiene build ni dependencias.
+
+Las piezas, de arriba hacia abajo:
+- .footer__logo    -> el ISOTIPO blanco, el cubo en reposo (assets/svg/
+                      blanco/fragmentless-white-frame35.svg, el mismo
+                      cuadro donde queda parada la animación de la
+                      portada). Va a #inicio.
+                      Acá va el CUBO, no el logotipo de letras: el
+                      logotipo (fragmentless-white-wordmark.svg) es de
+                      trazo tan fino que a este tamaño se empasta, se
+                      probó y se descartó.
+                      El SVG trae aire alrededor del hexágono, igual que
+                      en .intro__logo, así que la caja del <img> va por
+                      encima del cubo visible: 78px de alto de caja dan un
+                      cubo de 52x60 medido en captura (64px en móvil).
+                      Es un <img> suelto, no la animación de 36 cuadros:
+                      acá el cubo está quieto a propósito.
+- .footer__nav     -> los 6 links. Los cinco primeros usan los MISMOS
+                      anchors que el menú flotante (#inicio, #gestion,
+                      #licencias, #clientes, #contacto); "Términos" va a
+                      "#" porque todavía no hay página.
+                      OJO: #licencias y #contacto siguen sin existir como
+                      id en el HTML, igual que en el menú. Cuando se creen
+                      hay que revisar los dos lugares.
+- .footer__link    -> el hover del original: una píldora que crece desde
+                      el centro + scale 1.05. La píldora es un ::before
+                      con z-index: -1, y por eso el link lleva
+                      `isolation: isolate`. SIN eso el ::before se va
+                      detrás del fondo del footer y la píldora no se ve
+                      nunca (el <a> no crea contexto de apilado solo).
+- .footer__social  -> 6 iconos (Instagram, Facebook, WhatsApp, TikTok,
+                      YouTube, X). Hover: suben 3px y crecen.
+                      TODOS apuntan a "#": son de RELLENO hasta que
+                      existan las cuentas reales, igual que los precios y
+                      los testimonios.
+- .footer__stripes -> la banda de rayas diagonales que se desplaza sola.
+                      El paso del keyframe (200px) es múltiplo exacto del
+                      mosaico (background-size: 10px): por eso el loop no
+                      tiene costura. Si cambiás uno, cambiá el otro.
+                      En el original era un paneo de 20s que corría UNA
+                      vez al entrar; acá es infinito, que en un footer
+                      queda mejor. Se apaga con prefers-reduced-motion.
+- .footer__base    -> el copyright. El año va escrito en el HTML (2026) y
+                      el JS lo pisa con el real, así que sin JS igual se
+                      ve un año en vez de un hueco.
+
+ANIMACIÓN (la ola de entrada):
+Misma mecánica que la sección 4: un IntersectionObserver pone .is-revealed
+y el CSS escalona las piezas con el --n inline. La clase .footer--animate
+(la que esconde las piezas) la agrega el JS, NO está en el HTML: sin JS o
+con prefers-reduced-motion el footer se ve entero desde el principio en
+vez de quedar invisible para siempre. No le saques esa vuelta.
+La diferencia con clientes: acá las piezas suben DESDE ABAJO (+18px) y sin
+blur, que es lo que hacía el componente original y encaja con que el
+footer entre por el borde de abajo de la pantalla.
+
+MENÚ: updateMenuTheme() ahora chequea PRIMERO el footer (negro -> tema
+'dark') y después el panel blanco. El orden importa: gana la sección más
+baja que ya pasó la franja del menú. En la práctica casi nunca se dispara,
+porque el footer mide ~426px y en una ventana normal nunca llega a la
+altura de la píldora; queda puesto para cuando el footer crezca o en
+pantallas muy bajas (un teléfono acostado).
+
+
 MENÚ FLOTANTE (.menu) - reemplazó a la navbar
 ==============================================
 
@@ -326,10 +486,11 @@ Anclas que YA existen:
                 blanco; ninguno de los dos existe ya.)
    #gestion  -> Sección 2, el scroll de palabras. Lo usan el botón
                 "Ver cómo funciona" y el "Desliza" de la portada.
+   #clientes -> Sección 4, los testimonios. Lo usa el link "Clientes" del
+                menú flotante.
 
 Anclas que TODAVÍA NO existen (los links están puestos, pero no hay
 sección a la que saltar; no rompen nada, simplemente no hacen nada):
-   #clientes  -> link del menú flotante.
    #licencias -> link del menú flotante.
    #contacto  -> link "Contacto" del menú flotante, el CTA blanco de la
                  portada y los 3 botones "Elegir plan" de la sección 3.
@@ -361,8 +522,10 @@ midiendo posiciones reales. Lo que hay que comprobar:
 - que durante el giro NINGUNA palabra esté resaltada y que el resaltado
   vuelva solo al terminar (subir y bajar el scroll varias veces),
 - que las anclas #inicio y #gestion salten a la sección correcta,
-- que el menú flotante cambie de tema en las tres secciones (blue, dark,
-  light) y que abra/cierre con clic, con Escape y con clic afuera,
+- que el menú flotante cambie de tema en las cuatro secciones (blue, dark,
+  light, light) y que abra/cierre con clic, con Escape y con clic afuera,
+- que la sección 4 aparezca escalonada al entrar en pantalla y que las
+  columnas laterales queden espejadas 7/3 contra la columna negra,
 - probar en varios anchos: 1920, 1440, 1024, 390 y 360.
 
 Detalle de semántica: el único <h1> de la página es el de la portada

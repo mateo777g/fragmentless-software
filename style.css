@@ -1226,6 +1226,213 @@ body {
 	transition-delay: calc(var(--n, 0) * 110ms);
 }
 
+/* =========================================================================
+ * FOOTER (.footer) - cierra la página, después de la sección 4.
+ *
+ * Fondo #030407: EL MISMO negro de la sección 2, no el #111315 del body.
+ * Contra el gris claro de clientes el corte se lee como el final de la
+ * página. Si lo cambias, mira también .footer__stripes (las rayas son
+ * blancas translúcidas y dependen de que el fondo sea oscuro).
+ *
+ * Traducido del componente "footer-section-1" (React + motion) a CSS
+ * pelado, igual que el menú y los testimonios. Lo único que hace el JS es
+ * poner .is-revealed (la ola) y escribir el año.
+ *
+ * Estático y hermano de .scroll-hero: no toca el track, ni el pin, ni el
+ * surface. Ver CLAUDE_LEEME.txt.
+ * ========================================================================= */
+.footer {
+	position: relative;
+	padding: 72px 0 0;
+	background: #030407;
+	color: #f4f6f8;
+	overflow: hidden;
+}
+
+/* El <h2> que le da nombre accesible al footer; no se ve. */
+.footer__sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+.footer__inner {
+	/* Mismo ancho que .clients__inner, así el logo cae centrado con las
+	   tarjetas de arriba. */
+	width: min(100%, 1040px);
+	margin: 0 auto;
+	padding: 0 clamp(20px, 4vw, 40px) 56px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 38px;
+}
+
+.footer__logo {
+	display: block;
+	line-height: 0;
+}
+
+/* Acá va el ISOTIPO (el cubo), no el logotipo de letras: el logotipo es de
+   trazo tan fino que a este tamaño se empasta.
+   El SVG trae aire alrededor del hexágono (mismo caso que .intro__logo),
+   así que el alto del <img> queda bastante por encima del tamaño visible
+   del cubo: 78px de caja ~= 48px de cubo. */
+.footer__logo img {
+	width: auto;
+	height: 78px;
+	transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.footer__logo:hover img,
+.footer__logo:focus-visible img {
+	transform: scale(1.06);
+}
+
+.footer__nav {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 6px 14px;
+}
+
+/* El hover del original: una píldora que crece desde el centro y el texto
+   que pasa a blanco pleno. La píldora es ::before para no meter un <span>
+   extra en cada link. */
+.footer__link {
+	position: relative;
+	/* Sin esto, el ::before con z-index: -1 se iría DETRÁS del fondo del
+	   footer (el link no crea contexto de apilado por sí solo) y la píldora
+	   del hover no se vería nunca. */
+	isolation: isolate;
+	padding: 7px 14px;
+	color: rgba(244, 246, 248, 0.62);
+	font-size: 0.95rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: color 300ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.footer__link::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: 8px;
+	background: rgba(244, 246, 248, 0.1);
+	opacity: 0;
+	transform: scale(0.6);
+	transition: opacity 300ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.footer__link:hover,
+.footer__link:focus-visible {
+	color: #ffffff;
+	transform: scale(1.05);
+}
+
+.footer__link:hover::before,
+.footer__link:focus-visible::before {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.footer__link:active {
+	transform: scale(0.95);
+}
+
+.footer__social {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 18px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.footer__icon {
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	color: rgba(244, 246, 248, 0.72);
+	transition: color 240ms ease, transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.footer__icon svg {
+	width: 20px;
+	height: 20px;
+}
+
+.footer__icon:hover,
+.footer__icon:focus-visible {
+	color: #ffffff;
+	transform: translateY(-3px) scale(1.14);
+}
+
+/* Banda de rayas diagonales que se desplaza sola. El paso de la animación
+   (200px) es múltiplo exacto del mosaico (10px): por eso el loop no tiene
+   costura. Si cambias background-size, cambia también el keyframe. */
+.footer__stripes {
+	height: 48px;
+	border-top: 1px solid rgba(244, 246, 248, 0.12);
+	border-bottom: 1px solid rgba(244, 246, 248, 0.12);
+	background-image: repeating-linear-gradient(315deg, rgba(244, 246, 248, 0.16) 0 1px, transparent 0 50%);
+	background-size: 10px 10px;
+	animation: footer-stripes 20s linear infinite;
+}
+
+@keyframes footer-stripes {
+	to {
+		background-position: 200px 0;
+	}
+}
+
+.footer__base {
+	padding: 30px 20px 34px;
+	text-align: center;
+}
+
+.footer__copy {
+	margin: 0;
+	color: rgba(244, 246, 248, 0.45);
+	font-size: 0.82rem;
+}
+
+/* -------------------------------------------------------------------------
+ * Ola de entrada, misma mecánica que la sección 4: la clase .footer--animate
+ * la pone el JS, así que sin JS (o con prefers-reduced-motion) el footer se
+ * ve entero desde el principio en vez de quedar invisible para siempre.
+ *
+ * Acá las piezas suben DESDE ABAJO (+18px), al revés que en clientes: es lo
+ * que hacía el componente original y encaja con que el footer entre por el
+ * borde de abajo de la pantalla.
+ * ------------------------------------------------------------------------- */
+.footer--animate [data-reveal] {
+	opacity: 0;
+	transform: translateY(18px);
+}
+
+.footer--animate.is-revealed [data-reveal] {
+	opacity: 1;
+	transform: none;
+	transition: opacity 520ms ease, transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
+	transition-delay: calc(var(--n, 0) * 110ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.footer__stripes {
+		animation: none;
+	}
+}
+
 @media (max-width: 900px) {
 	.plans__grid {
 		grid-template-columns: 1fr;
@@ -1365,5 +1572,36 @@ body {
 
 	.clients__rule {
 		width: calc(100% - 32px);
+	}
+
+	/* Footer */
+	.footer {
+		padding-top: 56px;
+	}
+
+	.footer__inner {
+		gap: 30px;
+		padding-bottom: 44px;
+	}
+
+	.footer__logo img {
+		height: 64px;
+	}
+
+	.footer__nav {
+		gap: 4px 8px;
+	}
+
+	.footer__link {
+		font-size: 0.88rem;
+		padding: 6px 10px;
+	}
+
+	.footer__social {
+		gap: 10px;
+	}
+
+	.footer__stripes {
+		height: 40px;
 	}
 }

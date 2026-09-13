@@ -418,9 +418,13 @@ body {
 	   lista congelada en vez de empujarla. */
 	margin-top: -100svh;
 	display: grid;
-	height: 100svh;
+	/* min-height y NO height: en pantallas bajas o en móvil las tarjetas no
+	   caben en una pantalla y el panel tiene que poder crecer. Esto no
+	   desincroniza nada: la matemática del solape depende del margin-top
+	   negativo (que fija dónde EMPIEZA el panel), no de su alto. */
+	min-height: 100svh;
 	place-items: center;
-	padding: 120px 24px 72px;
+	padding: 118px 24px 64px;
 	background: #f4f6f8;
 	color: #111315;
 	border-radius: calc(1.25rem * (1 - var(--surface-progress))) calc(1.25rem * (1 - var(--surface-progress))) 0 0;
@@ -430,40 +434,256 @@ body {
 }
 
 .scroll-hero__surface-content {
-	width: min(100%, 760px);
+	/* Mismo ancho que la navbar (1040px), así las tarjetas quedan alineadas
+	   con ella. Antes era 760px, que alcanzaba para una sola línea de texto. */
+	width: min(100%, 1040px);
 	text-align: center;
 	opacity: var(--surface-text-progress);
 	transform: translateY(calc((1 - var(--surface-text-progress)) * 24px));
 	transition: opacity 120ms linear, transform 120ms linear;
 }
 
-.scroll-hero__surface-kicker {
-	margin: 0 0 22px;
-	color: #1355e8;
-	font-size: 0.76rem;
-	font-weight: 700;
-	letter-spacing: 0.2em;
-	text-transform: uppercase;
-}
-
-.scroll-hero__tagline {
+/* -------------------------------------------------------------------------
+ * SECCIÓN 3 - Planes.
+ * Vive DENTRO de .scroll-hero__surface-content, así que hereda tal cual el
+ * desvanecido de entrada (--surface-text-progress) que ya tenía el texto
+ * anterior. No define animación de scroll propia: si le agregas una, se va a
+ * pelear con ese fundido.
+ * ------------------------------------------------------------------------- */
+.plans__title {
 	margin: 0;
-	font-size: clamp(2rem, 5vw, 4.5rem);
+	font-size: clamp(1.9rem, 3.4vw, 3rem);
 	font-weight: 700;
-	letter-spacing: -0.05em;
+	letter-spacing: -0.045em;
 	line-height: 1.05;
 }
 
-.scroll-hero__tagline a {
+.plans__title span {
 	color: #1355e8;
-	text-decoration: none;
-	text-decoration-thickness: 0.08em;
-	text-underline-offset: 0.12em;
 }
 
-.scroll-hero__tagline a:hover,
-.scroll-hero__tagline a:focus-visible {
-	text-decoration: underline;
+.plans__subtitle {
+	margin: 14px auto 0;
+	max-width: 540px;
+	color: rgba(17, 19, 21, 0.6);
+	font-size: clamp(0.9rem, 1.2vw, 1rem);
+	line-height: 1.5;
+}
+
+/* Fila del switch mensual / anual. */
+.plans__billing {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	margin: 22px 0 30px;
+	padding: 8px 16px;
+	border: 1px solid rgba(17, 19, 21, 0.1);
+	border-radius: 999px;
+	background: #ffffff;
+	box-shadow: 0 6px 18px rgba(3, 4, 7, 0.05);
+}
+
+.plans__billing-label {
+	color: rgba(17, 19, 21, 0.45);
+	font-size: 0.85rem;
+	font-weight: 700;
+	transition: color 180ms ease;
+}
+
+.plans__billing-label.is-active {
+	color: #111315;
+}
+
+.plans__switch {
+	display: flex;
+	align-items: center;
+	width: 46px;
+	height: 26px;
+	padding: 3px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(17, 19, 21, 0.14);
+	cursor: pointer;
+	transition: background-color 200ms ease;
+}
+
+.plans__switch[aria-checked="true"] {
+	background: rgba(19, 85, 232, 0.22);
+}
+
+.plans__switch:focus-visible {
+	outline: 2px solid #1355e8;
+	outline-offset: 2px;
+}
+
+/* El círculo del switch va en azul de marca. */
+.plans__switch-thumb {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: #1355e8;
+	box-shadow: 0 2px 6px rgba(19, 85, 232, 0.45);
+	transition: transform 200ms ease;
+}
+
+.plans__switch[aria-checked="true"] .plans__switch-thumb {
+	/* 46 de ancho - 6 de padding - 20 del círculo = 20px de recorrido. */
+	transform: translateX(20px);
+}
+
+.plans__badge {
+	color: #1355e8;
+	font-size: 0.62rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.plans__grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	align-items: stretch;
+	gap: 16px;
+	text-align: left;
+}
+
+.plans__card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 26px 24px;
+	border: 1px solid rgba(17, 19, 21, 0.09);
+	border-radius: 18px;
+	background: #ffffff;
+	color: #111315;
+	box-shadow: 0 12px 30px rgba(3, 4, 7, 0.06);
+}
+
+/* Plan del centro: tarjeta negra y un poco más grande. */
+.plans__card--featured {
+	z-index: 1;
+	border-color: transparent;
+	background: #111315;
+	color: #ffffff;
+	transform: scale(1.04);
+	box-shadow: 0 22px 50px rgba(3, 4, 7, 0.3);
+}
+
+.plans__name {
+	margin: 0;
+	font-size: 1.05rem;
+	font-weight: 700;
+}
+
+.plans__desc {
+	margin: 5px 0 0;
+	color: rgba(17, 19, 21, 0.55);
+	font-size: 0.82rem;
+	line-height: 1.4;
+}
+
+.plans__price {
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+	margin: 22px 0 0;
+}
+
+.plans__currency {
+	color: rgba(17, 19, 21, 0.5);
+	font-size: 1.15rem;
+	font-weight: 700;
+}
+
+.plans__amount {
+	font-size: clamp(2.1rem, 3.6vw, 2.9rem);
+	font-weight: 700;
+	letter-spacing: -0.04em;
+	/* Números de ancho fijo: el conteo del precio no descuadra la línea. */
+	font-variant-numeric: tabular-nums;
+}
+
+.plans__period {
+	color: rgba(17, 19, 21, 0.55);
+	font-size: 0.82rem;
+}
+
+.plans__card--featured .plans__desc,
+.plans__card--featured .plans__currency,
+.plans__card--featured .plans__period {
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.plans__cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 46px;
+	margin: 22px 0 0;
+	border-radius: 12px;
+	background: #1355e8;
+	color: #ffffff;
+	font-size: 0.88rem;
+	font-weight: 700;
+	text-decoration: none;
+	box-shadow: 0 8px 20px rgba(19, 85, 232, 0.28);
+	transition: transform 180ms ease, filter 180ms ease;
+}
+
+.plans__cta:hover,
+.plans__cta:focus-visible {
+	transform: translateY(-2px);
+	filter: brightness(1.08);
+}
+
+.plans__features {
+	display: grid;
+	gap: 11px;
+	margin: 22px 0 0;
+	padding: 20px 0 0;
+	border-top: 1px solid rgba(17, 19, 21, 0.1);
+	list-style: none;
+	color: rgba(17, 19, 21, 0.7);
+	font-size: 0.84rem;
+	line-height: 1.35;
+}
+
+.plans__card--featured .plans__features {
+	border-top-color: rgba(255, 255, 255, 0.16);
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.plans__features li {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+/* El check va como máscara en vez de 15 SVG inline repetidos. */
+.plans__features li::before {
+	content: "";
+	width: 15px;
+	height: 15px;
+	flex-shrink: 0;
+	background: #1355e8;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 13 4 4 10-10'/%3E%3C/svg%3E") center / contain no-repeat;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 13 4 4 10-10'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Sobre la tarjeta negra el azul de marca queda muy apagado. */
+.plans__card--featured .plans__features li::before {
+	background: #8ab0ff;
+}
+
+@media (max-width: 900px) {
+	.plans__grid {
+		grid-template-columns: 1fr;
+		gap: 14px;
+	}
+
+	.plans__card--featured {
+		transform: none;
+	}
 }
 
 @media (max-width: 640px) {
@@ -538,6 +758,15 @@ body {
 
 	.scroll-hero__surface-content {
 		text-align: left;
+	}
+
+	.plans__subtitle {
+		margin-left: 0;
+	}
+
+	.plans__billing {
+		gap: 10px;
+		padding: 7px 14px;
 	}
 
 }

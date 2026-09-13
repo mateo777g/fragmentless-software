@@ -87,9 +87,92 @@
 
 			<!-- SECCIÓN 3 - Panel blanco que se solapa sobre la sección 2. -->
 			<div class="scroll-hero__surface">
+				<!--
+					Todo lo de los planes va DENTRO de .scroll-hero__surface-content,
+					así que aparece con el mismo desvanecido sutil de siempre (lo
+					maneja --surface-text-progress). No tiene animación propia.
+				-->
 				<div class="scroll-hero__surface-content">
-					<p class="scroll-hero__surface-kicker">Sección 3</p>
-					<p class="scroll-hero__tagline">Y yo te mostraré cómo<br><a href="#inicio">gestionar tu negocio.</a></p>
+					<h2 class="plans__title">Planes que crecen<br><span>con tu negocio.</span></h2>
+					<p class="plans__subtitle">Elige el plan que necesitas hoy. Puedes cambiarlo o cancelarlo cuando quieras.</p>
+
+					<div class="plans__billing">
+						<span class="plans__billing-label" data-billing="monthly">Mensual</span>
+
+						<button type="button" class="plans__switch" role="switch" aria-checked="true" aria-label="Cambiar entre facturación mensual y anual">
+							<span class="plans__switch-thumb" aria-hidden="true"></span>
+						</button>
+
+						<span class="plans__billing-label" data-billing="yearly">Anual</span>
+						<span class="plans__badge">Ahorra 20%</span>
+					</div>
+
+					<!-- data-monthly / data-yearly: los lee el JS para el conteo del precio. -->
+					<div class="plans__grid">
+						<article class="plans__card">
+							<h3 class="plans__name">Plan Básico</h3>
+							<p class="plans__desc">Ideal para negocios que empiezan</p>
+
+							<p class="plans__price">
+								<span class="plans__currency">$</span>
+								<span class="plans__amount" data-monthly="29" data-yearly="23">23</span>
+								<span class="plans__period">/mes</span>
+							</p>
+
+							<a class="plans__cta" href="#contacto">Elegir plan</a>
+
+							<ul class="plans__features">
+								<li>Panel unificado</li>
+								<li>Actualización de menú</li>
+								<li>Control de mesas</li>
+								<li>Registro de ventas</li>
+								<li>3 usuarios</li>
+							</ul>
+						</article>
+
+						<!-- Plan destacado: tarjeta negra, un poco más grande. -->
+						<article class="plans__card plans__card--featured">
+							<h3 class="plans__name">Plan Negocio</h3>
+							<p class="plans__desc">Para negocios que están creciendo</p>
+
+							<p class="plans__price">
+								<span class="plans__currency">$</span>
+								<span class="plans__amount" data-monthly="59" data-yearly="47">47</span>
+								<span class="plans__period">/mes</span>
+							</p>
+
+							<a class="plans__cta" href="#contacto">Elegir plan</a>
+
+							<ul class="plans__features">
+								<li>Todo lo del plan básico</li>
+								<li>Reportes con IA</li>
+								<li>Creación de contenido</li>
+								<li>Historial y respaldos</li>
+								<li>10 usuarios</li>
+							</ul>
+						</article>
+
+						<article class="plans__card">
+							<h3 class="plans__name">Plan Premium</h3>
+							<p class="plans__desc">Para operaciones con varias sucursales</p>
+
+							<p class="plans__price">
+								<span class="plans__currency">$</span>
+								<span class="plans__amount" data-monthly="99" data-yearly="79">79</span>
+								<span class="plans__period">/mes</span>
+							</p>
+
+							<a class="plans__cta" href="#contacto">Elegir plan</a>
+
+							<ul class="plans__features">
+								<li>Todo lo del plan negocio</li>
+								<li>Publicación en redes sociales</li>
+								<li>Integraciones a medida</li>
+								<li>Roles y permisos</li>
+								<li>Usuarios ilimitados</li>
+							</ul>
+						</article>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -173,6 +256,57 @@
 		window.addEventListener('resize', updateScrollHero);
 		reduceMotion.addEventListener('change', updateScrollHero);
 		updateScrollHero();
+
+		/* =====================================================================
+		 * SECCIÓN 3 - Planes (mensual / anual).
+		 * El switch cambia el precio con un conteo animado (el equivalente
+		 * casero de NumberFlow). Es independiente del scroll: no toca ni el
+		 * track, ni el pin, ni el surface, así que no puede desincronizar la
+		 * matemática de las secciones 2 y 3.
+		 * ===================================================================== */
+		const billingSwitch = document.querySelector('.plans__switch');
+		const billingLabels = document.querySelectorAll('.plans__billing-label');
+		const priceAmounts = document.querySelectorAll('.plans__amount');
+		const priceFrames = new WeakMap();
+
+		function countPriceTo(node, target) {
+			const from = Number(node.textContent) || target;
+			cancelAnimationFrame(priceFrames.get(node));
+
+			if (from === target || reduceMotion.matches) {
+				node.textContent = target;
+				return;
+			}
+
+			const started = performance.now();
+			const step = (now) => {
+				// easeOutCubic: arranca rápido y frena suave sobre el número final.
+				const progress = clamp01((now - started) / 420);
+				const eased = 1 - Math.pow(1 - progress, 3);
+				node.textContent = Math.round(from + (target - from) * eased);
+				if (progress < 1) priceFrames.set(node, requestAnimationFrame(step));
+			};
+
+			priceFrames.set(node, requestAnimationFrame(step));
+		}
+
+		function setBilling(yearly) {
+			billingSwitch.setAttribute('aria-checked', String(yearly));
+			billingLabels.forEach((label) => {
+				label.classList.toggle('is-active', (label.dataset.billing === 'yearly') === yearly);
+			});
+			priceAmounts.forEach((node) => {
+				countPriceTo(node, Number(yearly ? node.dataset.yearly : node.dataset.monthly));
+			});
+		}
+
+		if (billingSwitch) {
+			billingSwitch.addEventListener('click', () => {
+				setBilling(billingSwitch.getAttribute('aria-checked') !== 'true');
+			});
+			// Arranca en anual, que es el precio con descuento.
+			setBilling(true);
+		}
 	</script>
 
 </body>

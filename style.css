@@ -427,6 +427,20 @@ body {
 	display: block;
 }
 
+/* El JS pone .is-playable cuando ya precargó los 36 cuadros: recién ahí el
+   isotipo responde al clic, así que recién ahí se avisa que es clickeable. */
+.intro__logo.is-playable img {
+	cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	/* Sin animación no hay nada que re-disparar: el isotipo se queda quieto
+	   en el frame35 y deja de anunciarse como clickeable. */
+	.intro__logo.is-playable img {
+		cursor: default;
+	}
+}
+
 .intro__cta,
 .intro__ghost {
 	display: inline-flex;

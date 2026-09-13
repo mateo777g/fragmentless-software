@@ -447,6 +447,91 @@
 			// Arranca en anual, que es el precio con descuento.
 			setBilling(true);
 		}
+
+		/* =====================================================================
+		 * SECCIÓN 1 - Isotipo animado de la portada.
+		 * 36 cuadros (frame00 -> frame35) que se intercambian cambiando el src
+		 * del <img>. Corre una sola vuelta al cargar, queda fijo en el frame35
+		 * y sólo vuelve a correr con un clic.
+		 *
+		 * Va como <img> y no inline a propósito: los 36 SVG comparten el mismo
+		 * id="glass" para su gradiente, así que inyectados en el documento los
+		 * ids chocan y todos los cuadros terminan pintados con el gradiente del
+		 * primero. Cada <img> es un documento aparte y no tiene ese problema.
+		 *
+		 * Tampoco es un WebP/GIF animado: eso no se puede frenar después de una
+		 * vuelta ni re-disparar desde JS.
+		 * ===================================================================== */
+		const introLogo = document.querySelector('.intro__logo');
+		const introLogoImg = introLogo?.querySelector('img');
+		const LOGO_COUNT = 36;
+		const LOGO_REST = LOGO_COUNT - 1;   // frame35 = logo rearmado, en reposo
+		const LOGO_STEP_MS = 70;            // 36 x 70ms ~= 2.5s la vuelta entera
+
+		const logoSrc = (i) => `assets/svg/blanco/fragmentless-white-frame${String(i).padStart(2, '0')}.svg`;
+
+		if (introLogoImg) {
+			// Bandera de "ya está corriendo": mientras esté en true el clic se
+			// ignora, para que no se reinicie la vuelta a la mitad.
+			let logoPlaying = false;
+
+			function playLogo() {
+				if (logoPlaying || reduceMotion.matches) return;
+				logoPlaying = true;
+
+				let frame = 0;
+				let last = 0;
+				let owed = 0;
+				introLogoImg.src = logoSrc(0);
+
+				// requestAnimationFrame acumulando el tiempo real, no
+				// setInterval: así la vuelta dura lo mismo a 60 que a 144 Hz y
+				// no se desfasa si un tick llega tarde.
+				function step(now) {
+					if (last) owed += now - last;
+					last = now;
+
+					const before = frame;
+					while (owed >= LOGO_STEP_MS && frame < LOGO_REST) {
+						owed -= LOGO_STEP_MS;
+						frame += 1;
+					}
+					// Sólo se toca el src cuando el cuadro cambió de verdad: el
+					// rAF corre ~4 veces por cada cuadro de 70ms.
+					if (frame !== before) introLogoImg.src = logoSrc(frame);
+
+					if (frame < LOGO_REST) {
+						requestAnimationFrame(step);
+					} else {
+						logoPlaying = false;   // recién acá el clic vuelve a valer
+					}
+				}
+
+				requestAnimationFrame(step);
+			}
+
+			// Precarga de los 36 antes de la primera vuelta: sin esto el primer
+			// ciclo va a tirones mientras bajan los archivos. Las imágenes
+			// quedan guardadas en el array para que no las junte el recolector
+			// antes de que el navegador las cachee.
+			const logoCache = [];
+			const logoReady = [];
+			for (let i = 0; i < LOGO_COUNT; i += 1) {
+				const img = new Image();
+				img.src = logoSrc(i);
+				logoCache.push(img);
+				// decode() falla si el cuadro no carga; que uno falte no debe
+				// dejar el isotipo muerto, así que se traga el error.
+				logoReady.push(img.decode ? img.decode().catch(() => {}) : Promise.resolve());
+			}
+
+			Promise.all(logoReady).then(() => {
+				introLogo.classList.add('is-playable');
+				playLogo();
+			});
+
+			introLogo.addEventListener('click', playLogo);
+		}
 	</script>
 
 </body>

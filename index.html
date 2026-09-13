@@ -8,25 +8,31 @@
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<nav class="navbar">
-		<div class="navbar__inner">
-			<!-- Atajos: #inicio = sección 1 (portada azul), #gestion = sección 2 (scroll de palabras). -->
-			<a class="navbar__brand" href="#inicio">
-				<img class="navbar__logo" src="assets/fragmentless-blue-horizontal.svg" alt="Fragmentless">
-			</a>
+	<!--
+		MENÚ FLOTANTE (reemplazó a la navbar vieja).
+		Píldora fija arriba al centro. Cerrada muestra "Menú" + hamburguesa;
+		al abrirse se estira y un círculo baja desde arriba pintando el panel.
+		El color lo cambia el JS según la sección que tenga debajo
+		(data-theme = blue | dark | light). Ver CLAUDE_LEEME.txt.
+		Atajos: #inicio = sección 1 (portada azul), #gestion = sección 2.
+	-->
+	<nav class="menu" data-theme="blue" aria-label="Menú principal">
+		<div class="menu__shell">
+			<!-- El círculo que "moja" el panel al abrir. Va detrás del texto. -->
+			<span class="menu__circle" aria-hidden="true"></span>
 
-			<div class="navbar__links">
-				<a href="#inicio">Inicio</a>
-				<a href="#clientes">Clientes</a>
-				<a href="#licencias">Licencias</a>
-			</div>
+			<button type="button" class="menu__bar" aria-expanded="false" aria-controls="menu-items">
+				<span class="menu__label">Menú</span>
+				<span class="menu__icon" aria-hidden="true"><i></i><i></i></span>
+			</button>
 
-			<a class="navbar__action" href="#contacto" aria-label="Contacto">
-				<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M20.5 11.5a8.5 8.5 0 0 1-12.3 7.6L4 20l1-4a8.5 8.5 0 1 1 15.5-4.5Z" />
-					<path d="M8.7 9.8c.25-.6.5-.6.75-.6h.4c.15 0 .35 0 .5.35l.6 1.35c.1.2 0 .45-.1.55l-.4.5c-.1.15-.1.35 0 .5.25.5 1.25 1.6 2.2 1.95.2.1.35 0 .45-.1l.5-.5c.15-.2.35-.2.5-.1l1.3.65c.15.1.25.25.25.45 0 .65-.75 1.3-1.4 1.3-1.45 0-4.15-1.25-5.25-3.7-.4-.9-.4-1.85 0-2.5Z" fill="#ffffff" stroke="none" />
-				</svg>
-			</a>
+			<!-- Las letras las parte el JS en dos copias para el roll del hover. -->
+			<ul class="menu__items" id="menu-items">
+				<li><a class="menu__item" href="#inicio">Inicio</a></li>
+				<li><a class="menu__item" href="#clientes">Clientes</a></li>
+				<li><a class="menu__item" href="#licencias">Licencias</a></li>
+				<li><a class="menu__item" href="#contacto">Contacto</a></li>
+			</ul>
 		</div>
 	</nav>
 
@@ -190,6 +196,128 @@
 
 		const clamp01 = (value) => Math.min(Math.max(value, 0), 1);
 
+		/* =====================================================================
+		 * MENÚ FLOTANTE.
+		 * Tres cosas: abrir/cerrar la píldora, el roll de letras del hover, y
+		 * el tema de color según la sección que quede debajo.
+		 * No toca el track, ni el pin, ni el surface: no puede desincronizar
+		 * la matemática de las secciones 2 y 3.
+		 * ===================================================================== */
+		const menuRoot = document.querySelector('.menu');
+		const menuShell = menuRoot?.querySelector('.menu__shell');
+		const menuBar = menuRoot?.querySelector('.menu__bar');
+		const menuList = menuRoot?.querySelector('.menu__items');
+		const menuItems = menuRoot ? [...menuRoot.querySelectorAll('.menu__item')] : [];
+
+		// Parte el texto en letras duplicadas (una arriba y otra abajo) para que
+		// el hover pueda subir la columna. El aria-label deja la palabra entera
+		// para los lectores de pantalla, que si no leerían "IINNIICCIIOO".
+		function buildRollingText(link) {
+			const label = link.textContent.trim();
+			link.textContent = '';
+			link.setAttribute('aria-label', label);
+
+			[...label].forEach((char, index) => {
+				if (char === ' ') {
+					const space = document.createElement('span');
+					space.className = 'menu__space';
+					link.appendChild(space);
+					return;
+				}
+
+				const box = document.createElement('span');
+				box.className = 'menu__char';
+				box.style.setProperty('--c', index);
+
+				const roll = document.createElement('span');
+				roll.className = 'menu__roll';
+				roll.appendChild(Object.assign(document.createElement('span'), { textContent: char }));
+				roll.appendChild(Object.assign(document.createElement('span'), { textContent: char }));
+
+				box.appendChild(roll);
+				link.appendChild(box);
+			});
+		}
+
+		function setMenuOpen(open) {
+			menuRoot.classList.toggle('is-open', open);
+			menuBar.setAttribute('aria-expanded', String(open));
+			// Cerrado, los links no deben ser enfocables con Tab.
+			menuList.inert = !open;
+			// Alto medido en vez de fijo: si algún día se agrega o quita un link,
+			// la animación sigue cerrando justo.
+			menuShell.style.height = open ? `${menuBar.offsetHeight + menuList.offsetHeight}px` : '';
+		}
+
+		// Tema según lo que haya debajo de la píldora. Se mide con el rect real
+		// (no con la posición de layout), así que respeta el scale del panel
+		// blanco y el momento exacto en que tapa la franja del menú.
+		function updateMenuTheme() {
+			const probe = 44;
+			let theme = 'blue';
+
+			if (scrollSurface && scrollSurface.getBoundingClientRect().top <= probe) {
+				theme = 'light';
+			} else if (scrollHero && scrollHero.getBoundingClientRect().top <= probe) {
+				theme = 'dark';
+			}
+
+			if (menuRoot.dataset.theme !== theme) menuRoot.dataset.theme = theme;
+		}
+
+		if (menuRoot) {
+			menuItems.forEach((link, index) => {
+				link.style.setProperty('--i', index);
+				buildRollingText(link);
+
+				// Bloqueo del roll: si el mouse sale a mitad de la animación, la
+				// salida se retiene hasta que termina. Si no, la columna pega un
+				// salto feo al volver a su lugar.
+				const lock = 30 * link.querySelectorAll('.menu__char').length + 300;
+				let timer = 0;
+				let pendingLeave = false;
+
+				link.addEventListener('mouseenter', () => {
+					pendingLeave = false;
+					if (link.classList.contains('is-rolling')) return;
+					link.classList.add('is-rolling');
+					timer = window.setTimeout(() => {
+						timer = 0;
+						if (pendingLeave) {
+							pendingLeave = false;
+							link.classList.remove('is-rolling');
+						}
+					}, lock);
+				});
+
+				link.addEventListener('mouseleave', () => {
+					if (timer) pendingLeave = true;
+					else link.classList.remove('is-rolling');
+				});
+
+				link.addEventListener('click', () => setMenuOpen(false));
+			});
+
+			menuBar.addEventListener('click', () => {
+				setMenuOpen(!menuRoot.classList.contains('is-open'));
+			});
+
+			document.addEventListener('mousedown', (event) => {
+				if (menuRoot.classList.contains('is-open') && !menuRoot.contains(event.target)) {
+					setMenuOpen(false);
+				}
+			});
+
+			document.addEventListener('keydown', (event) => {
+				if (event.key === 'Escape' && menuRoot.classList.contains('is-open')) {
+					setMenuOpen(false);
+					menuBar.focus();
+				}
+			});
+
+			setMenuOpen(false);
+		}
+
 		// Suma la cadena de offsetTop, así que la geometría sigue siendo
 		// correcta aunque arriba haya secciones estáticas (la portada azul).
 		// offsetTop tampoco se ve afectado por transform, o sea que no depende
@@ -235,6 +363,7 @@
 
 			const viewport = window.innerHeight;
 			updateSectionTilt(viewport);
+			if (menuRoot) updateMenuTheme();
 			const words = scrollWords.children;
 			// El track mide 2 pantallas (la fijada + el solape) más el recorrido de las palabras.
 			const wordDistance = Math.max(scrollTrack.offsetHeight - scrollPin.offsetHeight * 2, 1);

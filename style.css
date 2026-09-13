@@ -14,96 +14,295 @@ body {
 	font-family: Arial, sans-serif;
 }
 
-.navbar {
+/* =========================================================================
+ * MENÚ FLOTANTE (.menu) - reemplaza a la navbar vieja.
+ *
+ * Píldora fija arriba al centro. Cerrada: "Menú" + hamburguesa. Abierta: se
+ * estira y un círculo baja desde arriba pintando el panel con los links.
+ * Todo es CSS: el JS solo pone/quita .is-open, el alto abierto y el tema.
+ *
+ * Los 4 colores del menú son variables y cambian según la sección que tenga
+ * debajo (data-theme, lo escribe el JS). Cambiar el tema no anima el custom
+ * property en sí, pero SÍ anima el background-color / color que lo usa, que
+ * es lo que se ve.
+ *   --menu-bg        fondo de la píldora cerrada
+ *   --menu-fg        texto/hamburguesa sobre esa píldora
+ *   --menu-panel     color del círculo que entra al abrir
+ *   --menu-panel-fg  texto sobre el panel abierto
+ *
+ * Cada tema usa para el panel un color que NO usa su píldora, así el morph
+ * se nota. Los tres contrastan contra el fondo de su sección:
+ *   blue  -> sobre la portada azul   (sección 1)
+ *   dark  -> sobre el fondo negro    (sección 2)
+ *   light -> sobre el panel blanco   (sección 3)
+ * ========================================================================= */
+.menu {
+	--menu-ease: cubic-bezier(0.22, 1, 0.36, 1);
+	--menu-bg: #ffffff;
+	--menu-fg: #1355e8;
+	--menu-panel: #111315;
+	--menu-panel-fg: #f4f6f8;
+	/* Alto de la barra cerrada. Lo usan la píldora y el propio botón. */
+	--menu-bar: 48px;
 	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 10;
-	display: flex;
-	justify-content: center;
-	width: 100%;
-	padding: 22px 20px 0;
+	top: 20px;
+	left: 50%;
+	/* Por encima de todo: la sección 3 llega a z-index 3. */
+	z-index: 100;
+	/* El contenedor no debe tapar clics de la página: solo la píldora los recibe. */
 	pointer-events: none;
+	animation: menu-in 520ms var(--menu-ease) both;
 }
 
-.navbar__inner {
+@keyframes menu-in {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -16px);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+}
+
+.menu[data-theme="blue"] {
+	--menu-bg: #ffffff;
+	--menu-fg: #1355e8;
+	--menu-panel: #111315;
+	--menu-panel-fg: #f4f6f8;
+}
+
+.menu[data-theme="dark"] {
+	--menu-bg: #1355e8;
+	--menu-fg: #ffffff;
+	--menu-panel: #f4f6f8;
+	--menu-panel-fg: #111315;
+}
+
+.menu[data-theme="light"] {
+	--menu-bg: #111315;
+	--menu-fg: #f4f6f8;
+	--menu-panel: #1355e8;
+	--menu-panel-fg: #ffffff;
+}
+
+.menu__shell {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 156px;
+	height: var(--menu-bar);
+	overflow: hidden;
+	border-radius: 999px;
+	background: var(--menu-bg);
+	box-shadow: 0 10px 30px rgba(3, 4, 7, 0.22);
+	pointer-events: auto;
+	transition:
+		width 800ms var(--menu-ease),
+		height 800ms var(--menu-ease),
+		border-radius 800ms var(--menu-ease),
+		transform 250ms var(--menu-ease),
+		background-color 400ms ease;
+}
+
+.menu:not(.is-open) .menu__shell:hover {
+	transform: scale(1.05);
+}
+
+.menu.is-open .menu__shell {
+	width: 280px;
+	border-radius: 30px;
+}
+
+/*
+ * El círculo mide 200% del alto de la píldora y cae desde arriba. Cerrado su
+ * borde inferior queda justo en el tope (top: -200% = invisible); abierto baja
+ * hasta -20% y cubre todo el panel. Es el mismo truco del diseño original,
+ * espejado porque acá el menú vive arriba y no abajo.
+ */
+.menu__circle {
+	position: absolute;
+	top: -200%;
+	left: 50%;
+	z-index: 0;
+	width: 200%;
+	height: 200%;
+	border-radius: 50%;
+	background: var(--menu-panel);
+	transform: translateX(-50%);
+	transition: top 800ms var(--menu-ease), background-color 400ms ease;
+}
+
+.menu.is-open .menu__circle {
+	top: -20%;
+	transition-delay: 100ms, 0ms;
+}
+
+.menu__bar {
+	position: relative;
+	z-index: 1;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 36px;
+	flex-shrink: 0;
 	width: 100%;
-	max-width: 1040px;
-	min-height: 68px;
-	padding: 12px 30px;
-	pointer-events: auto;
-	border: 1px solid rgba(17, 19, 21, 0.12);
-	border-radius: 999px;
-	background: rgba(248, 250, 252, 0.92);
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
-	backdrop-filter: blur(10px);
-	-webkit-backdrop-filter: blur(10px);
+	height: var(--menu-bar);
+	padding: 0 20px;
+	border: 0;
+	/* Hereda el radio de la píldora para que el anillo de foco salga redondo
+	   y no un rectángulo asomando por los costados. */
+	border-radius: inherit;
+	background: none;
+	color: var(--menu-fg);
+	font-family: inherit;
+	font-size: 0.95rem;
+	font-weight: 700;
+	line-height: 1;
+	cursor: pointer;
+	transition: color 300ms ease, padding 800ms var(--menu-ease);
 }
 
-.navbar__brand {
-	display: flex;
-	align-items: center;
-	white-space: nowrap;
+.menu.is-open .menu__bar {
+	padding: 0 24px;
+	color: var(--menu-panel-fg);
 }
 
-.navbar__logo {
-	width: 164px;
-	height: auto;
-	flex-shrink: 0;
-	object-fit: contain;
+.menu__bar:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: -5px;
 }
 
-.navbar__links {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin: 0 auto;
-}
-
-.navbar a {
-	color: #1b1f24;
-	text-decoration: none;
-}
-
-.navbar__links a {
-	display: inline-block;
-	padding: 8px 14px 7px;
-	font-size: 0.9rem;
-	color: rgba(27, 31, 36, 0.68);
-	transition: color 180ms ease;
-}
-
-.navbar__links a:hover,
-.navbar__links a:focus-visible {
-	color: #1355e8;
-}
-
-.navbar__action {
+.menu__icon {
+	position: relative;
 	display: grid;
-	width: 38px;
-	height: 38px;
+	width: 24px;
+	height: 24px;
 	place-items: center;
+}
+
+.menu__icon i {
+	position: absolute;
+	width: 18px;
+	height: 2px;
+	border-radius: 999px;
+	background: currentColor;
+	transition: transform 400ms var(--menu-ease), background-color 300ms ease;
+}
+
+.menu__icon i:first-child {
+	transform: translateY(-3px);
+}
+
+.menu__icon i:last-child {
+	transform: translateY(3px);
+}
+
+.menu.is-open .menu__icon i:first-child {
+	transform: rotate(45deg);
+}
+
+.menu.is-open .menu__icon i:last-child {
+	transform: rotate(-45deg);
+}
+
+.menu__items {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	flex-shrink: 0;
-	border-radius: 50%;
-	background: #1355e8;
-	color: #ffffff;
-	box-shadow: 0 4px 12px rgba(19, 85, 232, 0.35);
-	transition: filter 180ms ease, transform 180ms ease;
+	gap: 16px;
+	margin: 0;
+	padding: 4px 24px 26px;
+	list-style: none;
+	visibility: hidden;
+	transition: visibility 0s linear 400ms;
 }
 
-.navbar__action svg {
-	width: 19px;
-	height: 19px;
+.menu.is-open .menu__items {
+	visibility: visible;
+	transition-delay: 0s;
 }
 
-.navbar__action:hover,
-.navbar__action:focus-visible {
-	filter: brightness(0.94);
-	transform: scale(1.06);
+/* Cada link entra escalonado detrás del círculo (--i lo pone el JS). */
+.menu__item {
+	display: flex;
+	height: 1em;
+	overflow: hidden;
+	color: var(--menu-panel-fg);
+	font-size: 1.45rem;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	line-height: 1;
+	text-transform: uppercase;
+	text-decoration: none;
+	opacity: 0;
+	transition: opacity 400ms ease, color 300ms ease;
+}
+
+.menu.is-open .menu__item {
+	opacity: 1;
+	transition-delay: calc(360ms + var(--i, 0) * 80ms), 0s;
+}
+
+/*
+ * Roll del hover: cada letra es una columna con la letra duplicada, y al
+ * pasar el mouse la columna sube 50% con un retardo por letra. Al salir
+ * vuelve de golpe (transition 0ms) en vez de desandar la animación; el JS
+ * retiene la salida hasta que el roll termina para que no corte a mitad.
+ */
+.menu__char {
+	display: block;
+	height: 1em;
+	overflow: hidden;
+}
+
+.menu__roll {
+	display: flex;
+	flex-direction: column;
+	transform: translateY(0);
+	transition: transform 0ms;
+}
+
+.menu__roll span {
+	display: block;
+	height: 1em;
+	line-height: 1em;
+}
+
+.menu__item.is-rolling .menu__roll {
+	transform: translateY(-50%);
+	transition: transform 800ms var(--menu-ease);
+	transition-delay: calc(var(--c, 0) * 30ms);
+}
+
+.menu__space {
+	display: block;
+	width: 0.3em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.menu {
+		animation: none;
+	}
+
+	.menu__shell,
+	.menu__circle,
+	.menu__bar,
+	.menu__icon i,
+	.menu__item {
+		transition-duration: 1ms;
+	}
+
+	.menu.is-open .menu__item {
+		transition-delay: 0s;
+	}
+
+	.menu__item.is-rolling .menu__roll {
+		transition: none;
+		transform: none;
+	}
 }
 
 /* =========================================================================
@@ -434,8 +633,9 @@ body {
 }
 
 .scroll-hero__surface-content {
-	/* Mismo ancho que la navbar (1040px), así las tarjetas quedan alineadas
-	   con ella. Antes era 760px, que alcanzaba para una sola línea de texto. */
+	/* 1040px: era el ancho de la navbar vieja. La navbar ya no existe, pero
+	   el valor se dejó porque a las tarjetas les queda bien. Antes era 760px,
+	   que alcanzaba para una sola línea de texto. */
 	width: min(100%, 1040px);
 	text-align: center;
 	opacity: var(--surface-text-progress);
@@ -687,27 +887,25 @@ body {
 }
 
 @media (max-width: 640px) {
-	.navbar {
-		padding: 16px 16px 0;
+	.menu {
+		--menu-bar: 44px;
+		top: 16px;
 	}
 
-	.navbar__inner {
-		gap: 14px;
-		min-height: 58px;
-		padding: 10px 18px;
+	.menu__shell {
+		width: 142px;
 	}
 
-	.navbar__links {
-		display: none;
+	.menu.is-open .menu__shell {
+		width: min(280px, calc(100vw - 32px));
 	}
 
-	.navbar__logo {
-		width: 132px;
+	.menu__bar {
+		font-size: 0.88rem;
 	}
 
-	.navbar__action {
-		width: 34px;
-		height: 34px;
+	.menu__item {
+		font-size: 1.3rem;
 	}
 
 	/* Sección 1 */

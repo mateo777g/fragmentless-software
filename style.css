@@ -1593,6 +1593,14 @@ body {
 	transform: scale(0.95);
 }
 
+/* Rótulo "Fragmentless Social" del pie. Nace OCULTO: en escritorio el pie
+   va centrado y sin rótulo, y lo enciende el @media de 640px. Es la única
+   regla de base que agrega el footer de móvil, y no cambia nada de lo que
+   ya se veía en PC. */
+.footer__social-title {
+	display: none;
+}
+
 .footer__social {
 	display: flex;
 	flex-wrap: wrap;
@@ -1891,54 +1899,291 @@ body {
 		bottom: 28px;
 	}
 
-	/* Secciones 2 y 3 */
+	/* =====================================================================
+	 * SECCIÓN 2 EN MÓVIL - Apilada y centrada, al revés que en PC (donde
+	 * "Tú podrás" y la lista van lado a lado, en una fila).
+	 *
+	 *   · "Tú podrás" se sale del flujo y se clava arriba del pin: queda
+	 *     quieto durante todo el recorrido.
+	 *   · La lista se queda sola en el flujo, así que su primera línea
+	 *     sigue cayendo exactamente sobre la banda de resaltado
+	 *     (el padding-top de siempre) y el JS no se entera del cambio:
+	 *     sigue moviendo SOLO el <ul> con --shift.
+	 *
+	 * Con el ancho entero para la lista, cada frase entra en UNA línea,
+	 * que es de lo que se trata el apilado.
+	 * ===================================================================== */
+	.scroll-hero {
+		/* La banda baja de 38vh a 46vh. No es estético: es el colchón que
+		   separa a "Tú podrás" de las palabras YA pasadas. Al final del
+		   recorrido la lista subió 5 líneas, y con 38vh la primera frase
+		   terminaba encima del "Tú podrás". Este --start no toca la
+		   matemática del solape con la sección 3 (esa depende del track,
+		   el pin y el margin-top del surface, no de la banda). */
+		--start: 46vh;
+	}
+
+	/* block y no flex: el lead sale del flujo y la lista se queda sola. */
 	.scroll-hero__word-layout {
-		align-items: flex-start;
-		justify-content: flex-start;
+		display: block;
 		padding: calc(var(--start) - 0.5lh) 20px 0;
-		font-size: clamp(1.3rem, 6.4vw, 2.4rem);
+		text-align: center;
+		font-size: clamp(1.45rem, 7.2vw, 2.4rem);
+	}
+
+	/* Absoluto contra el __word-layout, que arranca en el tope del pin.
+	   Nada de position: fixed: el pin ya está fijado, y un fixed encima se
+	   quedaría pegado también fuera de la sección.
+
+	   El top NO es un número a ojo: es el punto donde la lista TERMINA el
+	   recorrido, menos el alto del propio lead y un respiro. O sea, el
+	   lead queda lo más abajo posible sin que la primera frase se le
+	   monte encima al final del scroll:
+
+	     final de la lista = var(--start) - 0.5lh - (--count - 1) * 1lh
+	     lead              = ese punto - 1lh (su alto) - 0.6lh (respiro)
+
+	   que sumado da el (--count + 1.1) de abajo. Al depender de --start,
+	   de --count y del alto de línea, se recoloca solo en cualquier
+	   pantalla y si algún día se agrega o quita una frase de la lista. */
+	.scroll-hero__lead {
+		position: absolute;
+		top: calc(var(--start) - (var(--count) + 1.1) * 1lh);
+		left: 20px;
+		right: 20px;
+		white-space: normal;
 	}
 
 	.scroll-hero__words {
 		min-width: 0;
 	}
 
-	.scroll-hero__lead {
-		white-space: normal;
-	}
-
+	/* =====================================================================
+	 * SECCIÓN 3 EN MÓVIL - Los 3 planes dejan de ir apilados y pasan a un
+	 * CARRUSEL horizontal: se desliza a la izquierda para el Básico y a la
+	 * derecha para el Premium, y arranca centrado en el Negocio (eso último
+	 * lo pone el JS, acá el CSS solo arma el riel).
+	 *
+	 * Con una sola tarjeta a la vista la sección entra en UNA pantalla, que
+	 * es lo que la empareja con la 1 y la 2. Por eso los paddings de acá
+	 * abajo están apretados: son el presupuesto de alto, no un capricho.
+	 * Si algún día se agrega una función más a la lista, revisa que siga
+	 * cabiendo (o baja el padding del __stage).
+	 * ===================================================================== */
 	.scroll-hero__surface {
 		padding: 0 20px;
 	}
 
+	/* minmax(0, 1fr) y no la columna `auto` implícita: una columna auto no
+	   puede achicarse por debajo del min-content de su contenido, y el riel
+	   de tarjetas de abajo mide (a lo ancho) las 3 tarjetas juntas. Sin
+	   esto la columna crece a ~650px, el contenido se desborda de la
+	   pantalla y el 100% de las tarjetas resuelve contra ese ancho inflado.
+	   Con el minmax(0, ...) la columna se queda en el ancho de la ventana y
+	   el desborde se lo come el scroll horizontal del riel, que es el que
+	   tiene que comérselo. */
 	.scroll-hero__surface-stage {
-		padding: 100px 0 60px;
+		grid-template-columns: minmax(0, 1fr);
+		/* Todo el ritmo vertical de la sección va en clamps de svh: en un
+		   teléfono alto respira, y en uno bajo se comprime solo en vez de
+		   empujar la tarjeta fuera de la pantalla. */
+		padding: clamp(72px, 10svh, 88px) 0 clamp(16px, 2.6svh, 24px);
 	}
 
+	/* Todo centrado, al revés que en PC (donde el bloque de texto va a la
+	   izquierda). El text-align: center ya viene del base; acá solo se
+	   quita el left que tenía el móvil. */
 	.scroll-hero__surface-content {
-		text-align: left;
+		text-align: center;
+	}
+
+	.plans__title {
+		font-size: clamp(1.8rem, 7.8vw, 2.5rem);
 	}
 
 	.plans__subtitle {
-		margin-left: 0;
+		max-width: 34ch;
+		margin: clamp(8px, 1.4svh, 14px) auto 0;
+		font-size: 0.92rem;
 	}
 
 	.plans__billing {
 		gap: 10px;
+		margin: clamp(14px, 2.2svh, 20px) 0 clamp(16px, 2.6svh, 24px);
 		padding: 7px 14px;
 	}
 
-	/* Sección 4 */
-	.clients {
-		padding: 60px 20px 80px;
+	/*
+	 * EL RIEL. Se sale de los 20px de padding del panel (margin negativo) y
+	 * se los devuelve como padding propio: así la tarjeta queda centrada con
+	 * su margen de siempre PERO las vecinas asoman pegadas al borde de la
+	 * pantalla, que es la pista de que hay más planes al lado.
+	 *
+	 * overscroll-behavior-x: contain -> el swipe horizontal muere acá y no
+	 * se lo lleva la página (en iOS, el "atrás" por gesto).
+	 */
+	.plans__grid {
+		display: flex;
+		gap: 12px;
+		/* +40 = los 20px de padding que el panel tiene a cada lado. */
+		width: calc(100% + 40px);
+		margin-inline: -20px;
+		padding-inline: 26px;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		overscroll-behavior-x: contain;
+		text-align: center;
+		scrollbar-width: none;
 	}
 
-	.clients__head {
+	.plans__grid::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* 0 0 100% = el ancho visible MENOS el padding-inline del riel, o sea
+	   una tarjeta por pantalla. El snap al centro las clava una por una. */
+	.plans__card {
+		flex: 0 0 100%;
+		scroll-snap-align: center;
+		padding: clamp(18px, 2.6svh, 24px) 20px;
+	}
+
+	.plans__name {
+		font-size: 1.2rem;
+	}
+
+	.plans__desc {
+		font-size: 0.88rem;
+	}
+
+	/* El precio es flex, así que centrarlo no es text-align sino justify. */
+	.plans__price {
+		justify-content: center;
+		margin-top: clamp(12px, 2svh, 18px);
+	}
+
+	.plans__amount {
+		font-size: 2.4rem;
+	}
+
+	.plans__currency-code {
+		font-size: 1rem;
+	}
+
+	.plans__cta {
+		min-height: clamp(44px, 5.6svh, 48px);
+		margin-top: clamp(12px, 2svh, 18px);
+		font-size: 0.95rem;
+	}
+
+	/* El ícono del precio anual sigue el padding nuevo de la tarjeta. */
+	.plans__annual-info {
+		top: clamp(18px, 2.6svh, 24px);
+		right: 20px;
+	}
+
+	/*
+	 * La lista se centra COMO BLOQUE (fit-content + auto), no frase por
+	 * frase: con text-align: center cada palomita quedaría a distinta
+	 * altura horizontal y la columna de íconos se vería en zigzag. Así el
+	 * bloque va al medio y las filas siguen alineadas entre ellas.
+	 */
+	.plans__features {
+		width: fit-content;
+		max-width: 100%;
+		margin: clamp(10px, 1.8svh, 14px) auto 0;
+		padding-top: clamp(12px, 2svh, 16px);
+		gap: clamp(6px, 1.1svh, 8px);
+		font-size: 0.88rem;
 		text-align: left;
 	}
 
+	/* =====================================================================
+	 * SECCIÓN 4 EN MÓVIL - Los comentarios se quedan PLANOS, apilados uno
+	 * debajo del otro como siempre (nada de carrusel: eso es de la sección
+	 * 3). Lo que cambia acá es el encuadre, para que la sección mida lo
+	 * mismo que las otras vistas:
+	 *
+	 *   · el contenido baja (la píldora del menú ocupa de 16px a 60px y el
+	 *     titular le quedaba pegado). Mismo padding que el __stage de la
+	 *     sección 3: si tocas uno, toca el otro;
+	 *   · se ven 3 testimonios y no 7;
+	 *   · la sección mide una pantalla y las 3 tarjetas se reparten el alto
+	 *     que sobra.
+	 * ===================================================================== */
+	.clients {
+		/* Columna flexible para que la grilla se quede con el alto que sobra
+		   entre el titular y el remate de abajo. */
+		display: flex;
+		flex-direction: column;
+		min-height: 100svh;
+		padding: clamp(72px, 10svh, 88px) 20px 86px;
+	}
+
+	.clients__inner {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		/* Sin esto un hijo flex no puede achicarse por debajo de su
+		   contenido y la grilla se pasaría de la pantalla. */
+		min-height: 0;
+	}
+
+	.clients__head {
+		text-align: center;
+	}
+
+	.clients__title {
+		font-size: clamp(1.8rem, 7.8vw, 2.5rem);
+	}
+
 	.clients__subtitle {
-		margin-left: 0;
+		max-width: 34ch;
+		margin: clamp(8px, 1.4svh, 14px) auto 0;
+		font-size: 0.92rem;
+	}
+
+	/*
+	 * La grilla se come el alto sobrante (flex: 1). Como sus filas son de
+	 * alto automático, el align-content: stretch de serie reparte ese
+	 * sobrante ENTRE LAS TRES por igual: cada tarjeta conserva el alto que
+	 * le pide su contenido y crece desde ahí, así que el texto nunca queda
+	 * apretado ni recortado.
+	 */
+	.clients__grid {
+		flex: 1;
+		min-height: 0;
+		margin-top: clamp(18px, 3svh, 28px);
+	}
+
+	/*
+	 * Las columnas dejan de ser cajas y sus tarjetas pasan a ser hijas
+	 * directas de la grilla (en PC siguen siendo 3 columnas de verdad).
+	 * Hace falta para el reparto de alto de arriba: si las tarjetas
+	 * quedaran dentro de la columna, la que crecería sería la COLUMNA y la
+	 * tarjeta se quedaría chica con un hueco debajo.
+	 */
+	.clients__col {
+		display: contents;
+	}
+
+	/*
+	 * SOLO 3 TESTIMONIOS en móvil, uno de cada color. Las otras 4 son
+	 * relleno: en una pantalla no aportan y alargan la sección. En PC
+	 * siguen estando las 7. Si algún día hay testimonios reales, esto es
+	 * lo que hay que revisar.
+	 */
+	.clients__col:nth-child(2) .clients__card:nth-child(n + 2),
+	.clients__col:nth-child(3) .clients__card {
+		display: none;
+	}
+
+	/* El piso de 184px de las negras vacías es de PC, donde tres de ellas
+	   marcan el alto de la fila. Acá abajo son un piso a secas, y en una
+	   pantalla baja es lo primero que empuja la sección fuera de la
+	   ventana. Con el clamp se achican solas cuando no hay alto. */
+	.clients__card--ink.clients__card--empty {
+		min-height: clamp(120px, 20svh, 184px);
 	}
 
 	.clients__avatar {
@@ -1951,31 +2196,121 @@ body {
 		width: calc(100% - 32px);
 	}
 
-	/* Footer */
+	/* =====================================================================
+	 * FOOTER EN MÓVIL - Los atajos dejan de ser una fila de píldoras y se
+	 * agrupan en una CAJITA: una fila por atajo, separadas por líneas, con
+	 * la flecha a la derecha. Debajo, el rótulo de redes y los dos iconos
+	 * más grandes.
+	 *
+	 * El isotipo de arriba no va. La banda de rayas y el © de abajo quedan
+	 * EXACTAMENTE como estaban: no se tocan.
+	 * ===================================================================== */
 	.footer {
 		padding-top: 56px;
 	}
 
+	/* stretch y no center: la cajita tiene que ocupar todo el ancho. */
 	.footer__inner {
-		gap: 30px;
+		align-items: stretch;
+		gap: 24px;
 		padding-bottom: 44px;
 	}
 
-	.footer__logo img {
-		height: 64px;
+	/* Fuera el isotipo: la cajita ya abre el pie y el cubo la empujaba
+	   media pantalla hacia abajo. */
+	.footer__logo {
+		display: none;
 	}
 
+	/* LA CAJITA. El overflow: hidden es lo que hace que las filas de las
+	   puntas queden recortadas por el borde redondeado. */
 	.footer__nav {
-		gap: 4px 8px;
+		flex-direction: column;
+		flex-wrap: nowrap;
+		gap: 0;
+		border: 1px solid rgba(244, 246, 248, 0.14);
+		border-radius: 14px;
+		overflow: hidden;
 	}
 
 	.footer__link {
-		font-size: 0.88rem;
-		padding: 6px 10px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 15px 18px;
+		color: rgba(244, 246, 248, 0.92);
+		font-size: 0.92rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
 	}
 
+	/* La línea va entre filas, no en cada una: así no se dibuja uno doble
+	   contra el borde de la caja. */
+	.footer__link + .footer__link {
+		border-top: 1px solid rgba(244, 246, 248, 0.12);
+	}
+
+	/* La flecha: un cuadrado al que solo se le pintan dos lados y se gira
+	   45°. Va en ::after porque el ::before ya es la píldora del hover. */
+	.footer__link::after {
+		content: "";
+		width: 7px;
+		height: 7px;
+		border-right: 2px solid rgba(244, 246, 248, 0.4);
+		border-bottom: 2px solid rgba(244, 246, 248, 0.4);
+		transform: rotate(-45deg);
+	}
+
+	/* La píldora del hover pasa a cubrir la fila entera (sin radio propio:
+	   el de la caja ya la recorta). */
+	.footer__link::before {
+		border-radius: 0;
+	}
+
+	/* Y sin el scale del hover/tap: en una fila de ancho completo se ve
+	   como si la caja se deformara. */
+	.footer__link:hover,
+	.footer__link:focus-visible,
+	.footer__link:active {
+		transform: none;
+	}
+
+	/* El margen negativo se come parte del gap de 24px del __inner: el
+	   rótulo tiene que leerse pegado a SUS iconos, no flotando entre la
+	   cajita y ellos. */
+	.footer__social-title {
+		display: block;
+		margin: 4px 0 -10px;
+		/* Los 18px son el padding de las filas de la cajita: así el rótulo
+		   arranca en la MISMA vertical que "INICIO" y compañía, y no en el
+		   borde de la caja. */
+		padding-left: 18px;
+		color: rgba(244, 246, 248, 0.5);
+		font-size: 0.78rem;
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+	}
+
+	/* Mismo riel que el rótulo y las filas. El 8 no es 18 porque el icono
+	   tiene su propia caja de 46px con el dibujo de 26 centrado: le sobran
+	   10px a cada lado, y 8 + 10 = los 18 del resto. Así lo que queda
+	   alineado es el DIBUJO, no su caja invisible. */
 	.footer__social {
-		gap: 10px;
+		justify-content: flex-start;
+		gap: 8px;
+		padding-left: 8px;
+	}
+
+	.footer__icon {
+		width: 46px;
+		height: 46px;
+	}
+
+	.footer__icon svg {
+		width: 26px;
+		height: 26px;
 	}
 
 	.footer__stripes {

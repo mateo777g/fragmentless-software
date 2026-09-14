@@ -493,6 +493,12 @@
 				<a class="footer__link" href="terminos.html" aria-current="page">Términos</a>
 			</nav>
 
+			<!-- Rótulo de las redes. SOLO se ve en móvil (en PC el pie va
+			     centrado y sin rótulo): nace oculto en el CSS base y lo
+			     enciende el @media de 640px. Igual que en index.html: este
+			     footer es una copia del de allá. -->
+			<p class="footer__social-title" data-reveal style="--n: 2;">Fragmentless Social</p>
+
 			<ul class="footer__social" data-reveal style="--n: 2;">
 				<li><a class="footer__icon" href="https://www.instagram.com/mattthew.reyes/" target="_blank" rel="noopener" aria-label="Instagram">
 					<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -514,5 +520,44 @@
 			<p class="footer__copy">&copy; <span class="footer__year">2026</span> Fragmentless. Todos los derechos reservados.</p>
 		</div>
 	</footer>
+
+	<script>
+		/* =====================================================================
+		 * ÚNICO JS DE ESTA PÁGINA: la ola de entrada del pie, la misma que en
+		 * index.html (mismas clases, mismo threshold, mismo escalonado por
+		 * --n; la animación en sí es CSS).
+		 *
+		 * Va copiado y NO se carga el JS de index.html a propósito: ese
+		 * archivo trae toda la matemática del scroll de las secciones 2 y 3
+		 * (el track, el pin, el solape del panel), que acá no existen. Si se
+		 * cargara entero, sus cálculos correrían contra elementos que no
+		 * están. Ver CLAUDE_LEEME.txt.
+		 *
+		 * Igual que allá: la clase .footer--animate la pone el JS y no el
+		 * HTML, así que si el script no corre el pie se ve entero en vez de
+		 * quedar invisible para siempre.
+		 *
+		 * El año del copyright sigue escrito a mano en el HTML: acá NO se
+		 * pisa desde JS, a propósito (también ver CLAUDE_LEEME.txt).
+		 * ===================================================================== */
+		(() => {
+			const footerSection = document.querySelector('.footer');
+			const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+			if (!footerSection || reduceMotion.matches || !('IntersectionObserver' in window)) return;
+
+			footerSection.classList.add('footer--animate');
+
+			const footerObserver = new IntersectionObserver((entries, observer) => {
+				entries.forEach((entry) => {
+					if (!entry.isIntersecting) return;
+					footerSection.classList.add('is-revealed');
+					observer.disconnect();
+				});
+			}, { threshold: 0.2 });
+
+			footerObserver.observe(footerSection);
+		})();
+	</script>
 </body>
 </html>

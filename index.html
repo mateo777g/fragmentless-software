@@ -427,6 +427,11 @@
 				<a class="footer__link" href="terminos.html">Términos</a>
 			</nav>
 
+			<!-- Rótulo de las redes. SOLO se ve en móvil (en PC el pie va
+			     centrado y sin rótulo): nace oculto en el CSS base y lo
+			     enciende el @media de 640px. -->
+			<p class="footer__social-title" data-reveal style="--n: 2;">Fragmentless Social</p>
+
 			<ul class="footer__social" data-reveal style="--n: 2;">
 				<li><a class="footer__icon" href="https://www.instagram.com/mattthew.reyes/" target="_blank" rel="noopener" aria-label="Instagram">
 					<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -870,6 +875,58 @@
 			// Arranca en mensual: el switch se mueve a anual recién cuando el usuario le da clic.
 			setBilling(false);
 		}
+
+		/* ---------------------------------------------------------------
+		 * CARRUSEL DE PLANES (solo móvil).
+		 * En móvil las tarjetas de planes dejan de estar apiladas y pasan a
+		 * un riel horizontal con scroll-snap (ver el @media de 640px). Lo
+		 * único que hace falta de JS es ARRANCARLO en el plan destacado: el
+		 * Negocio es el que tiene que estar a la vista cuando la sección
+		 * entra, y el Básico / Premium se descubren deslizando a los lados.
+		 * (La sección 4 NO lleva riel: sus comentarios van apilados.)
+		 *
+		 * El centrado se calcula con offsetLeft y NO con getBoundingClientRect:
+		 * el panel de la sección 3 lleva un transform: scale() que depende del
+		 * scroll, y los rects vienen escalados por él (scrollLeft no). Con
+		 * offsetLeft, que es layout puro, la cuenta no se entera del scale.
+		 *
+		 * Va sin behavior: 'smooth' a propósito: es la posición de PARTIDA,
+		 * no una animación; la sección está lejos en la página y el usuario
+		 * nunca ve el salto.
+		 * --------------------------------------------------------------- */
+		const mobileLayout = window.matchMedia('(max-width: 640px)');
+		const featuredPlan = document.querySelector('.plans__card--featured');
+
+		function centerFeaturedPlan() {
+			if (!plansGrid || !featuredPlan) return;
+
+			// En escritorio el riel no existe (es un grid de 3 columnas sin
+			// scroll): scrollLeft 0 y listo, por si se venía de móvil.
+			if (!mobileLayout.matches) {
+				plansGrid.scrollLeft = 0;
+				return;
+			}
+
+			const cardX = featuredPlan.offsetLeft - plansGrid.offsetLeft;
+			plansGrid.scrollLeft = cardX - (plansGrid.clientWidth - featuredPlan.offsetWidth) / 2;
+		}
+
+		centerFeaturedPlan();
+		// Las fuentes pueden cambiar el ancho de las tarjetas después del
+		// primer cálculo, igual que le pasa al pin de la portada.
+		window.addEventListener('load', centerFeaturedPlan);
+		mobileLayout.addEventListener('change', centerFeaturedPlan);
+
+		// Solo los cambios de ANCHO: un resize de alto en el teléfono es la
+		// barra de URL, y recentrar ahí le movería el carrusel al usuario
+		// a mitad de lectura (mismo criterio que el pin de la portada).
+		let carouselWidth = window.innerWidth;
+
+		window.addEventListener('resize', () => {
+			if (window.innerWidth === carouselWidth) return;
+			carouselWidth = window.innerWidth;
+			centerFeaturedPlan();
+		});
 
 		/* =====================================================================
 		 * SECCIÓN 4 - Clientes.

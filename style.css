@@ -2263,12 +2263,30 @@ body {
 		display: none;
 	}
 
+	/*
+	 * La cita del cliente (la de verdad, la de Anxie Store) es más larga que
+	 * el relleno que había y estiró la sección 40px: en 390x844 se pasaba de
+	 * la pantalla. Se recupera ese alto en los dos únicos lugares que sobran,
+	 * y hacen falta LOS DOS (cada uno solo deja 2-3px afuera):
+	 *
+	 *   · el piso de las negras vacías, que no lleva contenido;
+	 *   · la cita, 0.95rem -> 0.85rem.
+	 *
+	 * El bloque de teléfonos bajitos (≤640 y ≤740 de alto) pisa estas dos
+	 * reglas más abajo con sus propios valores: ahí el alto se pelea de otra
+	 * manera y meterle este clamp lo empeoraba 3px. No lo unifiques.
+	 */
+
 	/* El piso de 184px de las negras vacías es de PC, donde tres de ellas
 	   marcan el alto de la fila. Acá abajo son un piso a secas, y en una
 	   pantalla baja es lo primero que empuja la sección fuera de la
 	   ventana. Con el clamp se achican solas cuando no hay alto. */
 	.clients__card--ink.clients__card--empty {
-		min-height: clamp(120px, 20svh, 184px);
+		min-height: clamp(104px, 16svh, 150px);
+	}
+
+	.clients__quote {
+		font-size: 0.85rem;
 	}
 
 	.clients__avatar {

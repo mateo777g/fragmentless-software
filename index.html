@@ -4,7 +4,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Fragmentless</title>
-	<link rel="icon" href="assets/fragmentless-blue-reposo.svg" type="image/svg+xml">
+	<!-- La barra del navegador en el celular se pinta del azul de la marca:
+	     las dos páginas arrancan con la portada azul (#1355e8), así que la
+	     barra se funde con ella en vez de cortar la pantalla en dos. -->
+	<meta name="theme-color" content="#1355e8">
+	<!-- El favicon cambia de color solo: azul en barras claras, blanco en
+	     oscuras. Ver el comentario dentro del archivo. -->
+	<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 	<link rel="stylesheet" href="style.css">
 </head>
 <body>

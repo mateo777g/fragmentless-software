@@ -1717,6 +1717,91 @@ body {
 	}
 }
 
+/* =========================================================================
+ * BANDA DE TABLET (641px - 900px) - Tablets en vertical (iPad 768x1024,
+ * iPad Air 834x1112) y teléfonos acostados (667x375, 844x390).
+ *
+ * Esta franja no la había diseñado nadie: era el diseño de PC con las
+ * grillas de 3 columnas pasadas a UNA sola, o sea 3 tarjetas de plan de
+ * 650-770px de ancho una debajo de la otra (medido en 768x1024: la sección
+ * 3 pedía 1868px de alto, casi dos pantallas) y las 7 tarjetas de clientes
+ * en fila india.
+ *
+ * Acá abajo se arregla tomando prestada la idea del teléfono (carrusel)
+ * pero con la tarjeta ACOTADA, que es lo que faltaba: en un ancho de
+ * tablet, una tarjeta estirada a todo lo ancho no se lee, se deforma.
+ *
+ * NO toca ni el diseño de móvil (≤640) ni el de PC (≥901): los dos están
+ * congelados. Ver CLAUDE_LEEME.txt.
+ * ========================================================================= */
+@media (min-width: 641px) and (max-width: 900px) {
+	/* Misma razón que en móvil: la columna `auto` del grid no puede
+	   achicarse por debajo del min-content, y el riel mide las 3 tarjetas
+	   juntas a lo ancho. */
+	.scroll-hero__surface-stage {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	/*
+	 * EL RIEL. A diferencia del de móvil, este NO se sale a los bordes de
+	 * la pantalla: se queda dentro del panel y son las tarjetas vecinas las
+	 * que asoman recortadas por los costados.
+	 *
+	 * El padding-inline es la cuenta que permite centrar la PRIMERA y la
+	 * ÚLTIMA tarjeta: la mitad del riel menos la mitad de una tarjeta. Sin
+	 * él, el scroll-snap no podría dejar los extremos en el medio.
+	 */
+	.plans__grid {
+		display: flex;
+		align-items: stretch;
+		gap: 16px;
+		padding-inline: calc(50% - 200px);
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		overscroll-behavior-x: contain;
+		scrollbar-width: none;
+	}
+
+	.plans__grid::-webkit-scrollbar {
+		display: none;
+	}
+
+	/* 400px fijos y no un %: es el ancho en el que la tarjeta se lee igual
+	   que en PC. Con % se estiraría a 700px en una tablet. */
+	.plans__card {
+		flex: 0 0 400px;
+		scroll-snap-align: center;
+	}
+
+	/*
+	 * CLIENTES: las 3 tarjetas que se ven en móvil, pero en FILA. Con las 7
+	 * de PC apiladas la sección medía 1415px; así entra en una pantalla y se
+	 * parece a la de PC, que es de lo que se trata la coherencia.
+	 */
+	.clients__col {
+		display: contents;
+	}
+
+	.clients__grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.clients__col:nth-child(2) .clients__card:nth-child(n + 2),
+	.clients__col:nth-child(3) .clients__card {
+		display: none;
+	}
+
+	/* Con 3 tarjetas en una tablet cada una queda en ~230px, y ahí el
+	   cuadrado de 64px del avatar le come el renglón al nombre ("Ángel
+	   Reyes" se partía en dos). El de 52px del teléfono sí deja el nombre
+	   en una línea. */
+	.clients__avatar {
+		width: 52px;
+		height: 52px;
+		font-size: 0.92rem;
+	}
+}
+
 @media (max-width: 640px) {
 	/* =====================================================================
 	 * MENÚ EN MÓVIL - píldora a la derecha que se abre como barra lateral.
@@ -2317,6 +2402,163 @@ body {
 		height: 40px;
 	}
 }
+
+/* =========================================================================
+ * PANTALLAS ACOSTADAS / VENTANAS BAJAS (ancho ≥ 641px y alto ≤ 620px).
+ * Un teléfono acostado (667x375, 844x390) o una ventana de escritorio
+ * aplastada. El problema no es el ancho, es el ALTO: con los paddings de
+ * siempre la portada pedía 637px en una ventana de 375 (medido), o sea que
+ * los dos botones caían fuera de pantalla, y la lista de palabras se metía
+ * debajo de la píldora del menú.
+ *
+ * No entra en los teléfonos de pie: esos tienen su propio bloque más abajo
+ * (≤640 de ancho). Acá SOLO se recorta espacio vertical, nada de layout.
+ * ========================================================================= */
+@media (min-width: 641px) and (max-height: 620px) {
+	/* padding-block y no padding: los costados (el clamp con vw) se
+	   respetan, que de ancho no falta nada. */
+	.intro {
+		padding-block: 44px 36px;
+	}
+
+	.intro__kicker {
+		margin-bottom: 10px;
+	}
+
+	/* El título se ata al ANCHO y al ALTO a la vez, y manda el que menos
+	   deje: con solo vw, en un teléfono acostado (667x375) salía de 46px y
+	   dos líneas de titular se comían 86px de los 375 que hay. El min()
+	   hace que en una ventana baja el alto sea el que decide. */
+	.intro__title {
+		font-size: clamp(2rem, min(6.9vw, 9svh), 8.2rem);
+	}
+
+	.intro__subtitle {
+		margin-top: 16px;
+	}
+
+	.intro__actions {
+		margin-top: 20px;
+	}
+
+	/* El isotipo es lo más alto de la fila y acá el alto es lo que falta. */
+	.intro__logo img {
+		width: min(100%, 300px);
+		max-height: 62svh;
+		object-fit: contain;
+	}
+
+	/* El "DESLIZA ↓" vive pegado abajo (absolute) y en una ventana baja se
+	   le monta encima a los botones. */
+	.intro__scroll {
+		display: none;
+	}
+
+	/*
+	 * Las palabras: con la banda en 38vh de 375px quedaba en el pixel 142,
+	 * y las 5 frases ya pasadas subían hasta meterse detrás del menú. Se
+	 * baja la banda y se achica la letra en proporción AL ALTO (svh, no vw:
+	 * de ancho sobra, lo que falta es alto).
+	 */
+	.scroll-hero {
+		--start: 54vh;
+	}
+
+	.scroll-hero__word-layout {
+		font-size: clamp(1rem, 4.6svh, 2.6rem);
+	}
+}
+
+/* =========================================================================
+ * TELÉFONOS BAJITOS (≤640px de ancho y ≤740px de alto).
+ * iPhone SE (320x568 y 375x667), Androids viejos (360x640). El diseño de
+ * móvil está pensado para los de 800px de alto para arriba; acá abajo hay
+ * entre 130 y 240px de más que recortar (medido antes: la portada pedía
+ * 792px en una pantalla de 568).
+ *
+ * Es recorte de espacio y de tamaños, NO otro diseño: la estructura (el
+ * carrusel de planes, los 3 testimonios, la cajita del pie) es la misma.
+ * ========================================================================= */
+@media (max-width: 640px) and (max-height: 740px) {
+	/* Sección 1 */
+	.intro {
+		padding: 86px 20px 62px;
+	}
+
+	.intro__content {
+		gap: 20px;
+	}
+
+	/* El isotipo pasa de 58% a 40%: es la pieza que más alto ocupa y la que
+	   menos información lleva (el nombre ya está escrito debajo). */
+	.intro__logo img {
+		width: min(40%, 168px);
+	}
+
+	.intro__kicker {
+		margin-bottom: 12px;
+	}
+
+	.intro__title {
+		font-size: clamp(2rem, 10vw, 3.2rem);
+	}
+
+	.intro__subtitle {
+		margin-top: 16px;
+		font-size: 0.95rem;
+	}
+
+	.intro__actions {
+		margin-top: 20px;
+		gap: 10px;
+	}
+
+	/* Sección 3: la lista de funciones es lo que más pesa de la tarjeta
+	   (9 renglones), y en 320px de ancho varios se parten en dos líneas.
+	   Bajarla un punto es lo que más alto devuelve. */
+	.plans__features {
+		gap: 5px;
+		font-size: 0.8rem;
+	}
+
+	.plans__card {
+		padding: 16px 16px;
+	}
+
+	.plans__amount {
+		font-size: 2.1rem;
+	}
+
+	.plans__cta {
+		min-height: 42px;
+	}
+
+	/* Sección 4. El padding de abajo (86px) estaba calculado para que el
+	   remate decorativo respirara, pero de ese remate lo único que se ve es
+	   la línea, que vive a 18px del borde: los otros 64px son la caja vacía
+	   que la sostiene. Recortarlo no tapa nada. */
+	.clients {
+		padding-bottom: 64px;
+	}
+
+	.clients__grid {
+		gap: 8px;
+	}
+
+	.clients__card--ink.clients__card--empty {
+		min-height: clamp(96px, 16svh, 150px);
+	}
+
+	.clients__quote {
+		font-size: 0.88rem;
+	}
+
+	.clients__avatar {
+		width: 44px;
+		height: 44px;
+	}
+}
+
 
 /* =========================================================================
  * PÁGINA DE TÉRMINOS (terminos.html).

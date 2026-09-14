@@ -332,6 +332,15 @@ body {
 	width: 0.3em;
 }
 
+/*
+ * Velo del panel lateral. En escritorio no existe: el menú de PC es la píldora
+ * que se estira sobre la página, sin panel de alto completo detrás.
+ * Se enciende en el @media de 640px. Ver el bloque MENÚ de móvil.
+ */
+.menu-scrim {
+	display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.menu {
 		animation: none;
@@ -1701,21 +1710,129 @@ body {
 }
 
 @media (max-width: 640px) {
+	/* =====================================================================
+	 * MENÚ EN MÓVIL - píldora a la derecha que se abre como barra lateral.
+	 *
+	 * Dos cambios respecto a PC:
+	 *   1. Cerrada, la píldora deja el centro (ahí cae la isla dinámica del
+	 *      iPhone), se ancla a la derecha y se acorta: "Menú" y la hamburguesa
+	 *      van juntos y centrados en vez de repartidos a los extremos.
+	 *   2. Abierta no se estira en su sitio como en PC: se convierte en un
+	 *      panel de alto completo pegado al borde derecho, con velo detrás.
+	 *      Así el menú puede crecer en links sin quedarse sin alto.
+	 *
+	 * El truco para que la píldora MORFE al panel (y no pegue un salto) es que
+	 * .menu pasa a ocupar la pantalla entera como caja de posicionamiento: la
+	 * píldora se acomoda arriba a la derecha con un margen, y al abrir sólo
+	 * cambian ancho, alto, margen y radio, que sí transicionan. .menu sigue con
+	 * pointer-events: none, así que aunque cubra todo no tapa clics.
+	 * ===================================================================== */
 	.menu {
 		--menu-bar: 44px;
-		top: 16px;
+		display: flex;
+		align-items: flex-start;
+		justify-content: flex-end;
+		top: 0;
+		left: auto;
+		right: 0;
+		width: 100%;
+		height: 100dvh;
+		animation-name: menu-in-mobile;
 	}
 
+	/* Igual que menu-in pero sin el -50%: acá la píldora ya no está centrada. */
+	@keyframes menu-in-mobile {
+		from {
+			opacity: 0;
+			filter: blur(10px);
+			transform: translateY(-20px);
+		}
+		to {
+			opacity: 1;
+			filter: none;
+			transform: none;
+		}
+	}
+
+	/* El margen es lo que separa la píldora del borde; al abrir se va a 0 y el
+	   panel queda pegado. Por eso hay que sumarlo a la transición heredada. */
 	.menu__shell {
-		width: 142px;
+		width: 108px;
+		margin: 16px 16px 0 0;
+		transition:
+			width 800ms var(--menu-ease),
+			height 800ms var(--menu-ease),
+			margin 800ms var(--menu-ease),
+			border-radius 800ms var(--menu-ease),
+			transform 250ms var(--menu-ease),
+			background-color 400ms ease;
 	}
 
+	/* El alto lo manda el CSS (100% de .menu = pantalla), no el JS: en móvil
+	   setMenuOpen() no escribe style.height. Ver index.html. */
 	.menu.is-open .menu__shell {
-		width: min(280px, calc(100vw - 32px));
+		width: min(82vw, 380px);
+		height: 100%;
+		margin: 0;
+		border-radius: 26px 0 0 26px;
 	}
 
 	.menu__bar {
+		justify-content: center;
+		gap: 8px;
+		padding: 0 14px;
 		font-size: 0.88rem;
+	}
+
+	.menu.is-open .menu__bar {
+		justify-content: space-between;
+		gap: 0;
+		padding: 0 22px;
+	}
+
+	/* En el panel los links van alineados a la izquierda y ocupan el alto que
+	   sobra. El scroll propio es lo que lo hace escalable: si algún día hay
+	   diez links, la lista scrollea sola en vez de desbordar el panel. */
+	.menu.is-open .menu__items {
+		flex: 1 1 auto;
+		/* Es un grid: sin align-content las filas se reparten el alto sobrante
+		   del panel y los links quedan desparramados. */
+		align-content: start;
+		justify-content: start;
+		gap: 22px;
+		min-height: 0;
+		padding: 30px 26px 34px;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	.menu__item {
+		font-size: 1.3rem;
+	}
+
+	/* Velo: deja ver la página detrás y, al ser hermano de .menu, el click en
+	   él lo recoge el listener de "click afuera" y cierra el panel. */
+	.menu-scrim {
+		display: block;
+		position: fixed;
+		inset: 0;
+		z-index: 99;
+		background: rgba(3, 4, 7, 0.5);
+		opacity: 0;
+		pointer-events: none;
+		/* La curva va escrita a mano: --menu-ease vive en .menu y el velo es
+		   hermano, así que no la hereda. */
+		transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	body.has-menu-open .menu-scrim {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/* Con el panel abierto la página de atrás no scrollea. */
+	body.has-menu-open {
+		overflow: hidden;
 	}
 
 	.menu__item {
@@ -1727,27 +1844,42 @@ body {
 		padding: 120px 20px 96px;
 	}
 
-	/* En móvil se apila: primero el isotipo, después el texto. */
+	/* En móvil se apila: primero el isotipo, después el texto. Y va todo
+	   centrado, al revés que en PC (donde el texto va a la izquierda y el
+	   isotipo a la derecha, en dos columnas). El text-align: center del
+	   contenedor se encarga del kicker, el título y el subtítulo de una. */
 	.intro__content {
 		grid-template-columns: minmax(0, 1fr);
 		gap: 32px;
+		text-align: center;
 	}
 
 	.intro__logo {
 		order: -1;
-		justify-content: flex-start;
 	}
 
 	.intro__logo img {
 		width: min(58%, 240px);
 	}
 
+	/* El 11vw está calculado igual que el 6.9vw de escritorio: es el máximo con
+	   el que "FRAGMENTLESS" (la palabra más larga, que no se puede partir)
+	   todavía entra en su caja. Con 12vw se desbordaba ~18px, y una línea que
+	   no entra Chrome NO la centra: la clava en el borde izquierdo y la deja
+	   derramarse a la derecha, así que el título se veía corrido mientras el
+	   resto del bloque estaba centrado. */
 	.intro__title {
-		font-size: clamp(2.4rem, 12vw, 3.6rem);
+		font-size: clamp(2.2rem, 11vw, 3.6rem);
 	}
 
+	/* El auto de los costados centra la caja; el max-width de 620px sólo
+	   entra en juego en las pantallas más anchas de este rango. */
 	.intro__subtitle {
-		margin-left: 0;
+		margin-inline: auto;
+	}
+
+	.intro__actions {
+		justify-content: center;
 	}
 
 	.intro__cta,

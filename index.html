@@ -78,6 +78,14 @@
 		</div>
 	</nav>
 
+	<!--
+		Velo del panel lateral. SOLO existe en móvil (en escritorio el CSS lo
+		deja en display: none y no pinta nada).
+		Va a propósito FUERA de .menu: así el click sobre él cae en el listener
+		de "click afuera" que ya cierra el menú, sin código nuevo.
+	-->
+	<div class="menu-scrim" aria-hidden="true"></div>
+
 	<main>
 		<!--
 			SECCIÓN 1 - Portada azul (estática).
@@ -533,14 +541,24 @@
 			box.appendChild(roll);
 		}
 
+		// En móvil el menú no es la píldora que se estira, sino un panel lateral
+		// de alto completo: ahí el alto lo pone el CSS y medirlo a mano lo
+		// rompería. Mismo breakpoint que el @media del CSS.
+		const menuDrawer = window.matchMedia('(max-width: 640px)');
+
 		function setMenuOpen(open) {
 			menuRoot.classList.toggle('is-open', open);
 			menuBar.setAttribute('aria-expanded', String(open));
 			// Cerrado, los links no deben ser enfocables con Tab.
 			menuList.inert = !open;
 			// Alto medido en vez de fijo: si algún día se agrega o quita un link,
-			// la animación sigue cerrando justo.
-			menuShell.style.height = open ? `${menuBar.offsetHeight + menuList.offsetHeight}px` : '';
+			// la animación sigue cerrando justo. En el panel lateral, no: se deja
+			// vacío para que mande el height: 100% del CSS.
+			menuShell.style.height = open && !menuDrawer.matches
+				? `${menuBar.offsetHeight + menuList.offsetHeight}px`
+				: '';
+			// Enciende el velo y frena el scroll de la página detrás del panel.
+			document.body.classList.toggle('has-menu-open', open && menuDrawer.matches);
 		}
 
 		// Tema según lo que haya debajo de la píldora. Se mide con el rect real
@@ -616,6 +634,11 @@
 				}
 			});
 
+			// Al cruzar el breakpoint el menú cambia de forma (píldora <-> panel):
+			// abierto quedaría a medio camino, con el alto inline de la otra
+			// versión. Se cierra y listo.
+			menuDrawer.addEventListener('change', () => setMenuOpen(false));
+
 			setMenuOpen(false);
 		}
 
@@ -673,6 +696,45 @@
 			return top;
 		}
 
+		/*
+		 * PIN DE LA PORTADA (--pin-top).
+		 * La portada se fija recién cuando su borde inferior toca el borde
+		 * inferior de la ventana: sticky top = alto de ventana - su alto. Es 0
+		 * mientras mida una pantalla exacta (el caso normal).
+		 *
+		 * OJO, ACÁ HUBO UN BUG: esto se calculaba dentro de updateSectionTilt(),
+		 * o sea EN CADA FRAME DE SCROLL, usando window.innerHeight. En el
+		 * teléfono ese valor cambia MIENTRAS scrolleás, porque la barra de URL
+		 * del navegador se contrae, así que --pin-top saltaba (medido: 0 -> -24
+		 * -> 0 en un mismo gesto) y la portada temblaba. En PC no pasaba porque
+		 * ahí innerHeight no se mueve al scrollear.
+		 *
+		 * Dos cambios para que no vuelva:
+		 *   1. El pin NO depende del scroll, así que se calcula sólo al cargar y
+		 *      al cambiar el tamaño, nunca por frame.
+		 *   2. Se mide contra 100lvh, el alto con la barra de URL contraída, que
+		 *      es un valor FIJO (a diferencia de innerHeight y de 100dvh). En
+		 *      escritorio 100lvh vale exactamente innerHeight, así que allá el
+		 *      número que sale es el mismo de siempre.
+		 */
+		const touchDevice = window.matchMedia('(hover: none) and (pointer: coarse)');
+
+		function stableViewport() {
+			const probe = document.createElement('div');
+			probe.style.cssText = 'position:absolute;top:0;left:0;width:0;height:100lvh;visibility:hidden;pointer-events:none';
+			document.body.appendChild(probe);
+			const height = probe.offsetHeight;
+			probe.remove();
+			// Si el navegador no conoce lvh, offsetHeight da 0: se cae a innerHeight.
+			return height || window.innerHeight;
+		}
+
+		function updateIntroPin() {
+			if (!introSection) return;
+			const pinTop = Math.min(0, stableViewport() - introSection.offsetHeight);
+			introSection.style.setProperty('--pin-top', `${pinTop}px`);
+		}
+
 		// TRANSICIÓN SECCIÓN 1 -> SECCIÓN 2.
 		// La portada azul está fijada (sticky) y la sección negra entra girada
 		// sobre su esquina inferior izquierda hasta quedar recta.
@@ -681,14 +743,6 @@
 		// Al llegar a 0 se quita la clase (y con ella el transform), porque un
 		// ancestro transformado rompe el resaltado azul de las palabras.
 		function updateSectionTilt(viewport) {
-			// La portada se fija recién cuando su borde inferior toca el borde
-			// inferior de la ventana: sticky top = alto de ventana - su alto.
-			// Es 0 mientras mida una pantalla exacta (el caso normal).
-			if (introSection) {
-				const pinTop = Math.min(0, viewport - introSection.offsetHeight);
-				introSection.style.setProperty('--pin-top', `${pinTop}px`);
-			}
-
 			const sectionTop = layoutTop(scrollHero) - window.scrollY;
 			const progress = clamp01((viewport - sectionTop) / (viewport * 0.75));
 			const tilting = progress < 1 && !reduceMotion.matches;
@@ -738,9 +792,27 @@
 		window.addEventListener('scroll', () => {
 			if (!heroFrame) heroFrame = window.requestAnimationFrame(updateScrollHero);
 		}, { passive: true });
-		window.addEventListener('resize', updateScrollHero);
+		let pinWidth = window.innerWidth;
+
+		window.addEventListener('resize', () => {
+			// En un teléfono, un resize que sólo cambia el ALTO es la barra de URL
+			// contrayéndose a mitad del scroll, no un cambio real de layout:
+			// recalcular el pin ahí es justo lo que hacía temblar la portada. Los
+			// cambios de ancho (rotar el teléfono) sí valen. En escritorio se
+			// atienden todos, como siempre.
+			if (window.innerWidth !== pinWidth || !touchDevice.matches) {
+				pinWidth = window.innerWidth;
+				updateIntroPin();
+			}
+			updateScrollHero();
+		});
 		reduceMotion.addEventListener('change', updateScrollHero);
+		updateIntroPin();
 		updateScrollHero();
+
+		// El isotipo y las fuentes pueden cambiar el alto de la portada después
+		// del primer cálculo, y de ese alto depende el pin.
+		window.addEventListener('load', updateIntroPin);
 
 		/* =====================================================================
 		 * SECCIÓN 3 - Planes (mensual / anual).

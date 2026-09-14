@@ -7,9 +7,18 @@
   entra en el mismo <img> sin tocar ningún ancho del CSS: se ve del mismo
   tamaño que el isotipo que reemplaza.
 
-  El trazo va en 4 y no en 3 porque el grupo está escalado a 0.75:
-  4 x 0.75 = 3, el mismo grosor fino de los cuadros originales. Acá no se
-  engorda como en el favicon, porque esto se ve grande, no a 16px.
+  TRAZO: va en 11, el MISMO número que traen los cuadros de la animación
+  (assets/svg/blanco/fragmentless-white-frame*.svg). Como el grupo está
+  escalado a 0.75, el dibujo entero se achica parejo, líneas incluidas: esto
+  es el logo de PC tal cual, nada más que más chico para que entre en la
+  placa.
+
+  OJO CON ESTO, que ya se equivocó una vez: estos paths salieron del logo
+  viejo (el fragmentless-blue-reposo que se borró), y ese venía con el trazo
+  en 3, que es la versión FLACA. Los cuadros blancos de la animación, que son
+  los que se ven en la portada en PC, lo tienen en 11. El número bueno es 11.
+  El favicon es el único que se sale de esta regla y va mucho más gordo (26),
+  porque a 16px de pestaña el 11 no se lee.
 -->
 <defs>
 <linearGradient id="glass" x1="0" y1="0" x2="0.55" y2="1">
@@ -18,7 +27,7 @@
 </linearGradient>
 </defs>
 <style>
-  g path { stroke: #1355E8; stroke-width: 4; }
+  g path { stroke: #1355E8; stroke-width: 11; }
 </style>
 <rect x="64" y="64" width="384" height="384" rx="84" fill="#FFFFFF"/>
 <g transform="translate(256,256) scale(0.75) translate(-256,-256)">

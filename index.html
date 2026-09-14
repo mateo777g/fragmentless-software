@@ -130,8 +130,22 @@
 					</div>
 				</div>
 
+				<!--
+					El <picture> es lo que parte el isotipo en dos versiones:
+					en móvil (≤640) manda el <source> y se ve la PLACA fija, porque la
+					animación de 36 cuadros se trababa en el teléfono; de 641 para
+					arriba no hay <source> que coincida, gana el <img> y la animación
+					corre como siempre.
+
+					OJO: cuando el <source> coincide, el src del <img> queda ignorado.
+					Por eso el JS ni arranca en móvil (ver initLogo): cambiarle el src
+					no se vería, y precargar los 36 cuadros sería gastar datos al pedo.
+				-->
 				<div class="intro__logo" aria-hidden="true" data-reveal style="--n: 4;">
-					<img src="assets/svg/blanco/fragmentless-white-frame35.svg" alt="">
+					<picture>
+						<source media="(max-width: 640px)" srcset="assets/logo-placa-azul.svg">
+						<img src="assets/svg/blanco/fragmentless-white-frame35.svg" alt="">
+					</picture>
 				</div>
 			</div>
 
@@ -426,7 +440,9 @@
 
 		<div class="footer__inner">
 			<a class="footer__logo" href="#inicio" data-reveal style="--n: 0;" aria-label="Fragmentless — volver al inicio">
-				<img src="assets/svg/blanco/fragmentless-white-frame35.svg" alt="Fragmentless" width="512" height="512">
+				<!-- Placa blanca con el cubo en negro. En móvil el pie no lleva
+				     isotipo (lo esconde el CSS), así que esto se ve de 641 para arriba. -->
+				<img src="assets/logo-placa-negro.svg" alt="Fragmentless" width="512" height="512">
 			</a>
 
 			<nav class="footer__nav" data-reveal style="--n: 1;" aria-label="Enlaces del pie">
@@ -1041,7 +1057,23 @@
 
 		const logoSrc = (i) => `assets/svg/blanco/fragmentless-white-frame${String(i).padStart(2, '0')}.svg`;
 
-		if (introLogoImg) {
+		/*
+		 * En MÓVIL el isotipo no se anima: es la placa fija que sirve el
+		 * <source> del <picture>. Si esto corriera igual, precargaría los 36
+		 * cuadros (datos del teléfono a la basura) y le cambiaría el src a un
+		 * <img> que ni se muestra, porque cuando un <source> coincide el src
+		 * del <img> queda ignorado.
+		 *
+		 * El corte de 640 está escrito en tres lados: acá, en el <source> del
+		 * HTML y en el @media del CSS. Si cambia uno, cambian los tres.
+		 */
+		const logoAnimado = window.matchMedia('(min-width: 641px)');
+		let logoIniciado = false;
+
+		function initLogo() {
+			if (logoIniciado || !introLogoImg || !logoAnimado.matches) return;
+			logoIniciado = true;
+
 			// Bandera de "ya está corriendo": mientras esté en true el clic se
 			// ignora, para que no se reinicie la vuelta a la mitad.
 			let logoPlaying = false;
@@ -1103,6 +1135,13 @@
 
 			introLogo.addEventListener('click', playLogo);
 		}
+
+		initLogo();
+
+		// Si alguien agranda la ventana y cruza el corte, el isotipo pasa a ser
+		// el animado: recién ahí se precargan los cuadros. Al revés no hace
+		// falta deshacer nada: la placa la pone el <picture> solo.
+		logoAnimado.addEventListener('change', initLogo);
 	</script>
 
 </body>

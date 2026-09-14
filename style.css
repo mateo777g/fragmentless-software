@@ -478,6 +478,13 @@ body {
 	min-width: 0;
 }
 
+/* El <picture> no debe existir para el layout: con display: contents el
+   <img> sigue siendo hijo directo del flex, así que el encuadre queda
+   igual que cuando acá había un <img> suelto. */
+.intro__logo picture {
+	display: contents;
+}
+
 .intro__logo img {
 	/* El SVG trae aire alrededor del hexágono, por eso el ancho del <img>
 	   va bastante por encima del tamaño visible del cubo. */
